@@ -5,19 +5,18 @@ import { beautifyCamelCase } from '@dexkit/core/utils';
 import { AppConfirmDialog } from '@dexkit/ui';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import ArrowDownward from '@mui/icons-material/ArrowDownward';
-import Cancel from '@mui/icons-material/Cancel';
-import Check from '@mui/icons-material/Check';
-import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  alpha,
   AutocompleteChangeReason,
   Autocomplete as AutocompleteMUI,
   AutocompleteRenderInputParams,
   Box,
   Button,
+  ButtonBase,
   Divider,
   FormControl,
   Grid,
@@ -27,8 +26,8 @@ import {
 } from '@mui/material';
 import { Field, FormikErrors, FormikTouched } from 'formik';
 import { TextField } from 'formik-mui';
-import { SyntheticEvent, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { SyntheticEvent, useRef, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import CollectionFilterForm from './Filters/CollectionFilterForm';
 import DropCollectionFilterForm from './Filters/DropCollectionFilter';
 import SwapFilterForm from './Filters/SwapFilterForm';
@@ -195,6 +194,27 @@ export default function LeaderboardRule({
     setClearConfirm(false);
   };
 
+  const [isEdit, setIsEdit] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleEdit = () => {
+    setIsEdit(true);
+
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 300);
+  };
+
+  const handleSave = () => {
+    setIsEdit(false);
+  };
+
+  const handleCancel = () => {
+    setIsEdit(false);
+  };
+
+  const { formatMessage } = useIntl();
   return (
     <>
       {clearConfirm && (
@@ -233,15 +253,57 @@ export default function LeaderboardRule({
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Stack direction="row" alignItems="center" spacing={2}>
-              <Typography fontWeight="bold" variant="body1">
-                <FormattedMessage
-                  id="rule.index.value"
-                  defaultMessage="Rule {index}"
-                  values={{
-                    index: index + 1,
+              {isEdit ? (
+                <Field
+                  component={TextField}
+                  name={`settings[${index}].title`}
+                  inputRef={(ref: any) => (inputRef.current = ref)}
+                  variant="standard"
+                  placeholder={formatMessage({
+                    id: 'rule.title',
+                    defaultMessage: 'Rule title',
+                  })}
+                  onKeyDown={(e: any) => {
+                    if (e.key === 'Enter') {
+                      handleSave();
+                    }
+                    if (e.key === 'Escape') {
+                      handleCancel();
+                    }
+                  }}
+                  onBlur={() => {
+                    handleSave();
                   }}
                 />
-              </Typography>
+              ) : (
+                <ButtonBase
+                  sx={{
+                    px: 1,
+                    py: 0.25,
+
+                    borderRadius: (theme) => theme.shape.borderRadius / 2,
+                    '&: hover': {
+                      backgroundColor: (theme) =>
+                        alpha(theme.palette.primary.main, 0.1),
+                    },
+                  }}
+                  onClick={handleEdit}
+                >
+                  <Typography fontWeight="bold" variant="body1">
+                    {values.settings[index]?.title ? (
+                      values.settings[index].title
+                    ) : (
+                      <FormattedMessage
+                        id="rule.index.value"
+                        defaultMessage="Rule {index}"
+                        values={{
+                          index: index + 1,
+                        }}
+                      />
+                    )}
+                  </Typography>
+                </ButtonBase>
+              )}
             </Stack>
           </Grid>
 
@@ -320,7 +382,15 @@ export default function LeaderboardRule({
               UserEvents.loginSignMessage && (
               <Grid item xs={12} sm={9}>
                 <Accordion disableGutters>
-                  <AccordionSummary expandIcon={<ArrowDownward />}>
+                  <AccordionSummary
+                    sx={{
+                      backgroundColor: (theme) =>
+                        theme.palette.mode === 'dark'
+                          ? undefined
+                          : theme.palette.grey[300],
+                    }}
+                    expandIcon={<ArrowDownward />}
+                  >
                     <Typography fontWeight="500">
                       <FormattedMessage
                         id="filter.event"
@@ -347,19 +417,13 @@ export default function LeaderboardRule({
               <Box>
                 <Stack direction="row" spacing={2}>
                   {!isNew ? (
-                    <Button
-                      size="small"
-                      color="error"
-                      startIcon={<Delete />}
-                      onClick={onRemove}
-                    >
+                    <Button size="small" color="error" onClick={onRemove}>
                       <FormattedMessage id="remove" defaultMessage="Remove" />
                     </Button>
                   ) : (
                     <Button
                       size="small"
                       variant="outlined"
-                      startIcon={<Cancel />}
                       onClick={() => {
                         if (isNew) {
                           return onRemove();
@@ -373,7 +437,6 @@ export default function LeaderboardRule({
 
                   <Button
                     size="small"
-                    startIcon={<Check />}
                     onClick={() => {
                       setEdit(false);
                       onSave();

@@ -3,9 +3,9 @@ import { Box, Grid, Link, Stack, Typography } from "@mui/material";
 import { useAppRankingQuery } from "@dexkit/ui/modules/wizard/hooks/ranking";
 import { RankingPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridPaginationModel } from "@mui/x-data-grid";
 import { FormattedMessage } from "react-intl";
 
 import { getBlockExplorerUrl, truncateAddress } from "@dexkit/core/utils";
@@ -49,6 +49,11 @@ const NoRows: React.FC = () => {
 
 export default function RankingSection({ section }: RankingSectionProps) {
   const { account, chainId } = useWeb3React();
+
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 5,
+  });
 
   const queryRanking = useAppRankingQuery({
     rankingId: section.settings.rankingId,
@@ -116,7 +121,15 @@ export default function RankingSection({ section }: RankingSectionProps) {
           getRowId={(row) => row.account}
           rowCount={rows.length}
           rows={rows}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
           columns={columns}
+          pageSizeOptions={[
+            { label: "5", value: 5 },
+            { label: "10", value: 10 },
+            { label: "50", value: 50 },
+            { label: "100", value: 100 },
+          ]}
           sx={{ minHeight: 300 }}
           slots={{ noRowsOverlay: NoRows, noResultsOverlay: NoRows }}
         />

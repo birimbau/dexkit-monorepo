@@ -1,8 +1,8 @@
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { isAddressEqual } from '@dexkit/core/utils';
-import { getChainName, getChainSymbol } from '@dexkit/core/utils/blockchain';
+import { getChainName } from '@dexkit/core/utils/blockchain';
 import { useTokenList } from '@dexkit/ui';
-import { Stack } from '@mui/material';
+import { Avatar, InputAdornment, Stack } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -113,12 +113,14 @@ export function SearchTokenAutocomplete(props: Props) {
         }
       }}
       getOptionLabel={(option) => {
-        return `${option?.name} - ${getChainSymbol(option.chainId)}`;
+        return `${option.name} (${
+          option?.symbol.toUpperCase() || ''
+        }) ${getChainName(option.chainId)}`;
       }}
       renderOption={(props, option) => (
         <Box
           component="li"
-          sx={{ '& > img': { mr: 2, flexShrink: 0 } }}
+          sx={{ '& > img': { mr: 2, flexShrink: 0, borderRadius: '50%' } }}
           {...props}
         >
           <img loading="lazy" width="20" src={`${option.logoURI}`} alt="" />
@@ -130,6 +132,17 @@ export function SearchTokenAutocomplete(props: Props) {
         <>
           <TextField
             {...params}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: data ? (
+                <InputAdornment position="start">
+                  <Avatar
+                    sx={{ height: '1rem', width: '1rem' }}
+                    src={data?.logoURI}
+                  />
+                </InputAdornment>
+              ) : undefined,
+            }}
             label={
               data ? (
                 <FormattedMessage id="Token" defaultMessage="Token" />
@@ -198,7 +211,17 @@ export function SearchTokenAutocompleteWithTokens(props: Props) {
     }
   }, [data, tokens]);
 
+  const orderedTokens = useMemo(() => {
+    return tokens.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+  }, [tokens]);
+
   return (
-    <SearchTokenAutocomplete {...props} data={formValue} tokens={tokens} />
+    <SearchTokenAutocomplete
+      {...props}
+      data={formValue}
+      tokens={orderedTokens}
+    />
   );
 }

@@ -10,7 +10,6 @@ import {
   Divider,
   Grid,
   IconButton,
-  InputAdornment,
   Link,
   Stack,
   Tooltip,
@@ -19,7 +18,7 @@ import {
 import Tab from '@mui/material/Tab';
 import { useCallback, useEffect, useState } from 'react';
 
-import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import { useDebounce } from '@dexkit/core';
 import {
   GET_APP_RANKINGS_QUERY,
   useAppRankingListQuery,
@@ -28,7 +27,6 @@ import Add from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import FileDownloadIcon from '@mui/icons-material/FileDownloadOutlined';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import Search from '@mui/icons-material/Search';
 import VisibilityIcon from '@mui/icons-material/VisibilityOutlined';
 import {
   DataGrid,
@@ -141,8 +139,9 @@ function AppRankingList({
   onClickEdit,
   onClickPreview,
   onClickExport,
-  query,
 }: TableProps) {
+  const [query, setQuery] = useState('');
+
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {},
   });
@@ -152,11 +151,13 @@ function AppRankingList({
     pageSize: 10,
   });
 
+  const lazyQuery = useDebounce(query, 500);
+
   const { data, isLoading, refetch } = useAppRankingListQuery({
     ...paginationModel,
     ...queryOptions,
     siteId: siteId,
-    query,
+    query: lazyQuery,
   });
 
   const [rowCountState, setRowCountState] = useState((data?.total as any) || 0);
@@ -314,8 +315,19 @@ function AppRankingList({
         sortingMode="server"
         getRowHeight={() => 'auto'}
         disableColumnMenu
-        disableColumnSelector
-        disableDensitySelector
+        slotProps={{
+          toolbar: {
+            printOptions: { disableToolbarButton: true },
+            csvOptions: { disableToolbarButton: true },
+            showQuickFilter: true,
+            quickFilterProps: {
+              value: query,
+              onChange: (e) => {
+                setQuery(e.target.value);
+              },
+            },
+          },
+        }}
         hideFooterPagination={rowCountState === 0}
         onPaginationModelChange={setPaginationModel}
         filterMode="server"
@@ -405,8 +417,8 @@ export default function RankingWizardContainer({
   const handleAppRankingRemoved = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'App leaderboard removed',
-        id: 'app.leaderboard.removed',
+        defaultMessage: 'Leaderboard removed',
+        id: 'leaderboard.removed',
       }),
       {
         variant: 'success',
@@ -421,8 +433,8 @@ export default function RankingWizardContainer({
   const handleAppRankingRemovedError = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'Error on removing app leaderboard',
-        id: 'error.removing.app.leaderboard',
+        defaultMessage: 'Error on removing leaderboard',
+        id: 'error.on.removing.leaderboard',
       }),
       {
         variant: 'error',
@@ -641,24 +653,6 @@ export default function RankingWizardContainer({
                       defaultMessage="New leaderboard"
                     />
                   </Button>
-                  <LazyTextField
-                    TextFieldProps={{
-                      variant: 'standard',
-                      placeholder: formatMessage({
-                        id: 'search...',
-                        defaultMessage: 'Search...',
-                      }),
-                      InputProps: {
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <Search />
-                          </InputAdornment>
-                        ),
-                      },
-                    }}
-                    value={query}
-                    onChange={handleChangeQuery}
-                  />
                 </Stack>
               </Box>
             </Grid>

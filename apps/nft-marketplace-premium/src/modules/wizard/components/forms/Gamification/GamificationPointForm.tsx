@@ -68,6 +68,7 @@ const GamificationPointSchema = Yup.array(
     userEventType: Yup.string().required(),
     points: Yup.number().required().min(0),
     filter: Yup.string(),
+    title: Yup.string().optional(),
   }),
 );
 

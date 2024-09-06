@@ -1,6 +1,7 @@
 import { ChainId } from "@dexkit/core/constants";
 import { NETWORKS } from "@dexkit/core/constants/networks";
 import { Network } from "@dexkit/core/types";
+import { parseChainId } from "@dexkit/core/utils";
 import { FormControl, InputLabel } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
@@ -10,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface Props {
   chainId?: ChainId;
@@ -27,6 +28,16 @@ export function NetworkSelectDropdown({
   enableTestnet,
   label,
 }: Props) {
+  const networks = useMemo(() => {
+    return Object.keys(NETWORKS)
+      .filter((key) => (enableTestnet ? true : !NETWORKS[Number(key)].testnet))
+      .sort((a, b) =>
+        NETWORKS[parseChainId(a)].name.localeCompare(
+          NETWORKS[parseChainId(b)].name
+        )
+      );
+  }, [enableTestnet]);
+
   return (
     <FormControl fullWidth>
       <InputLabel shrink>{label}</InputLabel>
@@ -55,34 +66,30 @@ export function NetworkSelectDropdown({
           );
         }}
       >
-        {Object.keys(NETWORKS)
-          .filter((key) =>
-            enableTestnet ? true : !NETWORKS[Number(key)].testnet
-          )
-          .map((key: any, index: number) => (
-            <MenuItem key={index} value={key}>
-              <ListItemIcon>
-                <Box
+        {networks.map((key: any, index: number) => (
+          <MenuItem key={index} value={key}>
+            <ListItemIcon>
+              <Box
+                sx={{
+                  width: (theme) => theme.spacing(4),
+                  display: "flex",
+                  alignItems: "center",
+                  alignContent: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Avatar
+                  src={(NETWORKS[key] as Network)?.imageUrl || ""}
                   sx={{
-                    width: (theme) => theme.spacing(4),
-                    display: "flex",
-                    alignItems: "center",
-                    alignContent: "center",
-                    justifyContent: "center",
+                    width: "auto",
+                    height: "1rem",
                   }}
-                >
-                  <Avatar
-                    src={(NETWORKS[key] as Network)?.imageUrl || ""}
-                    sx={{
-                      width: "auto",
-                      height: "1rem",
-                    }}
-                  />
-                </Box>
-              </ListItemIcon>
-              <ListItemText primary={NETWORKS[key].name} />
-            </MenuItem>
-          ))}
+                />
+              </Box>
+            </ListItemIcon>
+            <ListItemText primary={NETWORKS[key].name} />
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
