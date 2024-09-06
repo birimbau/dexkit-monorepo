@@ -144,6 +144,8 @@ function AppRankingList({
 
   const [queryOptions, setQueryOptions] = useState<any>({
     filter: {},
+    sort: 'asc',
+    sortField: 'title',
   });
 
   const [paginationModel, setPaginationModel] = useState({
@@ -298,6 +300,7 @@ function AppRankingList({
         autoHeight
         rowHeight={100}
         key={data?.total}
+        sortingOrder={['asc', 'desc']}
         slots={{
           toolbar: GridToolbar,
           noRowsOverlay: EmptyRankings,
@@ -332,6 +335,7 @@ function AppRankingList({
         onPaginationModelChange={setPaginationModel}
         filterMode="server"
         onFilterModelChange={onFilterChange}
+        sortModel={[{ field: queryOptions.sortField, sort: queryOptions.sort }]}
         onSortModelChange={handleSortModelChange}
         pageSizeOptions={[5, 10, 25, 50]}
         loading={isLoading}
@@ -695,26 +699,24 @@ export default function RankingWizardContainer({
                     />
                   </div>
                 </Grid>
-                {open && (
-                  <Grid item xs={12} sm={6}>
-                    <Alert severity="info" onClose={() => setOpen(false)}>
-                      <AlertTitle sx={{ fontWeight: 'bold' }}>
-                        <Typography fontWeight="inherit" variant="body2">
-                          <FormattedMessage
-                            id="build.a.ranking.alert.message"
-                            defaultMessage="Define and assign points to each user event to build a ranking."
-                          />
-                        </Typography>
-                      </AlertTitle>
-                      <Typography variant="body2">
+                <Grid item xs={12} sm={6}>
+                  <Alert severity="info">
+                    <AlertTitle sx={{ fontWeight: 'bold' }}>
+                      <Typography fontWeight="inherit" variant="body2">
                         <FormattedMessage
-                          id="points.are.awarded.based.on.user.message"
-                          defaultMessage="Points are awarded based on user activity to determine their ranking."
+                          id="build.a.ranking.alert.message"
+                          defaultMessage="Define and assign points to each user event to build a ranking."
                         />
                       </Typography>
-                    </Alert>
-                  </Grid>
-                )}
+                    </AlertTitle>
+                    <Typography variant="body2">
+                      <FormattedMessage
+                        id="points.are.awarded.based.on.user.message"
+                        defaultMessage="Points are awarded based on user activity to determine their ranking."
+                      />
+                    </Typography>
+                  </Alert>
+                </Grid>
                 <Grid item xs={12}>
                   <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

@@ -121,12 +121,7 @@ export default function DropCollectionFilterForm({
     <Grid container spacing={2}>
       <Grid item xs={12} sm={4}>
         <NetworkSelectDropdown
-          label={
-            <FormattedMessage
-              id="choose.network"
-              defaultMessage="Choose network"
-            />
-          }
+          label={<FormattedMessage id="network" defaultMessage="Network" />}
           chainId={index !== undefined ? filter?.chainId : undefined}
           onChange={(chainId) => {
             setFieldValue(

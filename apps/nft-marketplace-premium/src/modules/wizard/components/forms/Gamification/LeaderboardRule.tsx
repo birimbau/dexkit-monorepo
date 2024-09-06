@@ -416,35 +416,38 @@ export default function LeaderboardRule({
             {edit ? (
               <Box>
                 <Stack direction="row" spacing={2}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() => {
+                      if (isNew) {
+                        return onRemove();
+                      }
+                      setEdit(false);
+                    }}
+                  >
+                    <FormattedMessage id="cancel" defaultMessage="Cancel" />
+                  </Button>
                   {!isNew ? (
                     <Button size="small" color="error" onClick={onRemove}>
                       <FormattedMessage id="remove" defaultMessage="Remove" />
                     </Button>
                   ) : (
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => {
-                        if (isNew) {
-                          return onRemove();
-                        }
-                        setEdit(false);
-                      }}
-                    >
-                      <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                    </Button>
+                    values.settings[index]?.userEventType && (
+                      <>
+                        <Button
+                          size="small"
+                          onClick={() => {
+                            setEdit(false);
+                            onSave();
+                          }}
+                          variant="contained"
+                        >
+                          <FormattedMessage id="add" defaultMessage="Add" />
+                        </Button>
+                      </>
+                    )
                   )}
-
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      setEdit(false);
-                      onSave();
-                    }}
-                    variant="contained"
-                  >
-                    <FormattedMessage id="save" defaultMessage="Save" />
-                  </Button>
                 </Stack>
               </Box>
             ) : (
