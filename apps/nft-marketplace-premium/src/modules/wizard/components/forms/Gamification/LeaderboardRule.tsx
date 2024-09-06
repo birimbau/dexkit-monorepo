@@ -428,25 +428,29 @@ export default function LeaderboardRule({
                   >
                     <FormattedMessage id="cancel" defaultMessage="Cancel" />
                   </Button>
-                  {!isNew ? (
+                  {!isNew && (
                     <Button size="small" color="error" onClick={onRemove}>
                       <FormattedMessage id="remove" defaultMessage="Remove" />
                     </Button>
-                  ) : (
-                    values.settings[index]?.userEventType && (
-                      <>
-                        <Button
-                          size="small"
-                          onClick={() => {
-                            setEdit(false);
-                            onSave();
-                          }}
-                          variant="contained"
-                        >
-                          <FormattedMessage id="add" defaultMessage="Add" />
-                        </Button>
-                      </>
-                    )
+                  )}
+                  {values.settings[index]?.userEventType && (
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setEdit(false);
+                        onSave();
+                      }}
+                      variant="contained"
+                    >
+                      {isNew ? (
+                        <FormattedMessage id="add" defaultMessage="Add" />
+                      ) : (
+                        <FormattedMessage
+                          id="update"
+                          defaultMessage="Updated"
+                        />
+                      )}
+                    </Button>
                   )}
                 </Stack>
               </Box>
