@@ -33,7 +33,7 @@ const CustomPage: NextPage<{
   partialResults: { [key: number]: boolean };
   balances: { [key: number]: string };
   slug?: string;
-}> = async ({
+}> = ({
   sections,
   isProtected,
   conditions,
@@ -101,7 +101,7 @@ export const getStaticProps: GetStaticProps = async ({
         isProtected: true,
         sections: [],
         result: false,
-        layout: homePage.layout,
+        layout: homePage?.layout,
         conditions: homePage?.gatedConditions,
         gatedLayout: homePage?.gatedPageLayout,
         site: params?.site,
@@ -172,7 +172,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       page: params?.page,
-      layout: homePage.layout,
+      layout: homePage?.layout,
       sections: sections,
       site: params?.site,
       ...configResponse,
