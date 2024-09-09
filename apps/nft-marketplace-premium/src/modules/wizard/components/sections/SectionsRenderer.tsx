@@ -82,11 +82,11 @@ export function SectionsRenderer({ sections, layout }: Props) {
   const [tab, setTab] = useState('tab-0');
 
   const sectionsToRender = sections.map((section, key) => {
-    if (isMobile && section.hideMobile) {
+    if (isMobile && section?.hideMobile) {
       return null;
     }
 
-    if (!isMobile && section.hideDesktop) {
+    if (!isMobile && section?.hideDesktop) {
       return null;
     }
 
@@ -156,11 +156,11 @@ export function SectionsRenderer({ sections, layout }: Props) {
         layout.layout?.desktop.position === 'side'
       ) {
         return sections.map((section, index) => {
-          if (isMobile && section.hideMobile) {
+          if (isMobile && section?.hideMobile) {
             return null;
           }
 
-          if (!isMobile && section.hideDesktop) {
+          if (!isMobile && section?.hideDesktop) {
             return null;
           }
 
@@ -186,11 +186,11 @@ export function SectionsRenderer({ sections, layout }: Props) {
 
   const renderBottomNavigationActions = () => {
     return sections.map((section, index, arr) => {
-      if (isMobile && section.hideMobile) {
+      if (isMobile && section?.hideMobile) {
         return null;
       }
 
-      if (!isMobile && section.hideDesktop) {
+      if (!isMobile && section?.hideDesktop) {
         return null;
       }
 
@@ -217,11 +217,11 @@ export function SectionsRenderer({ sections, layout }: Props) {
 
   const renderPanels = () => {
     return sections.map((section, index) => {
-      if (isMobile && section.hideMobile) {
+      if (isMobile && section?.hideMobile) {
         return null;
       }
 
-      if (!isMobile && section.hideDesktop) {
+      if (!isMobile && section?.hideDesktop) {
         return null;
       }
 
