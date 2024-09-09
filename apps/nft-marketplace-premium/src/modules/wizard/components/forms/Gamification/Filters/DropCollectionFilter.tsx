@@ -1,23 +1,21 @@
 import {
-  Box,
-  Button,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
   Select,
-  Tab,
-  Tabs,
+  SelectChangeEvent,
   Typography,
 } from '@mui/material';
-import { Field, Form, Formik } from 'formik';
+import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
 import * as Yup from 'yup';
 
+import { GamificationPoint } from '@/modules/wizard/types';
 import { NetworkSelectDropdown } from '@dexkit/ui/components/NetworkSelectDropdown';
-import { useState } from 'react';
+import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
+import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
-import ChangeListener from '../../../ChangeListener';
 import { CollectionItemAutocomplete } from '../../CollectionItemAutocomplete';
 import { Conditions } from '../constants/conditions';
 
@@ -46,6 +44,7 @@ interface Props {
   onChange?: (item: DropCollectionFilter, isValid: boolean) => void;
   item?: DropCollectionFilter;
   isERC1155?: boolean;
+  index?: number;
 }
 
 function a11yProps(index: number) {
@@ -72,89 +71,165 @@ function TabPanel(props: TabPanelProps) {
 
 export default function DropCollectionFilterForm({
   item,
+  index,
   onCancel,
   onSubmit,
   onChange,
   isERC1155,
 }: Props) {
-  const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-  return (
-    <Formik
-      initialValues={{ ...item }}
-      onSubmit={(values) => {
-        if (onSubmit) {
-          onSubmit(values as DropCollectionFilter);
-        }
-      }}
-      validationSchema={DropCollectionFilterSchema}
-    >
-      {({
-        submitForm,
-        isSubmitting,
-        isValid,
-        values,
-        setFieldValue,
-        errors,
-        resetForm,
-      }) => (
-        <Form>
-          <ChangeListener
-            values={values}
-            isValid={isValid}
-            onChange={onChange}
-          />
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <Typography variant="caption">
-                  <FormattedMessage
-                    id="choose.network"
-                    defaultMessage="Choose network"
-                  />
-                </Typography>
-                <NetworkSelectDropdown
-                  chainId={values.chainId}
-                  onChange={(chainId) => {
-                    setFieldValue('chainId', chainId);
-                    setFieldValue('tokenAddress', undefined);
-                    setFieldValue('collectionAddress', undefined);
-                  }}
-                  labelId="Choose network"
-                  enableTestnet={true}
-                />
-              </FormControl>
-            </Grid>
+  const { setFieldValue, values } = useFormikContext<{
+    from: string | undefined;
+    to: string | undefined;
+    settings: GamificationPoint[];
+  }>();
 
-            <>
-              <Tabs
-                value={value}
+  const { chainId } = useWeb3React();
+
+  const filter = useMemo(() => {
+    if (index !== undefined && values.settings[index].filter) {
+      return JSON.parse(values.settings[index].filter ?? '{}') as {
+        chainId: number;
+        collectionAddress: string;
+        conditionNFT: string;
+        mode: number;
+      };
+    }
+
+    return {
+      chainId: chainId,
+      mode: -1,
+      collectionAddress: '',
+      conditionNFT: '',
+    };
+  }, [index, JSON.stringify(values), chainId]);
+
+  const setValue = useCallback(
+    (field: string, value: any) => {
+      setFieldValue(
+        `settings.${index}.filter`,
+        JSON.stringify({ ...filter, [field]: value }),
+      );
+    },
+    [filter, index],
+  );
+
+  const handleChange = (event: SelectChangeEvent<number>) => {
+    setValue('mode', event.target.value as number);
+  };
+
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={4}>
+        <NetworkSelectDropdown
+          label={<FormattedMessage id="network" defaultMessage="Network" />}
+          chainId={index !== undefined ? filter?.chainId : undefined}
+          onChange={(chainId) => {
+            setFieldValue(
+              `settings.${index}.filter`,
+              JSON.stringify({
+                ...filter,
+                chainId,
+                tokenAddress: '',
+                collectionAddres: '',
+              }),
+            );
+          }}
+          labelId="Choose network"
+          enableTestnet={true}
+        />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography fontWeight="500" variant="body1">
+          <FormattedMessage
+            id="filter.by.collection"
+            defaultMessage="Filter by collection"
+          />
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              {filter?.mode !== -1 && (
+                <InputLabel shrink>
+                  <FormattedMessage
+                    id="choose.an.option"
+                    defaultMessage="Choose an option"
+                  />
+                </InputLabel>
+              )}
+
+              <Select
+                value={filter?.mode ?? -1}
                 onChange={handleChange}
-                aria-label="collection tabs"
+                notched
+                label={
+                  filter?.mode && filter?.mode === -1 ? undefined : (
+                    <FormattedMessage
+                      id="choose.an.option"
+                      defaultMessage="Choose an option"
+                    />
+                  )
+                }
+                renderValue={
+                  filter?.mode && filter?.mode == -1
+                    ? (value: any) => {
+                        return (
+                          <Typography color="gray">
+                            <FormattedMessage
+                              id="choose.an.option"
+                              defaultMessage="Choose an option"
+                            />
+                          </Typography>
+                        );
+                      }
+                    : undefined
+                }
+                fullWidth
               >
-                <Tab label="Import" {...a11yProps(0)} />
-                <Tab label="Your collections" {...a11yProps(1)} />
-              </Tabs>
-              <TabPanel value={value} index={1}>
-                <Grid item xs={12}>
+                <MenuItem value={0}>
+                  <FormattedMessage
+                    id="import.collection"
+                    defaultMessage="Import collection"
+                  />
+                </MenuItem>
+                <MenuItem value={1}>
+                  <FormattedMessage
+                    id="my.collections.alt"
+                    defaultMessage="My collections"
+                  />
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} sm={8}>
+            <Grid container spacing={2}>
+              <TabPanel value={filter.mode} index={1}>
+                <Grid item xs={12} sm={6}>
                   <CollectionItemAutocomplete
                     onChange={(coll) => {
-                      setFieldValue('collectionAddress', coll?.contractAddress);
+                      setFieldValue(
+                        `settings.${index}.filter`,
+                        JSON.stringify({
+                          ...filter,
+                          collectionAddress: coll?.contractAddress,
+                        }),
+                      );
                     }}
                     filterByChainId={true}
-                    chainId={values.chainId}
-                    disabled={values.chainId === undefined}
-                    formValue={{
-                      contractAddress: values.collectionAddress,
-                      chainId: values.chainId,
+                    chainId={filter?.chainId}
+                    disabled={filter?.chainId === undefined}
+                    value={{
+                      contractAddress: filter?.collectionAddress,
+                      chainId: filter?.chainId,
                     }}
                   />
                 </Grid>
               </TabPanel>
-              <TabPanel value={value} index={0}>
-                <Grid item xs={12}>
+              <TabPanel value={filter.mode} index={0}>
+                <Grid item xs={12} sm={8}>
                   <Field
                     component={TextField}
                     label={
@@ -169,83 +244,85 @@ export default function DropCollectionFilterForm({
                   />
                 </Grid>
               </TabPanel>
-            </>
-            {isERC1155 === true && (
-              <>
-                <Grid item xs={12}>
-                  <Field
-                    component={TextField}
-                    type="text"
-                    fullWidth
-                    label={
-                      <FormattedMessage
-                        id={'tokenId'}
-                        defaultMessage={'Token Id'}
-                      />
-                    }
-                    InputProps={{ min: 0 }}
-                    name="tokenId"
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel id="condition-amount-nft-select-label">
-                      <FormattedMessage
-                        id="condition.amount.nft"
-                        defaultMessage="Condition amount NFT"
-                      />
-                    </InputLabel>
-                    <Select
-                      labelId="condition-amount-nft-select-label"
-                      id="demo-simple-select"
-                      value={values.conditionNFT}
-                      label={
-                        <FormattedMessage
-                          id="condition.amount.nft"
-                          defaultMessage="Condition amount NFT"
-                        />
-                      }
-                      onChange={(ev) =>
-                        setFieldValue('conditionNFT', ev.target.value)
-                      }
-                    >
-                      {Conditions.map((v, i) => (
-                        <MenuItem value={v} key={i}>
-                          {v}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Field
-                    component={TextField}
-                    type="number"
-                    fullWidth
-                    label={
-                      <FormattedMessage
-                        id={'Amount.nft'}
-                        defaultMessage={'Amount NFT'}
-                      />
-                    }
-                    InputProps={{ min: 0 }}
-                    name="amount"
-                  />
-                </Grid>
-              </>
-            )}
-
-            <Grid item xs={12}>
-              <Box display={'flex'} justifyContent={'flex-end'}>
-                <Button onClick={() => resetForm()}>
-                  <FormattedMessage id="cancel" defaultMessage="Cancel" />
-                </Button>
-              </Box>
             </Grid>
           </Grid>
-        </Form>
+        </Grid>
+      </Grid>
+
+      {filter?.mode !== -1 && (
+        <>
+          {isERC1155 === true && (
+            <>
+              <Grid item xs={12} sm={4}>
+                <Field
+                  component={TextField}
+                  type="text"
+                  fullWidth
+                  label={
+                    <FormattedMessage id="nft.id" defaultMessage="NFT ID" />
+                  }
+                  InputProps={{ min: 0 }}
+                  name="tokenId"
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="condition-amount-nft-select-label">
+                    <FormattedMessage
+                      id="amount.condition"
+                      defaultMessage="Amount condition"
+                    />
+                  </InputLabel>
+                  <Select
+                    MenuProps={{
+                      slotProps: {
+                        paper: {
+                          style: { width: 'fit-content' },
+                        },
+                      },
+                    }}
+                    labelId="condition-amount-nft-select-label"
+                    id="demo-simple-select"
+                    value={filter?.conditionNFT}
+                    label={
+                      <FormattedMessage
+                        id="amount.condition"
+                        defaultMessage="Amount condition"
+                      />
+                    }
+                    onChange={(ev) =>
+                      setFieldValue('conditionNFT', ev.target.value)
+                    }
+                  >
+                    {Conditions.map((v, i) => (
+                      <MenuItem value={v.symbol} key={i}>
+                        {v.symbol} {v.sign}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <Field
+                  component={TextField}
+                  type="number"
+                  fullWidth
+                  label={
+                    <FormattedMessage
+                      id="nft.amount.alt"
+                      defaultMessage="NFT amount"
+                    />
+                  }
+                  InputProps={{ min: 0 }}
+                  name="amount"
+                  placeholder="e.g., 100"
+                />
+              </Grid>
+            </>
+          )}
+        </>
       )}
-    </Formik>
+    </Grid>
   );
 }

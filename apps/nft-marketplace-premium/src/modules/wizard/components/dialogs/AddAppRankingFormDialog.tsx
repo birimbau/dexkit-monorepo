@@ -1,5 +1,6 @@
 import { AppDialogTitle } from '@dexkit/ui/components/AppDialogTitle';
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,7 +18,8 @@ import * as Yup from 'yup';
 import { useAddAppRankingMutation } from '../../hooks';
 
 import CompletationProvider from '@dexkit/ui/components/CompletationProvider';
-import SendAddAppRankingDialog from './SendAddAppRankingDialog';
+import { useQueryClient } from '@tanstack/react-query';
+import { useSnackbar } from 'notistack';
 
 interface Props {
   dialogProps: DialogProps;
@@ -53,55 +55,59 @@ export default function AddRankingFormDialog({
     }
   };
 
+  const { enqueueSnackbar } = useSnackbar();
+
+  const queryClient = useQueryClient();
+
   return (
     <>
-      {open && (
-        <SendAddAppRankingDialog
-          dialogProps={{
-            open: open,
-            onClose: () => {
-              setOpen(false);
-              mutationAddRanking.reset();
-            },
-          }}
-          isLoading={mutationAddRanking.isLoading}
-          isSuccess={mutationAddRanking.isSuccess}
-          error={mutationAddRanking.error}
-        />
-      )}
-
-      <Dialog {...dialogProps}>
+      <Dialog {...dialogProps} maxWidth="xs">
         <AppDialogTitle
           title={
             <FormattedMessage
-              id="add.app.ranking"
-              defaultMessage="Add app ranking"
+              id="Create.leaderboard"
+              defaultMessage="Create Leaderboard"
             />
           }
           onClose={handleClose}
+          sx={{ px: 4, py: 2 }}
         />
 
         <Formik
           initialValues={{
-            title: title ? title : '',
-            description: description ? description : undefined,
+            title: '',
+            description: '',
           }}
           validationSchema={AddRankingSchema}
-          onSubmit={(value, helper) => {
-            setOpen(true);
+          onSubmit={async (value, helper) => {
+            try {
+              setOpen(true);
 
-            mutationAddRanking.mutate({
-              siteId,
-              rankingId,
-              title: value?.title,
-              description: value?.description,
-            });
-            helper.setSubmitting(false);
+              await mutationAddRanking.mutateAsync({
+                siteId,
+                rankingId,
+                title: value?.title,
+                description: value?.description,
+              });
+
+              setOpen(false);
+
+              enqueueSnackbar(
+                <FormattedMessage
+                  id="leaderboard.created"
+                  defaultMessage="Leaderboard created"
+                />,
+                { variant: 'success' },
+              );
+            } catch (err) {
+              enqueueSnackbar(String(err), { variant: 'error' });
+            }
+            handleClose();
           }}
         >
-          {({ submitForm, values, setFieldValue }) => (
+          {({ submitForm, values, setFieldValue, isSubmitting, isValid }) => (
             <Form>
-              <DialogContent dividers>
+              <DialogContent sx={{ p: 4 }} dividers>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                     <Box>
@@ -122,8 +128,8 @@ export default function AddRankingFormDialog({
                               }}
                               label={
                                 <FormattedMessage
-                                  id={'title'}
-                                  defaultMessage={'Title'}
+                                  id="leaderboard.title"
+                                  defaultMessage="Leaderboard title"
                                 />
                               }
                             />
@@ -151,8 +157,8 @@ export default function AddRankingFormDialog({
                               }}
                               label={
                                 <FormattedMessage
-                                  id={'description'}
-                                  defaultMessage={'Description'}
+                                  id="leaderboard.description"
+                                  defaultMessage="Leaderboard description"
                                 />
                               }
                               inputRef={ref}
@@ -165,22 +171,24 @@ export default function AddRankingFormDialog({
                 </Grid>
               </DialogContent>
 
-              <DialogActions>
+              <DialogActions sx={{ px: 4, py: 2 }}>
                 <Grid item xs={12}>
                   <Stack spacing={1} direction="row" justifyContent="flex-end">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={submitForm}
-                    >
-                      <FormattedMessage id="save" defaultMessage="Save" />
+                    <Button color="primary" onClick={handleClose}>
+                      <FormattedMessage id="cancel" defaultMessage="cancel" />
                     </Button>
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={handleClose}
+                      onClick={submitForm}
+                      startIcon={
+                        isSubmitting ? (
+                          <CircularProgress color="inherit" size="1rem" />
+                        ) : undefined
+                      }
+                      disabled={isSubmitting || !isValid}
                     >
-                      <FormattedMessage id="cancel" defaultMessage="cancel" />
+                      <FormattedMessage id="create" defaultMessage="Create" />
                     </Button>
                   </Stack>
                 </Grid>

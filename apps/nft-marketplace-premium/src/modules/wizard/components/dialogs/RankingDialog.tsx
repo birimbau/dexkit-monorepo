@@ -33,7 +33,7 @@ function RankingDialog({ dialogProps, rankingId }: Props) {
       <DialogContent>
         <RankingSection
           section={{ type: 'ranking', settings: { rankingId: rankingId } }}
-        ></RankingSection>
+        />
       </DialogContent>
     </Dialog>
   );

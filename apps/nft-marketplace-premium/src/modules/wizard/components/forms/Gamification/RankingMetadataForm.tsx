@@ -6,15 +6,16 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import { Field, Form, Formik } from 'formik';
 import { TextField } from 'formik-mui';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import * as Yup from 'yup';
-import SendAddAppRankingDialog from '../../dialogs/SendAddAppRankingDialog';
 interface Props {
   siteId?: number;
   rankingId?: number;
   description?: string;
   title?: string;
+  onSave: () => void;
 }
 
 interface AddRanking {
@@ -32,43 +33,43 @@ export default function RankingMetadataForm({
   title,
   description,
   rankingId,
+  onSave,
 }: Props) {
   const [open, setOpen] = useState(false);
   const mutationAddRanking = useAddAppRankingMutation();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   return (
     <>
-      {open && (
-        <SendAddAppRankingDialog
-          dialogProps={{
-            open: open,
-            onClose: () => {
-              setOpen(false);
-              mutationAddRanking.reset();
-            },
-          }}
-          isEdit={rankingId !== undefined}
-          isLoading={mutationAddRanking.isLoading}
-          isSuccess={mutationAddRanking.isSuccess}
-          error={mutationAddRanking.error}
-        />
-      )}
-
       <Formik
         initialValues={{
           title: title ? title : '',
           description: description ? description : undefined,
         }}
         validationSchema={AddRankingSchema}
-        onSubmit={(value, helper) => {
+        onSubmit={async (value, helper) => {
           setOpen(true);
-          mutationAddRanking.mutate({
-            siteId,
-            rankingId,
-            title: value?.title,
-            description: value?.description,
-          });
-          helper.setSubmitting(false);
+
+          try {
+            await mutationAddRanking.mutateAsync({
+              siteId,
+              rankingId,
+              title: value?.title,
+              description: value?.description,
+            });
+            enqueueSnackbar(
+              <FormattedMessage
+                id="metadata.updated"
+                defaultMessage="Metadata updated"
+              />,
+              { variant: 'success' },
+            );
+          } catch (err) {
+            enqueueSnackbar(String(err), { variant: 'error' });
+          }
+          
+          onSave();
         }}
       >
         {({ submitForm, resetForm, values, setFieldValue }) => (
@@ -138,19 +139,15 @@ export default function RankingMetadataForm({
 
               <Grid item xs={12}>
                 <Stack spacing={1} direction="row" justifyContent="flex-end">
+                  <Button onClick={() => resetForm()}>
+                    <FormattedMessage id="cancel" defaultMessage="cancel" />
+                  </Button>
                   <Button
                     variant="contained"
                     color="primary"
                     onClick={submitForm}
                   >
                     <FormattedMessage id="save" defaultMessage="Save" />
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => resetForm()}
-                  >
-                    <FormattedMessage id="cancel" defaultMessage="cancel" />
                   </Button>
                 </Stack>
               </Grid>

@@ -4,7 +4,10 @@ import Stack from '@mui/material/Stack';
 import { useState } from 'react';
 import { PreviewPortal } from 'src/components/PreviewPortal';
 
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import {
+  AppConfig,
+  PageSectionsLayout,
+} from '@dexkit/ui/modules/wizard/types/config';
 import PreviewPage from './PreviewPage';
 import { PreviewPlatformType } from './PreviewPlatformType';
 interface Props {
@@ -17,6 +20,7 @@ interface Props {
   page?: string;
   site?: string;
   index?: number;
+  layout?: PageSectionsLayout;
 }
 
 export default function PreviewPagePlatform({
@@ -29,6 +33,7 @@ export default function PreviewPagePlatform({
   page,
   site,
   index,
+  layout,
 }: Props) {
   const [previewPlatform, setPreviewPlatform] = useState<any>('desktop');
 
@@ -39,6 +44,7 @@ export default function PreviewPagePlatform({
       previewPlatform={previewPlatform}
       withLayout={withLayout}
       appConfig={appConfig}
+      layout={layout}
     />
   );
 

@@ -1,9 +1,7 @@
 import { useIsMobile } from '@dexkit/core';
-import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
-import Dashboard from '@mui/icons-material/Dashboard';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import {
   Button,
@@ -17,23 +15,19 @@ import {
 import { ChangeEvent, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-export interface PageSectionsHeaderProps {
+export interface LeaderboardHeaderProps {
   onClose: () => void;
   onPreview: () => void;
-  onClone: () => void;
   onEditTitle: (title: string) => void;
-  onEditLayout: () => void;
-  page: AppPage;
+  title: string;
 }
 
-export default function PageSectionsHeader({
+export default function LeaderboardHeader({
   onClose,
   onPreview,
-  onClone,
   onEditTitle,
-  onEditLayout,
-  page,
-}: PageSectionsHeaderProps) {
+  title,
+}: LeaderboardHeaderProps) {
   const [isEditTitle, setIsEditTitle] = useState(false);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -45,20 +39,20 @@ export default function PageSectionsHeader({
     }, 300);
   };
 
-  const [title, setTitle] = useState(page?.title ?? '');
+  const [value, setValue] = useState(title ?? '');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+    setValue(e.target.value);
   };
 
   const handleSave = () => {
-    onEditTitle(title);
+    onEditTitle(value);
     setIsEditTitle(false);
   };
 
   const handleCancel = () => {
     setIsEditTitle(false);
-    setTitle(page?.title || '');
+    setValue(title || '');
   };
 
   const isMobile = useIsMobile();
@@ -66,13 +60,13 @@ export default function PageSectionsHeader({
   return (
     <Stack direction="row" alignItems="center" spacing={2}>
       <Stack direction="row" alignItems="center" spacing={1}>
-        <IconButton onClick={onClose} sx={{ pl: 0, ml: 0 }}>
+        <IconButton onClick={onClose}>
           <ArrowBack color="primary" />
         </IconButton>
         {isEditTitle ? (
           <TextField
             inputRef={(ref) => (inputRef.current = ref)}
-            value={title}
+            value={value}
             variant="standard"
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -81,6 +75,9 @@ export default function PageSectionsHeader({
               if (e.key === 'Escape') {
                 handleCancel();
               }
+            }}
+            onBlur={() => {
+              handleSave();
             }}
             onChange={handleChange}
           />
@@ -104,7 +101,7 @@ export default function PageSectionsHeader({
                 cursor: 'pointer',
               }}
             >
-              {page?.title}
+              {title}
             </Typography>
           </ButtonBase>
         )}
@@ -122,9 +119,6 @@ export default function PageSectionsHeader({
 
       <Button onClick={onPreview} startIcon={<Visibility />}>
         <FormattedMessage id="preview" defaultMessage="Preview" />
-      </Button>
-      <Button startIcon={<Dashboard />} onClick={onEditLayout}>
-        <FormattedMessage id="edit.layout" defaultMessage="Edit layout" />
       </Button>
     </Stack>
   );

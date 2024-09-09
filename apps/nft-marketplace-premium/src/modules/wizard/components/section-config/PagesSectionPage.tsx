@@ -8,6 +8,7 @@ import {
 import {
   AppPage,
   AppPageOptions,
+  PageSectionsLayout,
 } from '@dexkit/ui/modules/wizard/types/config';
 import { useState } from 'react';
 import { PageSectionKey } from '../../hooks/sections';
@@ -43,6 +44,7 @@ interface Props {
   previewUrl?: string;
   activeSection?: PageSectionKey;
   site?: string;
+  onUpdatePageLayout: (page: string, layout: PageSectionsLayout) => void;
 }
 
 export default function PagesSectionPage({
@@ -52,6 +54,7 @@ export default function PagesSectionPage({
   onClonePage,
   onUpdateGatedConditions,
   onAddPage,
+  onUpdatePageLayout,
   onSwap,
   onEditPage,
   onRemovePage,
@@ -171,6 +174,7 @@ export default function PagesSectionPage({
             onUpdateGatedConditions={onUpdateGatedConditions}
             site={site}
             previewUrl={previewUrl}
+            onUpdatePageLayout={onUpdatePageLayout}
           />
         </Box>
       </Stack>
