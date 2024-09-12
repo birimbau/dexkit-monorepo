@@ -172,7 +172,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       page: params?.page,
-      layout: homePage?.layout,
+      layout: homePage?.layout || null,
       sections: sections,
       site: params?.site,
       ...configResponse,
