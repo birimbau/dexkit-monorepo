@@ -27,7 +27,7 @@ function CommerceHomePageComponent() {
               />
             </Typography>
             <Typography variant="h5">
-              {isTotalLoading ? <Skeleton /> : dataTotal?.total}
+              {isTotalLoading ? <Skeleton /> : `${dataTotal?.total} USD`}
             </Typography>
           </CardContent>
         </Card>

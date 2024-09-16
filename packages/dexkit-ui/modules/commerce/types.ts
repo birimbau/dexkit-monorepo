@@ -142,3 +142,47 @@ export type CategoryType = z.infer<typeof CategoryFormSchema>;
 export type ProductCollectionItemType = z.infer<typeof CollectionItemSchema>;
 
 export type ProductCollectionType = z.infer<typeof ProductCollectionSchema>;
+
+export type CommerceNotificationUrlMetadata = {
+  type: "url";
+  url: string;
+};
+
+export type CommerceNotificationPaymentMetadata = {
+  type: "payment";
+  orderId: string;
+};
+
+export type CommerceNotificationOrderMetadata = {
+  type: "order";
+  orderId: string;
+};
+
+export type CommerceNotificationMetadata =
+  | CommerceNotificationPaymentMetadata
+  | CommerceNotificationOrderMetadata;
+
+export type CommerceNotificationIconUrl = {
+  type: "url";
+  url: string;
+};
+
+export type CommerceNotificationIcon = {
+  type: "icon";
+  icon: string;
+};
+
+export type CommerceNotificationIconType =
+  | CommerceNotificationIconUrl
+  | CommerceNotificationIcon;
+
+export type CommerceNotification = {
+  id: string;
+  icon?: CommerceNotificationIconType;
+  title: { id: string; message: string; values?: Record<string, any> };
+  subtitle: { id: string; message: string; values?: Record<string, any> };
+  metadata?: CommerceNotificationMetadata;
+  scope: string;
+  readAt?: string;
+  createdAt: string;
+};

@@ -8,6 +8,7 @@ export const GET_ORDER_LIST_QUERY = 'GET_ORDER_LIST_QUERY';
 export default function useOrderList(params: {
   page: number;
   limit: number;
+  status: string;
   q?: string;
 }) {
   const { instance } = useContext(DexkitApiProvider);

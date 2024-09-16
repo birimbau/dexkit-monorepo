@@ -31,9 +31,10 @@ const Component = () => {
 
 export interface OrdersTableProps {
   query: string;
+  status: string;
 }
 
-export default function OrdersTable({ query }: OrdersTableProps) {
+export default function OrdersTable({ query, status }: OrdersTableProps) {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
@@ -42,6 +43,7 @@ export default function OrdersTable({ query }: OrdersTableProps) {
   const { data } = useOrderList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
+    status,
     q: query,
   });
 
@@ -109,6 +111,17 @@ export default function OrdersTable({ query }: OrdersTableProps) {
       },
       {
         flex: 1,
+        field: 'status',
+        headerName: formatMessage({
+          id: 'status',
+          defaultMessage: 'Status',
+        }),
+        renderCell: ({ row }) => {
+          return renderStatusText(row.status);
+        },
+      },
+      {
+        flex: 1,
         field: 'createdAt',
         headerName: formatMessage({
           id: 'created.at',
@@ -126,7 +139,8 @@ export default function OrdersTable({ query }: OrdersTableProps) {
       <DataGrid
         columns={columns}
         rows={data?.items ?? []}
-        rowCount={0}
+        rowCount={data?.totalItems}
+        pageSizeOptions={[5, 10, 25, 50, 100]}
         paginationMode="server"
         getRowId={(row) => String(row.id)}
         paginationModel={paginationModel}

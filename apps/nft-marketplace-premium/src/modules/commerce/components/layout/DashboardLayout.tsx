@@ -1,5 +1,6 @@
 import SellIcon from '@mui/icons-material/Sell';
 import {
+  Badge,
   Box,
   Button,
   Container,
@@ -31,6 +32,10 @@ import ChevronRight from '@mui/icons-material/ChevronRight';
 import Wallet from '@mui/icons-material/Wallet';
 import { useConnectWalletDialog } from 'src/hooks/app';
 
+import NotificationsIcon from '@mui/icons-material/Notifications';
+
+import useNotificationsCountUnread from '@dexkit/ui/modules/commerce/hooks/useNotificatonsCountUnread';
+
 export interface DashboardLayoutProps {
   children: React.ReactNode;
   page?: string;
@@ -46,6 +51,8 @@ function RequireLogin({
   const { isActive } = useWeb3React();
 
   const connectWalletDialog = useConnectWalletDialog();
+
+  const { data } = useNotificationsCountUnread({ scope: 'Store' });
 
   if (isActive) {
     return (
@@ -66,6 +73,30 @@ function RequireLogin({
                   <ListItemText
                     primary={
                       <FormattedMessage id="home" defaultMessage="Home" />
+                    }
+                  />
+                </ListItemButton>
+                <ListItemButton
+                  LinkComponent={Link}
+                  href="/u/account/commerce/notifications"
+                  divider
+                  selected={page === 'notifications'}
+                >
+                  <ListItemIcon>
+                    <Badge
+                      badgeContent={data?.count}
+                      variant="standard"
+                      color="primary"
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="notifications"
+                        defaultMessage="Notifications"
+                      />
                     }
                   />
                 </ListItemButton>
@@ -177,9 +208,7 @@ function RequireLogin({
             </Paper>
           </Grid>
           <Grid item xs={12} sm={9}>
-            <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-              {children}
-            </DexkitApiProvider.Provider>
+            {children}
           </Grid>
         </Grid>
       </Container>
@@ -236,7 +265,9 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   return (
     <AuthMainLayout noSsr>
-      <RequireLogin page={page ?? ''}>{children}</RequireLogin>
+      <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
+        <RequireLogin page={page ?? ''}>{children}</RequireLogin>
+      </DexkitApiProvider.Provider>
     </AuthMainLayout>
   );
 }
