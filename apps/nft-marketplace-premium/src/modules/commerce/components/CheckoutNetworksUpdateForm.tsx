@@ -2,21 +2,21 @@ import { ChainId } from '@dexkit/core';
 import { NETWORKS } from '@dexkit/core/constants/networks';
 import { parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui';
+import Search from '@mui/icons-material/Search';
 import {
   Box,
   Button,
-  Card,
-  Checkbox,
+  Divider,
   Grid,
-  List,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
+  InputAdornment,
   Stack,
+  Switch,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import { useCallback, useMemo, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 import useCheckoutNetworks from '../hooks/settings/useCheckoutNetworks';
 import useUpdateCheckoutNetworks from '../hooks/settings/useUpdateCheckoutNetworks';
 
@@ -27,12 +27,20 @@ interface CheckoutNetworksBaseProps {
 function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
   const { activeChainIds } = useActiveChainIds();
 
+  const [query, setQuery] = useState<string>('');
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+  };
+
   const availNetworks = useMemo(() => {
     return Object.keys(NETWORKS)
       .map((key: string) => NETWORKS[parseChainId(key)])
       .filter((n) => ![ChainId.Goerli, ChainId.Mumbai].includes(n.chainId))
-      .filter((n) => activeChainIds.includes(n.chainId));
-  }, []);
+      .filter((n) => activeChainIds.includes(n.chainId))
+      .filter((n) => n.name.toLowerCase().search(query.toLowerCase()) > -1)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [activeChainIds, query]);
 
   const value: { [key: string]: boolean } = networks.reduce(
     (prev, curr: { chainId: number }) => {
@@ -58,6 +66,8 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const { formatMessage } = useIntl();
+
   const handleSave = async () => {
     const chainIds = Object.keys(checked)
       .filter((n) => checked[n])
@@ -80,21 +90,61 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Card sx={{ overflowY: 'auto', height: (theme) => theme.spacing(26) }}>
-          <List>
+        <TextField
+          variant="standard"
+          size="small"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+          placeholder={formatMessage({
+            id: 'search.networks',
+            defaultMessage: 'Search networks',
+          })}
+          value={query}
+          onChange={handleChange}
+        />
+      </Grid>
+      <Grid item xs={6}>
+        <Box>
+          <Grid
+            container
+            spacing={2}
+            direction="column"
+            alignItems="flex-start"
+            justifyContent="flex-start"
+            wrap="wrap"
+            sx={{ height: '18rem' }}
+          >
             {availNetworks.map((network, key) => (
-              <ListItem key={key}>
-                <ListItemText primary={network.name} />
-                <ListItemSecondaryAction>
-                  <Checkbox
-                    checked={Boolean(checked[network.chainId])}
-                    onClick={handleToggle(network.chainId)}
-                  />
-                </ListItemSecondaryAction>
-              </ListItem>
+              <Grid item key={key}>
+                <Box>
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Switch
+                      checked={Boolean(checked[network.chainId])}
+                      onClick={handleToggle(network.chainId)}
+                    />
+                    <Typography
+                      sx={
+                        network.testnet
+                          ? { color: (theme) => theme.palette.error.main }
+                          : undefined
+                      }
+                    >
+                      {network.name}
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Grid>
             ))}
-          </List>
-        </Card>
+          </Grid>
+        </Box>
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
       </Grid>
       <Grid item xs={12}>
         <Box>

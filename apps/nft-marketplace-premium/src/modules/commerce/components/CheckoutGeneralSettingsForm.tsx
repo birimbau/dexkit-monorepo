@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Grid, Stack } from '@mui/material';
+import { Button, CircularProgress, Divider, Grid, Stack } from '@mui/material';
 import { Field, Formik } from 'formik';
 import { TextField } from 'formik-mui';
 import { useSnackbar } from 'notistack';
@@ -79,6 +79,9 @@ function CheckoutGeneralSettingsFormBase({
                 />
               </Grid>
             </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <Divider />
           </Grid>
           <Grid item xs={12}>
             <div>

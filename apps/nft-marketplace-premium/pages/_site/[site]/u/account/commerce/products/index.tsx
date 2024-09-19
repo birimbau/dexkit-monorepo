@@ -1,10 +1,17 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import ProductsTable from '@/modules/commerce/components/ProductsTable';
-import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, InputAdornment, Stack, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  InputAdornment,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
+import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -21,57 +28,51 @@ export default function CommerceProductsPage() {
   return (
     <DashboardLayout page="products">
       <Stack spacing={2}>
-        <PageHeader
-          breadcrumbs={[
-            {
-              caption: (
-                <FormattedMessage id="commerce" defaultMessage="Commerce" />
-              ),
-              uri: '/u/account/commerce',
-            },
-            {
-              caption: (
-                <FormattedMessage id="products" defaultMessage="Products" />
-              ),
-              uri: '/u/account/commerce/products',
-              active: true,
-            },
-          ]}
-        />
-        <Typography variant="h6">
-          <FormattedMessage id="products" defaultMessage="Products" />
-        </Typography>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-        >
+        <Box mb={4}>
+          <Typography variant="h5" fontWeight="bold">
+            <FormattedMessage id="items" defaultMessage="Items" />
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="create.and.manage.your.products"
+              defaultMessage="Create and manage your products."
+            />
+          </Typography>
+        </Box>
+        <Stack spacing={2} alignItems="flex-start">
           <Button
             LinkComponent={NextLink}
+            startIcon={<Add />}
             variant="contained"
             href="/u/account/commerce/products/create"
           >
-            <FormattedMessage id="create" defaultMessage="Create" />
+            <FormattedMessage id="new.product" defaultMessage="New product" />
           </Button>
-          <LazyTextField
-            TextFieldProps={{
-              size: 'small',
-              variant: 'standard',
-              placeholder: formatMessage({
-                id: 'search.for.a.product',
-                defaultMessage: 'Search for a product',
-              }),
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            onChange={handleChange}
-          />
+          <Alert severity="info">
+            <FormattedMessage
+              id="product.inactive.not.display.info"
+              defaultMessage={`Products with the status "Inactive" will not be displayed in your e-commerce store.`}
+            />
+          </Alert>
         </Stack>
+        <LazyTextField
+          TextFieldProps={{
+            size: 'small',
+            variant: 'standard',
+            placeholder: formatMessage({
+              id: 'search.for.a.product',
+              defaultMessage: 'Search for a product',
+            }),
+            InputProps: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            },
+          }}
+          onChange={handleChange}
+        />
         <ProductsTable query={query} />
       </Stack>
     </DashboardLayout>

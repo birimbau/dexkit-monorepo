@@ -1,16 +1,23 @@
 import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CategoryType } from '../types';
 
-import { getWindowUrl } from '@dexkit/core/utils/browser';
-import Share from '@mui/icons-material/Share';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import Delete from '@mui/icons-material/Delete';
+import { Box, IconButton, Stack } from '@mui/material';
 import Link from '@mui/material/Link';
+import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
+import { useSnackbar } from 'notistack';
 import useCategoryList from '../hooks/useCategoryList';
 import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
+
+import useDeleteCategory from '@dexkit/ui/modules/commerce/hooks/useDeleteCategory';
+
+const AppConfirmDialog = dynamic(
+  () => import('@dexkit/ui/components/AppConfirmDialog'),
+);
 
 export interface CategoryTableProps {
   query: string;
@@ -23,13 +30,55 @@ export default function CategoryTable({ query, onShare }: CategoryTableProps) {
     pageSize: 5,
   });
 
-  const { data, isLoading } = useCategoryList({
+  const { data, isLoading, refetch } = useCategoryList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: query,
   });
 
   const { formatMessage } = useIntl();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { mutateAsync: deleteProductCollection, isLoading: isLoadingDelete } =
+    useDeleteCategory();
+
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedId, setSelectedId] = useState<string>();
+
+  const handleDelete = useCallback((id: string) => {
+    return () => {
+      setSelectedId(id);
+      setShowConfirm(true);
+    };
+  }, []);
+
+  const handleClose = () => {
+    setShowConfirm(false);
+    setSelectedId(undefined);
+  };
+
+  const handleConfirm = async () => {
+    if (selectedId) {
+      try {
+        await deleteProductCollection({ id: selectedId });
+
+        enqueueSnackbar(
+          <FormattedMessage
+            id="product.deleted"
+            defaultMessage="Product deleted"
+          />,
+          { variant: 'success' },
+        );
+        setShowConfirm(false);
+        setSelectedId(undefined);
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: 'error' });
+      }
+    }
+
+    await refetch();
+  };
 
   const columns = useMemo(() => {
     return [
@@ -47,61 +96,76 @@ export default function CategoryTable({ query, onShare }: CategoryTableProps) {
         ),
       },
       {
-        flex: 1,
         field: 'actions',
-        headerName: formatMessage({
-          id: 'actions',
-          defaultMessage: 'Actions',
-        }),
+        flex: 1,
+        headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
         renderCell: ({ row }) => (
-          <IconButton onClick={() => onShare(`${getWindowUrl()}/c/${row.id}`)}>
-            <Tooltip
-              title={<FormattedMessage id="share" defaultMessage="Share" />}
-            >
-              <Share />
-            </Tooltip>
-          </IconButton>
+          <Stack direction="row">
+            <IconButton onClick={handleDelete(row.id ?? '')}>
+              <Delete color="error" />
+            </IconButton>
+          </Stack>
         ),
       },
     ] as GridColDef<CategoryType>[];
   }, []);
 
   return (
-    <Box>
-      <DataGrid
-        columns={columns}
-        rows={data?.items ?? []}
-        rowCount={data?.items.length}
-        paginationMode="client"
-        getRowId={(row) => String(row.id)}
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
-        loading={isLoading}
-        sx={{ height: 300 }}
-        slots={{
-          noRowsOverlay: noRowsOverlay(
+    <>
+      {showConfirm && (
+        <AppConfirmDialog
+          DialogProps={{ open: showConfirm, onClose: handleClose }}
+          onConfirm={handleConfirm}
+          isConfirming={isLoading}
+          title={
             <FormattedMessage
-              id="no.checkouts"
-              defaultMessage="No Checkouts"
-            />,
-            <FormattedMessage
-              id="create.checkouts.to.see.it.here"
-              defaultMessage="Create checkouts to see it here"
-            />,
-          ),
-          loadingOverlay: LoadingOverlay,
-          noResultsOverlay: noRowsOverlay(
-            <FormattedMessage
-              id="no.checkouts"
-              defaultMessage="No Checkouts"
-            />,
-            <FormattedMessage
-              id="create.checkouts.to.see.it.here"
-              defaultMessage="Create checkouts to see it here"
-            />,
-          ),
-        }}
-      />
-    </Box>
+              id="delete.category"
+              defaultMessage="Delete category"
+            />
+          }
+        >
+          <FormattedMessage
+            id="do.you.really.want.to.delete.this.category"
+            defaultMessage="Do you really want to delete this categogry?"
+          />
+        </AppConfirmDialog>
+      )}
+      <Box>
+        <DataGrid
+          columns={columns}
+          rows={data?.items ?? []}
+          rowCount={data?.items.length}
+          paginationMode="client"
+          getRowId={(row) => String(row.id)}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
+          loading={isLoading}
+          sx={{ height: 300 }}
+          slots={{
+            noRowsOverlay: noRowsOverlay(
+              <FormattedMessage
+                id="no.checkouts"
+                defaultMessage="No Checkouts"
+              />,
+              <FormattedMessage
+                id="create.checkouts.to.see.it.here"
+                defaultMessage="Create checkouts to see it here"
+              />,
+            ),
+            loadingOverlay: LoadingOverlay,
+            noResultsOverlay: noRowsOverlay(
+              <FormattedMessage
+                id="no.checkouts"
+                defaultMessage="No Checkouts"
+              />,
+              <FormattedMessage
+                id="create.checkouts.to.see.it.here"
+                defaultMessage="Create checkouts to see it here"
+              />,
+            ),
+          }}
+        />
+      </Box>
+    </>
   );
 }

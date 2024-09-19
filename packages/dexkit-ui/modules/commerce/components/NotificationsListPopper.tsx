@@ -5,6 +5,8 @@ import {
   Popper,
   PopperProps,
   TablePagination,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -49,10 +51,13 @@ export default function NotificationsListPopper({
     }));
   };
 
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up("sm"));
+
   return (
     <Popper {...PopperProps}>
       <ClickAwayListener onClickAway={onClose}>
-        <Paper>
+        <Paper sx={(theme) => ({ width: theme.breakpoints.values.sm * 0.75 })}>
           <NotificationsListTabs
             unreadCount={unread?.count ?? 0}
             onChange={(tab) =>

@@ -1,8 +1,8 @@
-import SellIcon from '@mui/icons-material/Sell';
 import {
   Badge,
   Box,
   Button,
+  Collapse,
   Container,
   Grid,
   List,
@@ -19,14 +19,9 @@ import { FormattedMessage } from 'react-intl';
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { myAppsApi } from '@dexkit/ui/constants/api';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
-import HomeIcon from '@mui/icons-material/Home';
-import InboxIcon from '@mui/icons-material/Inbox';
 import Settings from '@mui/icons-material/Settings';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import React from 'react';
+import React, { useState } from 'react';
 import AuthMainLayout from 'src/components/layouts/authMain';
-
-import CategoryIcon from '@mui/icons-material/Category';
 
 import ChevronRight from '@mui/icons-material/ChevronRight';
 import Wallet from '@mui/icons-material/Wallet';
@@ -35,6 +30,21 @@ import { useConnectWalletDialog } from 'src/hooks/app';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 import useNotificationsCountUnread from '@dexkit/ui/modules/commerce/hooks/useNotificatonsCountUnread';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+
+import AppsIcon from '@mui/icons-material/Apps';
+import InventoryIcon from '@mui/icons-material/Inventory';
+
+import LabelIcon from '@mui/icons-material/Label';
+
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 export interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -54,6 +64,14 @@ function RequireLogin({
 
   const { data } = useNotificationsCountUnread({ scope: 'Store' });
 
+  const [open, setOpen] = useState(
+    ['categories', 'products', 'collections'].includes(page),
+  );
+
+  const handleToggleMenu = () => {
+    setOpen((value) => !value);
+  };
+
   if (isActive) {
     return (
       <Container>
@@ -64,22 +82,23 @@ function RequireLogin({
                 <ListItemButton
                   LinkComponent={Link}
                   href="/u/account/commerce"
-                  divider
                   selected={page === 'home'}
                 >
                   <ListItemIcon>
-                    <HomeIcon />
+                    <DashboardIcon />
                   </ListItemIcon>
                   <ListItemText
                     primary={
-                      <FormattedMessage id="home" defaultMessage="Home" />
+                      <FormattedMessage
+                        id="dashboard"
+                        defaultMessage="Dashboard"
+                      />
                     }
                   />
                 </ListItemButton>
                 <ListItemButton
                   LinkComponent={Link}
                   href="/u/account/commerce/notifications"
-                  divider
                   selected={page === 'notifications'}
                 >
                   <ListItemIcon>
@@ -103,11 +122,10 @@ function RequireLogin({
                 <ListItemButton
                   LinkComponent={Link}
                   href="/u/account/commerce/orders"
-                  divider
                   selected={page === 'orders'}
                 >
                   <ListItemIcon>
-                    <InboxIcon />
+                    <ReceiptLongIcon />
                   </ListItemIcon>
                   <ListItemText
                     primary={
@@ -115,78 +133,7 @@ function RequireLogin({
                     }
                   />
                 </ListItemButton>
-                <ListItemButton
-                  LinkComponent={Link}
-                  href="/u/account/commerce/checkouts"
-                  divider
-                  selected={page === 'checkouts'}
-                >
-                  <ListItemIcon>
-                    <ShoppingCartIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="checkouts"
-                        defaultMessage="Checkouts"
-                      />
-                    }
-                  />
-                </ListItemButton>
-                <ListItemButton
-                  divider
-                  LinkComponent={Link}
-                  href="/u/account/commerce/categories"
-                  selected={page === 'categories'}
-                >
-                  <ListItemIcon>
-                    <CategoryIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="categories"
-                        defaultMessage="Categories"
-                      />
-                    }
-                  />
-                </ListItemButton>
-                <ListItemButton
-                  divider
-                  LinkComponent={Link}
-                  href="/u/account/commerce/collections"
-                  selected={page === 'collections'}
-                >
-                  <ListItemIcon>
-                    <CategoryIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="collections"
-                        defaultMessage="Collections"
-                      />
-                    }
-                  />
-                </ListItemButton>
-                <ListItemButton
-                  divider
-                  LinkComponent={Link}
-                  href="/u/account/commerce/products"
-                  selected={page === 'products'}
-                >
-                  <ListItemIcon>
-                    <SellIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="products"
-                        defaultMessage="Products"
-                      />
-                    }
-                  />
-                </ListItemButton>
+
                 <ListItemButton
                   LinkComponent={Link}
                   href="/u/account/commerce/settings"
@@ -200,6 +147,92 @@ function RequireLogin({
                       <FormattedMessage
                         id="settings"
                         defaultMessage="Settings"
+                      />
+                    }
+                  />
+                </ListItemButton>
+
+                <ListItemButton onClick={handleToggleMenu}>
+                  <ListItemIcon>
+                    <ShoppingBagIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="product" defaultMessage="Product" />
+                    }
+                  />
+                  {open ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+                <Collapse in={open}>
+                  <List disablePadding>
+                    <ListItemButton
+                      LinkComponent={Link}
+                      href="/u/account/commerce/products"
+                      selected={page === 'products'}
+                      sx={{ pl: 5 }}
+                    >
+                      <ListItemIcon>
+                        <InventoryIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          <FormattedMessage id="items" defaultMessage="Items" />
+                        }
+                      />
+                    </ListItemButton>
+
+                    <ListItemButton
+                      LinkComponent={Link}
+                      href="/u/account/commerce/categories"
+                      selected={page === 'categories'}
+                      sx={{ pl: 5 }}
+                    >
+                      <ListItemIcon>
+                        <AppsIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          <FormattedMessage
+                            id="categories"
+                            defaultMessage="Categories"
+                          />
+                        }
+                      />
+                    </ListItemButton>
+                    <ListItemButton
+                      LinkComponent={Link}
+                      href="/u/account/commerce/collections"
+                      selected={page === 'collections'}
+                      sx={{ pl: 5 }}
+                    >
+                      <ListItemIcon>
+                        <LabelIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          <FormattedMessage
+                            id="collections"
+                            defaultMessage="Collections"
+                          />
+                        }
+                      />
+                    </ListItemButton>
+                  </List>
+                </Collapse>
+
+                <ListItemButton
+                  LinkComponent={Link}
+                  href="/u/account/commerce/checkouts"
+                  selected={page === 'checkouts'}
+                >
+                  <ListItemIcon>
+                    <AddShoppingCartIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="checkouts"
+                        defaultMessage="Checkouts"
                       />
                     }
                   />
@@ -266,7 +299,15 @@ export default function DashboardLayout({
   return (
     <AuthMainLayout noSsr>
       <DexkitApiProvider.Provider value={{ instance: myAppsApi }}>
-        <RequireLogin page={page ?? ''}>{children}</RequireLogin>
+        <RequireLogin page={page ?? ''}>
+          <Container>
+            <Grid container justifyContent="center" spacing={2}>
+              <Grid item xs={12} sm={10}>
+                {children}
+              </Grid>
+            </Grid>
+          </Container>
+        </RequireLogin>
       </DexkitApiProvider.Provider>
     </AuthMainLayout>
   );
