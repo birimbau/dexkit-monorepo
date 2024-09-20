@@ -7,20 +7,19 @@ import {
   Box,
   Button,
   ButtonBase,
-  Checkbox,
   Divider,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   Grid,
   InputAdornment,
-  TextField as MuiTextField,
   Stack,
+  Switch,
 } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
 import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
-import moment, { Moment } from 'moment';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { ProductFormType } from '../types';
 
@@ -36,6 +35,8 @@ import * as commands from '@uiw/react-md-editor/commands';
 
 import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import '@uiw/react-md-editor/markdown-editor.css';
+import { useSnackbar } from 'notistack';
+import useDeleteProduct from '../hooks/useDeleteProduct';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -75,6 +76,41 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
   const { data: categories } = useCategoryList({ limit: 50, page: 0 });
 
   const { formatMessage } = useIntl();
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const { mutateAsync: deleteProduct, isLoading } = useDeleteProduct();
+
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleDelete = useCallback(() => {
+    return () => {
+      setShowConfirm(true);
+    };
+  }, []);
+
+  const handleCloseConfirm = () => {
+    setShowConfirm(false);
+  };
+
+  const handleConfirm = async () => {
+    if (values.id) {
+      try {
+        await deleteProduct({ id: values.id });
+
+        enqueueSnackbar(
+          <FormattedMessage
+            id="product.deleted"
+            defaultMessage="Product deleted"
+          />,
+          { variant: 'success' },
+        );
+        setShowConfirm(false);
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: 'error' });
+      }
+    }
+  };
 
   return (
     <>
@@ -130,143 +166,175 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
             </Stack>
           </ButtonBase>
         </Grid>
-        <Grid item xs={12}>
-          <Field
-            component={TextField}
-            name="name"
-            fullWidth
-            label={<FormattedMessage id="name" defaultMessage="Name" />}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <ProductCategoryAutocomplete
-            value={values.category ?? null}
-            onChange={(value: ProductCategoryType | null) => {
-              setFieldValue('category', value);
-            }}
-            categories={categories?.items ?? []}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormikDecimalInput
-            name="price"
-            TextFieldProps={{
-              fullWidth: true,
-              label: <FormattedMessage id="price" defaultMessage="Price" />,
-              InputProps: {
-                startAdornment: (
-                  <InputAdornment position="start">$</InputAdornment>
-                ),
-              },
-            }}
-            decimals={6}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            label={<FormattedMessage id="digital" defaultMessage="Digital?" />}
-            control={
-              <Checkbox
-                checked={values.digital}
-                onChange={(e) => {
-                  setFieldValue('digital', e.target.checked);
-                }}
+        <Grid item xs={12} sm={8}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Field
+                component={TextField}
+                name="name"
+                fullWidth
+                label={<FormattedMessage id="name" defaultMessage="Name" />}
               />
-            }
-          />
-        </Grid>
-        {values.digital && (
-          <Grid item xs={12}>
-            <MDEditor
-              value={values.content ?? ''}
-              onChange={(value) => setFieldValue('content', value)}
-              commands={[
-                ...commands.getCommands(),
-                {
-                  keyCommand: 'ai',
-                  name: formatMessage({
-                    id: 'artificial.inteligence',
-                    defaultMessage: 'Artificial Inteligence',
-                  }),
-
-                  render: (command, disabled, executeCommand) => {
-                    return (
-                      <button
-                        disabled={disabled}
-                        onClick={(evn) => {
-                          // evn.stopPropagation();
-                          executeCommand(command, command.groupName);
-                        }}
-                      >
-                        <AutoAwesome fontSize="inherit" />
-                      </button>
-                    );
+            </Grid>
+            <Grid item xs={12}>
+              <ProductCategoryAutocomplete
+                value={values.category ?? null}
+                onChange={(value: ProductCategoryType | null) => {
+                  setFieldValue('category', value);
+                }}
+                categories={categories?.items ?? []}
+              />
+            </Grid>
+            <Grid item>
+              <FormikDecimalInput
+                name="price"
+                TextFieldProps={{
+                  label: <FormattedMessage id="price" defaultMessage="Price" />,
+                  InputProps: {
+                    startAdornment: (
+                      <InputAdornment position="start">$</InputAdornment>
+                    ),
                   },
-                  icon: <AutoAwesome fontSize="inherit" />,
-                  execute: async (
-                    state: ExecuteState,
-                    api: TextAreaTextApi,
-                  ) => {},
-                },
-              ]}
-            />
-          </Grid>
-        )}
-
-        <Grid item xs={12}>
-          <FormControlLabel
-            label={
-              <FormattedMessage id="published" defaultMessage="Published?" />
-            }
-            control={
-              <Checkbox
-                checked={showPublishedAt}
-                onChange={(e) => {
-                  if (!e.target.checked) {
-                    setFieldValue('publishedAt', null);
-                  } else {
-                    setFieldValue('publishedAt', new Date());
-                  }
-                  setShowPublishedAt(e.target.checked);
                 }}
+                decimals={6}
               />
-            }
-          />
-        </Grid>
-        {showPublishedAt && (
-          <Grid item xs={12}>
-            <DateTimePicker
-              renderInput={(props) => <MuiTextField {...props} />}
-              value={moment(values.publishedAt)}
-              onChange={(value: Moment | null) => {
-                setFieldValue('publishedAt', value?.toDate());
-              }}
-            />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl>
+                <FormControlLabel
+                  label={
+                    <FormattedMessage
+                      id="published"
+                      defaultMessage="Published?"
+                    />
+                  }
+                  control={
+                    <Switch
+                      checked={showPublishedAt}
+                      onChange={(e) => {
+                        if (!e.target.checked) {
+                          setFieldValue('publishedAt', null);
+                        } else {
+                          setFieldValue('publishedAt', new Date());
+                        }
+                        setShowPublishedAt(e.target.checked);
+                      }}
+                    />
+                  }
+                />
+                <FormHelperText sx={{ m: 0 }}>
+                  <FormattedMessage
+                    id="turn.off.to.set.the.item.msg"
+                    defaultMessage="Turn off to set the item as “Inactive” and hide it from the store."
+                  />
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                label={
+                  <FormattedMessage
+                    id="protected.item"
+                    defaultMessage="Protected item"
+                  />
+                }
+                control={
+                  <Switch
+                    checked={values.digital}
+                    onChange={(e) => {
+                      setFieldValue('digital', e.target.checked);
+                    }}
+                  />
+                }
+              />
+              <FormHelperText sx={{ m: 0 }}>
+                <FormattedMessage
+                  id="turn.on.to.set.the.item.protected.msg"
+                  defaultMessage="Turn on to open an editor for adding protected information that only the buyer can view."
+                />
+              </FormHelperText>
+            </Grid>
+            {values.digital && (
+              <Grid item xs={12}>
+                <MDEditor
+                  value={values.content ?? ''}
+                  onChange={(value) => setFieldValue('content', value)}
+                  commands={[
+                    ...commands.getCommands(),
+                    {
+                      keyCommand: 'ai',
+                      name: formatMessage({
+                        id: 'artificial.inteligence',
+                        defaultMessage: 'Artificial Inteligence',
+                      }),
+
+                      render: (command, disabled, executeCommand) => {
+                        return (
+                          <button
+                            disabled={disabled}
+                            onClick={(evn) => {
+                              // evn.stopPropagation();
+                              executeCommand(command, command.groupName);
+                            }}
+                          >
+                            <AutoAwesome fontSize="inherit" />
+                          </button>
+                        );
+                      },
+                      icon: <AutoAwesome fontSize="inherit" />,
+                      execute: async (
+                        state: ExecuteState,
+                        api: TextAreaTextApi,
+                      ) => {},
+                    },
+                  ]}
+                />
+              </Grid>
+            )}
+
+            {values.id && (
+              <Grid item xs={12}>
+                <Button
+                  onClick={handleDelete}
+                  variant="contained"
+                  color="error"
+                >
+                  <FormattedMessage
+                    id="delete.product"
+                    defaultMessage="Delete Product"
+                  />
+                </Button>
+              </Grid>
+            )}
+
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>
+            <Grid item xs={12}>
+              <Box>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="flex-end"
+                  spacing={2}
+                >
+                  <Button
+                    LinkComponent={Link}
+                    href="/u/account/commerce/products"
+                  >
+                    <FormattedMessage id="cancel" defaultMessage="cancel" />
+                  </Button>
+                  <Button
+                    onClick={onSubmit}
+                    disabled={!isValid}
+                    variant="contained"
+                  >
+                    <FormattedMessage id="save" defaultMessage="Save" />
+                  </Button>
+                </Stack>
+              </Box>
+            </Grid>
           </Grid>
-        )}
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
-          <Box>
-            <Stack
-              direction="row"
-              alignItems="center"
-              justifyContent="flex-end"
-              spacing={2}
-            >
-              <Button LinkComponent={Link} href="/u/account/commerce/products">
-                <FormattedMessage id="cancel" defaultMessage="cancel" />
-              </Button>
-              <Button
-                onClick={onSubmit}
-                disabled={!isValid}
-                variant="contained"
-              >
-                <FormattedMessage id="save" defaultMessage="Save" />
-              </Button>
-            </Stack>
-          </Box>
         </Grid>
       </Grid>
     </>

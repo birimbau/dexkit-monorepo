@@ -65,8 +65,8 @@ export default function CategoryTable({ query, onShare }: CategoryTableProps) {
 
         enqueueSnackbar(
           <FormattedMessage
-            id="product.deleted"
-            defaultMessage="Product deleted"
+            id="category.deleted"
+            defaultMessage="Category deleted"
           />,
           { variant: 'success' },
         );

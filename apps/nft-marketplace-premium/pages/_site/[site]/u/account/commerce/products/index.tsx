@@ -1,30 +1,12 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import ProductsTable from '@/modules/commerce/components/ProductsTable';
-import {
-  Alert,
-  Box,
-  Button,
-  InputAdornment,
-  Stack,
-  Typography,
-} from '@mui/material';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { Alert, Box, Button, Stack, Typography } from '@mui/material';
+import { FormattedMessage } from 'react-intl';
 
-import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import Add from '@mui/icons-material/Add';
-import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
-import { useState } from 'react';
 
 export default function CommerceProductsPage() {
-  const [query, setQuery] = useState('');
-
-  const handleChange = (value: string) => {
-    setQuery(value);
-  };
-
-  const { formatMessage } = useIntl();
-
   return (
     <DashboardLayout page="products">
       <Stack spacing={2}>
@@ -55,25 +37,7 @@ export default function CommerceProductsPage() {
             />
           </Alert>
         </Stack>
-        <LazyTextField
-          TextFieldProps={{
-            size: 'small',
-            variant: 'standard',
-            placeholder: formatMessage({
-              id: 'search.for.a.product',
-              defaultMessage: 'Search for a product',
-            }),
-            InputProps: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            },
-          }}
-          onChange={handleChange}
-        />
-        <ProductsTable query={query} />
+        <ProductsTable />
       </Stack>
     </DashboardLayout>
   );

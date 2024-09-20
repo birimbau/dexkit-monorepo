@@ -302,7 +302,7 @@ export default function DashboardLayout({
         <RequireLogin page={page ?? ''}>
           <Container>
             <Grid container justifyContent="center" spacing={2}>
-              <Grid item xs={12} sm={10}>
+              <Grid item xs={12}>
                 {children}
               </Grid>
             </Grid>
