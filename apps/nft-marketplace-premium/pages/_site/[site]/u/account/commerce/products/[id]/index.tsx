@@ -74,9 +74,10 @@ function UpdateProductComponent({ product }: UpdateProductComponentProps) {
             category: product.category,
             digital: product.digital,
             content: product.content,
+            collections: product.collections,
           }}
         >
-          {({ isValid, submitForm, errors }) => (
+          {({ isValid, submitForm }) => (
             <ProductForm isValid={isValid} onSubmit={submitForm} />
           )}
         </Formik>

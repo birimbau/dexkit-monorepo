@@ -11,9 +11,10 @@ import dynamic from 'next/dynamic';
 import NextLink from 'next/link';
 import { useSnackbar } from 'notistack';
 import useCategoryList from '../hooks/useCategoryList';
-import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
 
+import AppsIcon from '@mui/icons-material/Apps';
+import { LoadingOverlay } from './LoadingOverlay';
 const AppConfirmDialog = dynamic(
   () => import('@dexkit/ui/components/AppConfirmDialog'),
 );
@@ -149,6 +150,9 @@ export default function CategoriesTable({ query }: CategoriesTableProps) {
                 id="create.a.category.to.see.it.here"
                 defaultMessage="Create a category to see it here"
               />,
+              <Box sx={{ fontSize: '3rem' }}>
+                <AppsIcon fontSize="inherit" />
+              </Box>,
             ),
             loadingOverlay: LoadingOverlay,
             noResultsOverlay: noRowsOverlay(
@@ -160,6 +164,9 @@ export default function CategoriesTable({ query }: CategoriesTableProps) {
                 id="create.a.category.to.see.it.here"
                 defaultMessage="Create a category to see it here"
               />,
+              <Box sx={{ fontSize: '3rem' }}>
+                <AppsIcon fontSize="inherit" />
+              </Box>,
             ),
           }}
         />

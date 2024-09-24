@@ -1,14 +1,30 @@
+import { ProductCollectionSchema } from '@dexkit/ui/modules/commerce/schemas';
+import Decimal from 'decimal.js';
 import { z } from 'zod';
 
 export const ProductSchema = z.object({
   id: z.string().optional(),
   name: z.string().max(30),
-  price: z.string(),
+  price: z.string().refine(
+    (args) => {
+      try {
+        const value = new Decimal(args);
+
+        return value.gt(0);
+      } catch (err) {}
+
+      return false;
+    },
+    { message: 'Must be greater than zero' },
+  ),
   category: z
     .custom<z.infer<typeof CategoryFormSchema>>()
     .nullable()
     .optional(),
-  imageUrl: z.string().url().optional(),
+  collections: z
+    .custom<z.infer<typeof ProductCollectionSchema>[]>()
+    .default([]),
+  imageUrl: z.string().url().optional().nullable(),
   publishedAt: z.coerce.date().nullable().optional(),
   digital: z.boolean(),
   content: z.string().nullable().optional(),

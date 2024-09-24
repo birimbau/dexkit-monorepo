@@ -118,7 +118,7 @@ export default function ProductsTable({}: ProducstTableProps) {
           defaultMessage: 'Image',
         }),
         renderCell: ({ row }) => (
-          <Avatar variant="rounded" src={row.imageUrl}>
+          <Avatar variant="rounded" src={row.imageUrl ?? ''}>
             <InventoryIcon />
           </Avatar>
         ),
@@ -145,13 +145,12 @@ export default function ProductsTable({}: ProducstTableProps) {
         }),
         renderCell: ({ row }) => (
           <Typography variant="inherit">
-            <FormattedNumber
-              currency="usd"
-              minimumFractionDigits={2}
-              maximumFractionDigits={18}
-              style="currency"
-              value={new Decimal(row.price).toNumber()}
-            />
+            {row.category?.name ?? (
+              <FormattedMessage
+                id="uncategorized"
+                defaultMessage="Uncategorized"
+              />
+            )}
           </Typography>
         ),
       },

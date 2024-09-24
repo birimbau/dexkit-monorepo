@@ -15,6 +15,8 @@ import Delete from '@mui/icons-material/DeleteOutline';
 import dynamic from 'next/dynamic';
 import { useSnackbar } from 'notistack';
 
+import LabelIcon from '@mui/icons-material/Label';
+
 const AppConfirmDialog = dynamic(
   () => import('@dexkit/ui/components/AppConfirmDialog'),
 );
@@ -150,17 +152,23 @@ export default function CollectionsTable({ query }: CollectionsTableProps) {
                 id="create.a.collection.to.see.it.here"
                 defaultMessage="Create a collection to see it here"
               />,
+              <Box sx={{ fontSize: '3rem' }}>
+                <LabelIcon fontSize="inherit" />
+              </Box>,
             ),
             loadingOverlay: LoadingOverlay,
             noResultsOverlay: noRowsOverlay(
               <FormattedMessage
                 id="no.collections"
-                defaultMessage="No Collections"
+                defaultMessage="No collections"
               />,
               <FormattedMessage
-                id="create.a.collections.to.see.it.here"
-                defaultMessage="Create a collections to see it here"
+                id="add.collections.to.your.store"
+                defaultMessage="Add collections to your store"
               />,
+              <Box sx={{ fontSize: '3rem' }}>
+                <LabelIcon fontSize="inherit" />
+              </Box>,
             ),
           }}
         />

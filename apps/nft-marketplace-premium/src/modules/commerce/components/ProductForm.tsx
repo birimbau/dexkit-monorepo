@@ -24,7 +24,10 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { ProductFormType } from '../types';
 
 import ProductCategoryAutocomplete from '@dexkit/ui/modules/commerce/components/CommerceSection/ProductCategoryAutocomplete';
-import { ProductCategoryType } from '@dexkit/ui/modules/commerce/types';
+import {
+  ProductCategoryType,
+  ProductCollectionType,
+} from '@dexkit/ui/modules/commerce/types';
 import dynamic from 'next/dynamic';
 import useCategoryList from '../hooks/useCategoryList';
 
@@ -33,10 +36,15 @@ import { ExecuteState, TextAreaTextApi } from '@uiw/react-md-editor';
 
 import * as commands from '@uiw/react-md-editor/commands';
 
+import { AppConfirmDialog } from '@dexkit/ui';
 import AutoAwesome from '@mui/icons-material/AutoAwesome';
 import '@uiw/react-md-editor/markdown-editor.css';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import useDeleteProduct from '../hooks/useDeleteProduct';
+
+import ProductCollectionsAutocomplete from '@dexkit/ui/modules/commerce/components/ProductCollectionsAutocomplete';
+import useProductCollectionList from '@dexkit/ui/modules/commerce/hooks/useProductCollectionList';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -49,7 +57,7 @@ export interface ProductFormProps {
 }
 
 export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
-  const { setFieldValue, values } = useFormikContext<ProductFormType>();
+  const { setFieldValue, values, errors } = useFormikContext<ProductFormType>();
 
   const handleSelectFile = (file: AccountFile) => {
     setFieldValue('imageUrl', file.url);
@@ -84,14 +92,14 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleDelete = useCallback(() => {
-    return () => {
-      setShowConfirm(true);
-    };
+    setShowConfirm(true);
   }, []);
 
   const handleCloseConfirm = () => {
     setShowConfirm(false);
   };
+
+  const router = useRouter();
 
   const handleConfirm = async () => {
     if (values.id) {
@@ -106,14 +114,39 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
           { variant: 'success' },
         );
         setShowConfirm(false);
+        router.push('/u/account/commerce/products');
       } catch (err) {
         enqueueSnackbar(String(err), { variant: 'error' });
       }
     }
   };
 
+  const { data: collections } = useProductCollectionList({
+    limit: 10,
+    page: 0,
+  });
+
   return (
     <>
+      {showConfirm && (
+        <AppConfirmDialog
+          DialogProps={{ open: showConfirm, onClose: handleCloseConfirm }}
+          onConfirm={handleConfirm}
+          isConfirming={isLoading}
+          title={
+            <FormattedMessage
+              id="delete.product"
+              defaultMessage="Delete product"
+            />
+          }
+        >
+          <FormattedMessage
+            id="do.you.really.want.to.delete.this.product"
+            defaultMessage="Do you really want to delete this product?"
+          />
+        </AppConfirmDialog>
+      )}
+
       <MediaDialog
         onConfirmSelectFile={handleSelectFile}
         dialogProps={{
@@ -123,6 +156,9 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
         }}
       />
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          {JSON.stringify(errors)}
+        </Grid>
         <Grid item xs={12} sm={4}>
           <ButtonBase
             onClick={handleSelectOpen}
@@ -173,7 +209,16 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 component={TextField}
                 name="name"
                 fullWidth
-                label={<FormattedMessage id="name" defaultMessage="Name" />}
+                label={<FormattedMessage id="item" defaultMessage="Item" />}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <ProductCollectionsAutocomplete
+                value={values.collections ? values.collections : []}
+                onChange={(value: ProductCollectionType[]) => {
+                  setFieldValue('collections', value);
+                }}
+                collections={collections?.items ?? []}
               />
             </Grid>
             <Grid item xs={12}>
@@ -192,7 +237,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                   label: <FormattedMessage id="price" defaultMessage="Price" />,
                   InputProps: {
                     startAdornment: (
-                      <InputAdornment position="start">$</InputAdornment>
+                      <InputAdornment position="start">USD</InputAdornment>
                     ),
                   },
                 }}
@@ -204,8 +249,8 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 <FormControlLabel
                   label={
                     <FormattedMessage
-                      id="published"
-                      defaultMessage="Published?"
+                      id="visibility.in.the.store"
+                      defaultMessage="Visibility in the store"
                     />
                   }
                   control={

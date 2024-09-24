@@ -53,7 +53,7 @@ export default function ProductAutocomplete({
         <ListItem {...params}>
           <ListItemAvatar>
             <Avatar
-              src={opt.imageUrl}
+              src={opt.imageUrl ?? ""}
               sx={{ width: "1.5rem", height: "1.5rem" }}
               variant="rounded"
             />

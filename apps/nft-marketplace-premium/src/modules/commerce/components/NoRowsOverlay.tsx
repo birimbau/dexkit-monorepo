@@ -3,6 +3,7 @@ import { Box, Stack, Typography } from '@mui/material';
 export function noRowsOverlay(
   title: React.ReactNode,
   subtitle: React.ReactNode,
+  icon?: React.ReactNode,
 ) {
   return function Component() {
     return (
@@ -10,10 +11,10 @@ export function noRowsOverlay(
         py={2}
         alignItems="center"
         justifyItems="center"
-        spacing={1}
         justifyContent="center"
         sx={{ height: '100%' }}
       >
+        {icon}
         <Box>
           <Typography align="center" variant="h5">
             {title}

@@ -78,8 +78,9 @@ function CreateProductComponent() {
           validationSchema={toFormikValidationSchema(ProductSchema)}
           initialValues={{
             name: '',
-            price: '0.0',
+            price: '0.01',
             digital: false,
+            collections: [],
           }}
         >
           {({ isValid, submitForm, errors }) => (
