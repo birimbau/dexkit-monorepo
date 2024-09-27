@@ -1,26 +1,16 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
-import LazyTextField from '@dexkit/ui/components/LazyTextField';
-import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, InputAdornment, Stack, Typography } from '@mui/material';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { FormattedMessage } from 'react-intl';
 
 import CategoriesTable from '@/modules/commerce/components/CheckoutsCategories';
-import Search from '@mui/icons-material/Search';
 import { useState } from 'react';
 
 import { GET_CATEGORY_LIST } from '@/modules/commerce/hooks/useCategoryList';
 import CreateCategoryFormDialog from '@dexkit/ui/modules/commerce/components/dialogs/CreateCategoryFormDialog';
+import Add from '@mui/icons-material/Add';
 import { useQueryClient } from '@tanstack/react-query';
 
 export default function CommerceCategoriesPage() {
-  const [query, setQuery] = useState('');
-
-  const handleChange = (value: string) => {
-    setQuery(value);
-  };
-
-  const { formatMessage } = useIntl();
-
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -43,58 +33,31 @@ export default function CommerceCategoriesPage() {
           }}
         />
         <Stack spacing={2}>
-          <PageHeader
-            breadcrumbs={[
-              {
-                caption: (
-                  <FormattedMessage id="commerce" defaultMessage="Commerce" />
-                ),
-                uri: '/u/account/commerce',
-              },
-              {
-                caption: (
-                  <FormattedMessage
-                    id="Categories"
-                    defaultMessage="Categories"
-                  />
-                ),
-                uri: '/u/account/commerce/categories',
-                active: true,
-              },
-            ]}
-          />
-          <Typography variant="h6">
-            <FormattedMessage id="categories" defaultMessage="Categories" />
-          </Typography>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Button onClick={handleOpen} variant="contained">
-              <FormattedMessage id="create" defaultMessage="Create" />
+          <Box>
+            <Typography variant="h6">
+              <FormattedMessage id="categories" defaultMessage="Categories" />
+            </Typography>
+            <Typography variant="body1">
+              <FormattedMessage
+                id="create.categories.description.text"
+                defaultMessage="Create categories to organize your products for easier management."
+              />
+            </Typography>
+          </Box>
+          <Box>
+            <Button
+              startIcon={<Add />}
+              onClick={handleOpen}
+              variant="contained"
+            >
+              <FormattedMessage
+                id="new.category"
+                defaultMessage="New category"
+              />
             </Button>
-            <LazyTextField
-              TextFieldProps={{
-                size: 'small',
-                variant: 'standard',
-                placeholder: formatMessage({
-                  id: 'search.for.a.checkout',
-                  defaultMessage: 'Search for a category',
-                }),
-                InputProps: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-              onChange={handleChange}
-            />
-          </Stack>
-          <CategoriesTable query={query} />
-        </Stack>{' '}
+          </Box>
+          <CategoriesTable />
+        </Stack>
       </DashboardLayout>
     </>
   );

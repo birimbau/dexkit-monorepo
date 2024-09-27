@@ -13,11 +13,13 @@ import { FormattedMessage } from 'react-intl';
 export interface CustomToolbarProps extends GridToolbarContainerProps {
   onDelete: () => void;
   showDelete: boolean;
+  placeholder: string;
 }
 
 export default function CustomToolbar({
   onDelete,
   showDelete,
+  placeholder,
 }: CustomToolbarProps) {
   return (
     <GridToolbarContainer>
@@ -37,7 +39,7 @@ export default function CustomToolbar({
         </Button>
       )}
 
-      <GridToolbarQuickFilter />
+      <GridToolbarQuickFilter placeholder={placeholder} />
     </GridToolbarContainer>
   );
 }

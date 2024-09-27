@@ -33,9 +33,17 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import useDeleteProduct from '../hooks/useDeleteProduct';
+import useDuplicateProduct from '../hooks/useDuplicateProduct';
 import CustomToolbar from './CustomToolbar';
 const AppConfirmDialog = dynamic(
   () => import('@dexkit/ui/components/AppConfirmDialog'),
+);
+
+const PreviewProductDialog = dynamic(
+  () =>
+    import(
+      '@dexkit/ui/modules/commerce/components/dialogs/PreviewProductDialog'
+    ),
 );
 
 export interface ProducstTableProps {}
@@ -66,9 +74,24 @@ export default function ProductsTable({}: ProducstTableProps) {
   const [showConfirmDuplicate, setShowConfirmDuplicate] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
 
+  const [showPreview, setShowPreview] = useState(false);
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+    setSelectedId(undefined);
+  };
+
+  const handleShowPreview = useCallback((id: string) => {
+    return (e: MouseEvent) => {
+      e.stopPropagation();
+      setSelectedId(id);
+      setShowPreview(true);
+    };
+  }, []);
+
   const handleDuplicate = useCallback((id: string) => {
     return (e: MouseEvent) => {
-      e.preventDefault();
+      e.stopPropagation();
       setSelectedId(id);
       setShowConfirmDuplicate(true);
     };
@@ -76,7 +99,7 @@ export default function ProductsTable({}: ProducstTableProps) {
 
   const handleDelete = useCallback((id: string) => {
     return (e: MouseEvent) => {
-      e.preventDefault();
+      e.stopPropagation();
       setSelectedId(id);
       setShowConfirm(true);
     };
@@ -145,7 +168,9 @@ export default function ProductsTable({}: ProducstTableProps) {
         }),
         renderCell: ({ row }) => (
           <Typography variant="inherit">
-            {row.category?.name ?? (
+            {row.category?.name ? (
+              row.category?.name
+            ) : (
               <FormattedMessage
                 id="uncategorized"
                 defaultMessage="Uncategorized"
@@ -177,7 +202,7 @@ export default function ProductsTable({}: ProducstTableProps) {
         headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
         renderCell: ({ row }) => (
           <Stack direction="row" spacing={1}>
-            <IconButton size="small" onClick={handleDelete(row.id ?? '')}>
+            <IconButton size="small" onClick={handleShowPreview(row.id ?? '')}>
               <Tooltip
                 title={
                   <FormattedMessage
@@ -215,15 +240,44 @@ export default function ProductsTable({}: ProducstTableProps) {
     [],
   );
 
-  const handleCloseDuplicate = () => {
+  const handleCloseDuplicate = async () => {
     setShowConfirmDuplicate(false);
     setSelectedId(undefined);
+  };
+
+  const { mutateAsync: duplicate } = useDuplicateProduct();
+
+  const handleConfirmDuplicate = async () => {
+    if (selectedId) {
+      try {
+        await duplicate({ id: selectedId });
+
+        enqueueSnackbar(
+          <FormattedMessage
+            id="product.duplicated"
+            defaultMessage="Product duplicated"
+          />,
+          { variant: 'success' },
+        );
+        setShowConfirmDuplicate(false);
+        setSelectedId(undefined);
+        await refetch();
+      } catch (err) {
+        enqueueSnackbar(String(err), { variant: 'error' });
+      }
+    }
   };
 
   const router = useRouter();
 
   return (
     <>
+      {showPreview && (
+        <PreviewProductDialog
+          DialogProps={{ open: showPreview, onClose: handleClosePreview }}
+          id={selectedId}
+        />
+      )}
       {showConfirm && (
         <AppConfirmDialog
           DialogProps={{ open: showConfirm, onClose: handleClose }}
@@ -243,13 +297,13 @@ export default function ProductsTable({}: ProducstTableProps) {
         </AppConfirmDialog>
       )}
 
-      {showConfirm && (
+      {showConfirmDuplicate && (
         <AppConfirmDialog
           DialogProps={{
             open: showConfirmDuplicate,
             onClose: handleCloseDuplicate,
           }}
-          onConfirm={handleConfirm}
+          onConfirm={handleConfirmDuplicate}
           isConfirming={isLoading}
           title={
             <FormattedMessage

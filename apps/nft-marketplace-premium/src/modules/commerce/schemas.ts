@@ -5,6 +5,7 @@ import { z } from 'zod';
 export const ProductSchema = z.object({
   id: z.string().optional(),
   name: z.string().max(30),
+  description: z.string().optional(),
   price: z.string().refine(
     (args) => {
       try {

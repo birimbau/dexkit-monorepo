@@ -1,7 +1,7 @@
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
 import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, InputAdornment, Stack, Typography } from '@mui/material';
+import { Box, Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import CollectionsTable from '@/modules/commerce/components/CollectionsTable';
@@ -42,9 +42,17 @@ export default function CommerceCategoriesPage() {
               },
             ]}
           />
-          <Typography variant="h6">
-            <FormattedMessage id="collections" defaultMessage="Collections" />
-          </Typography>
+          <Box>
+            <Typography variant="h6">
+              <FormattedMessage id="collections" defaultMessage="Collections" />
+            </Typography>
+            <Typography color="secondary" variant="body1">
+              <FormattedMessage
+                id="create.collections.description.text"
+                defaultMessage="Create collections to showcase themed or promotional product groups."
+              />
+            </Typography>
+          </Box>
           <Stack
             direction="row"
             alignItems="center"

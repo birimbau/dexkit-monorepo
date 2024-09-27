@@ -80,6 +80,7 @@ function CreateProductComponent() {
             name: '',
             price: '0.01',
             digital: false,
+            description: '',
             collections: [],
           }}
         >

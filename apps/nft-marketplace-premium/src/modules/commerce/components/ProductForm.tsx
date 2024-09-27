@@ -23,6 +23,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { ProductFormType } from '../types';
 
+const PreviewProductDialog = dynamic(
+  () =>
+    import(
+      '@dexkit/ui/modules/commerce/components/dialogs/PreviewProductDialog'
+    ),
+);
+
 import ProductCategoryAutocomplete from '@dexkit/ui/modules/commerce/components/CommerceSection/ProductCategoryAutocomplete';
 import {
   ProductCategoryType,
@@ -45,6 +52,7 @@ import useDeleteProduct from '../hooks/useDeleteProduct';
 
 import ProductCollectionsAutocomplete from '@dexkit/ui/modules/commerce/components/ProductCollectionsAutocomplete';
 import useProductCollectionList from '@dexkit/ui/modules/commerce/hooks/useProductCollectionList';
+import Visibility from '@mui/icons-material/Visibility';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -126,8 +134,24 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
     page: 0,
   });
 
+  const [showPreview, setShowPreview] = useState(false);
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
+  };
+
+  const handleShowPreview = () => {
+    setShowPreview(true);
+  };
+
   return (
     <>
+      {showPreview && (
+        <PreviewProductDialog
+          DialogProps={{ open: showPreview, onClose: handleClosePreview }}
+          id={values.id}
+        />
+      )}
       {showConfirm && (
         <AppConfirmDialog
           DialogProps={{ open: showConfirm, onClose: handleCloseConfirm }}
@@ -156,9 +180,6 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
         }}
       />
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          {JSON.stringify(errors)}
-        </Grid>
         <Grid item xs={12} sm={4}>
           <ButtonBase
             onClick={handleSelectOpen}
@@ -205,11 +226,35 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
         <Grid item xs={12} sm={8}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
+              <Button onClick={handleShowPreview} startIcon={<Visibility />}>
+                <FormattedMessage
+                  id="preview.in.store"
+                  defaultMessage="Preview in store"
+                />
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
               <Field
                 component={TextField}
                 name="name"
                 fullWidth
                 label={<FormattedMessage id="item" defaultMessage="Item" />}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Field
+                component={TextField}
+                name="description"
+                fullWidth
+                label={
+                  <FormattedMessage
+                    id="description"
+                    defaultMessage="Description"
+                  />
+                }
+                multiline
+                rows={3}
               />
             </Grid>
             <Grid item xs={12}>
@@ -360,7 +405,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 <Stack
                   direction="row"
                   alignItems="center"
-                  justifyContent="flex-end"
+                  justifyContent="flex-start"
                   spacing={2}
                 >
                   <Button
