@@ -50,6 +50,7 @@ export type Product = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  description?: string;
   name: string;
   price: string;
   imageUrl: string | null;

@@ -25,6 +25,8 @@ const AppConfirmDialog = dynamic(
   () => import('@dexkit/ui/components/AppConfirmDialog'),
 );
 
+import useDeleteManyCategories from '@dexkit/ui/modules/commerce/hooks/useDeleteManyCategories';
+
 export interface CategoriesTableProps {}
 
 export default function CategoriesTable({}: CategoriesTableProps) {
@@ -56,6 +58,8 @@ export default function CategoriesTable({}: CategoriesTableProps) {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
+
+  const [showDeleteMany, setShowDeleteMany] = useState(false);
 
   const handleDelete = useCallback((id: string) => {
     return (e: MouseEvent) => {
@@ -134,8 +138,53 @@ export default function CategoriesTable({}: CategoriesTableProps) {
     setShowEdit(false);
   };
 
+  const handleCloseDeleteMany = () => {
+    setShowDeleteMany(false);
+  };
+
+  const { mutateAsync: deleteMany, isLoading: isDeletingMany } =
+    useDeleteManyCategories();
+
+  const handleConfirmDeleteMany = async () => {
+    try {
+      await deleteMany({ ids: selectionModel as string[] });
+
+      enqueueSnackbar(
+        <FormattedMessage
+          id="categories.are.deleted"
+          defaultMessage="Categories are deleted"
+        />,
+        { variant: 'success' },
+      );
+      await refetch();
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
+
+    handleCloseDeleteMany();
+  };
+
   return (
     <>
+      {showDeleteMany && (
+        <AppConfirmDialog
+          DialogProps={{ open: showDeleteMany, onClose: handleCloseDeleteMany }}
+          onConfirm={handleConfirmDeleteMany}
+          isConfirming={isDeletingMany}
+          title={
+            <FormattedMessage
+              id="delete.collections.s"
+              defaultMessage="Delete collection(s)"
+            />
+          }
+        >
+          <FormattedMessage
+            id="do.you.really.want.to.delete.amount.collections"
+            defaultMessage="Do you really want to delete {amount} collection(s)?"
+            values={{ amount: selectionModel.length }}
+          />
+        </AppConfirmDialog>
+      )}
       {showEdit && (
         <EditCategoryFormDialog
           DialogProps={{
@@ -185,7 +234,9 @@ export default function CategoriesTable({}: CategoriesTableProps) {
           checkboxSelection
           slotProps={{
             toolbar: {
-              onDelete: () => {},
+              onDelete: () => {
+                setShowDeleteMany(true);
+              },
               placeholder: formatMessage({
                 id: 'search.categories',
                 defaultMessage: 'Search categories',

@@ -1,11 +1,16 @@
-import { ShoppingCart } from "@mui/icons-material";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
+
+import Share from "@mui/icons-material/Share";
 import {
   Box,
   Button,
   Grid,
+  IconButton,
   Skeleton,
   Stack,
   styled,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import Decimal from "decimal.js";
@@ -88,37 +93,65 @@ export default function ProductContent({
           />
         </Grid>
       )}
-
       <Grid item xs={12} sm={6}>
         <Image src={product?.imageUrl ?? ""} />
       </Grid>
       <Grid item xs={12} sm={6}>
         <Box>
-          <Stack spacing={2}>
-            <Box>
-              <Typography color="text.secondary" variant="caption">
-                {product?.category?.name}
-              </Typography>
-              <Typography variant="h5" component="h1">
+          <Stack alignItems="flex-start" spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <Typography variant="h4" component="h1">
                 {product?.name}
               </Typography>
-              <Typography color="success.main" variant="subtitle1">
-                <FormattedNumber
-                  style="currency"
-                  currency="usd"
-                  value={new Decimal(
-                    product?.price?.toString() ?? "0"
-                  ).toNumber()}
-                  maximumFractionDigits={18}
-                  minimumFractionDigits={2}
+              <Stack direction="row" alignItems="center" spacing={0.5}>
+                <IconButton size="small">
+                  <Tooltip
+                    placement="top"
+                    title={
+                      <FormattedMessage
+                        id="add.to.wishlist"
+                        defaultMessage="Add to wishlist"
+                      />
+                    }
+                  >
+                    <FavoriteBorderIcon />
+                  </Tooltip>
+                </IconButton>
+                <IconButton size="small">
+                  <Tooltip
+                    placement="top"
+                    title={
+                      <FormattedMessage id="share" defaultMessage="Share" />
+                    }
+                  >
+                    <Share />
+                  </Tooltip>
+                </IconButton>
+              </Stack>
+            </Stack>
+            <Typography variant="body2" color="text.secondary">
+              {product?.description}
+            </Typography>
+            <Typography fontWeight="500" variant="h5">
+              <FormattedNumber
+                value={new Decimal(
+                  product?.price?.toString() ?? "0"
+                ).toNumber()}
+                maximumFractionDigits={18}
+                minimumFractionDigits={2}
+              />{" "}
+              USD
+            </Typography>
+
+            {cartItem?.quantity && cartItem?.quantity > 0 && (
+              <Box>
+                <Counter
+                  value={cartItem?.quantity ?? 0}
+                  onIncrement={handleIncrement}
+                  onDecrement={handleDecrement}
                 />
-              </Typography>
-            </Box>
-            <Counter
-              value={cartItem?.quantity ?? 0}
-              onIncrement={handleIncrement}
-              onDecrement={handleDecrement}
-            />
+              </Box>
+            )}
 
             {Boolean(cartItem) ? (
               <Button
@@ -139,10 +172,7 @@ export default function ProductContent({
                 variant="contained"
                 color="primary"
               >
-                <FormattedMessage
-                  id="add.to.cart"
-                  defaultMessage="Add to cart"
-                />
+                <FormattedMessage id="buy now" defaultMessage="Buy now" />
               </Button>
             )}
           </Stack>

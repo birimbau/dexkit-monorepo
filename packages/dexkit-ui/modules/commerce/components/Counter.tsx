@@ -1,7 +1,7 @@
 import Add from "@mui/icons-material/Add";
 import Delete from "@mui/icons-material/Delete";
 import Remove from "@mui/icons-material/Remove";
-import { IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 
 export interface CounterProps {
   value: number;
@@ -15,14 +15,22 @@ export default function Counter({
   onDecrement,
 }: CounterProps) {
   return (
-    <Stack direction="row" alignItems="center" spacing={2}>
-      <IconButton onClick={onIncrement}>
-        <Add />
-      </IconButton>
-      <Typography variant="body1">{value}</Typography>
-      <IconButton onClick={onDecrement}>
-        {value === 1 ? <Delete /> : <Remove />}
-      </IconButton>
-    </Stack>
+    <Box
+      sx={{
+        p: 0.5,
+        borderRadius: (theme) => `${theme.shape.borderRadius}px`,
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      <Stack direction="row" alignItems="center" spacing={2}>
+        <IconButton size="small" onClick={onDecrement}>
+          {value === 1 ? <Delete /> : <Remove />}
+        </IconButton>
+        <Typography variant="body1">{value}</Typography>
+        <IconButton size="small" onClick={onIncrement}>
+          <Add />
+        </IconButton>
+      </Stack>
+    </Box>
   );
 }

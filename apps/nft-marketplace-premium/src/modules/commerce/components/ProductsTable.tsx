@@ -35,6 +35,11 @@ import { useSnackbar } from 'notistack';
 import useDeleteProduct from '../hooks/useDeleteProduct';
 import useDuplicateProduct from '../hooks/useDuplicateProduct';
 import CustomToolbar from './CustomToolbar';
+
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+
+import useDeleteManyProducts from '@dexkit/ui/modules/commerce/hooks/useDeleteManyProducts';
+
 const AppConfirmDialog = dynamic(
   () => import('@dexkit/ui/components/AppConfirmDialog'),
 );
@@ -75,6 +80,12 @@ export default function ProductsTable({}: ProducstTableProps) {
   const [selectedId, setSelectedId] = useState<string>();
 
   const [showPreview, setShowPreview] = useState(false);
+
+  const [showDeleteMany, setShowDeleteMany] = useState(false);
+
+  const handleCloseDeleteMany = () => {
+    setShowDeleteMany(false);
+  };
 
   const handleClosePreview = () => {
     setShowPreview(false);
@@ -186,12 +197,12 @@ export default function ProductsTable({}: ProducstTableProps) {
         renderCell: ({ row }) => (
           <Typography variant="inherit">
             <FormattedNumber
-              currency="usd"
               minimumFractionDigits={2}
               maximumFractionDigits={18}
-              style="currency"
+              signDisplay="never"
               value={new Decimal(row.price).toNumber()}
-            />
+            />{' '}
+            USD
           </Typography>
         ),
       },
@@ -199,6 +210,8 @@ export default function ProductsTable({}: ProducstTableProps) {
       {
         field: 'actions',
         flex: 1,
+        sortable: false,
+        disableColumnMenu: true,
         headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
         renderCell: ({ row }) => (
           <Stack direction="row" spacing={1}>
@@ -268,6 +281,28 @@ export default function ProductsTable({}: ProducstTableProps) {
     }
   };
 
+  const { mutateAsync: deleteMany, isLoading: isDeletingMany } =
+    useDeleteManyProducts();
+
+  const handleConfirmDeleteMany = async () => {
+    try {
+      await deleteMany({ ids: selectionModel as string[] });
+
+      enqueueSnackbar(
+        <FormattedMessage
+          id="products.are.deleted"
+          defaultMessage="Products are deleted"
+        />,
+        { variant: 'success' },
+      );
+      await refetch();
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: 'error' });
+    }
+
+    handleCloseDeleteMany();
+  };
+
   const router = useRouter();
 
   return (
@@ -293,6 +328,26 @@ export default function ProductsTable({}: ProducstTableProps) {
           <FormattedMessage
             id="do.you.really.want.to.delete.this.product"
             defaultMessage="Do you really want to delete this product?"
+          />
+        </AppConfirmDialog>
+      )}
+
+      {showDeleteMany && (
+        <AppConfirmDialog
+          DialogProps={{ open: showDeleteMany, onClose: handleCloseDeleteMany }}
+          onConfirm={handleConfirmDeleteMany}
+          isConfirming={isDeletingMany}
+          title={
+            <FormattedMessage
+              id="delete.products"
+              defaultMessage="Delete products"
+            />
+          }
+        >
+          <FormattedMessage
+            id="do.you.really.want.to.delete.amount.products"
+            defaultMessage="Do you really want to delete {amount} products?"
+            values={{ amount: selectionModel.length }}
           />
         </AppConfirmDialog>
       )}
@@ -326,6 +381,13 @@ export default function ProductsTable({}: ProducstTableProps) {
                 id: 'search.products',
                 defaultMessage: 'Search products',
               }),
+              footerTotalVisibleRows: (visibleCount, totalCount) => (
+                <FormattedMessage
+                  id="visiblecount.of.total.count.products"
+                  defaultMessage="{visibleCount} of {totalCount} products"
+                  values={{ visibleCount, totalCount }}
+                />
+              ),
             }}
             columns={columns}
             rowCount={data?.totalItems}
@@ -336,13 +398,22 @@ export default function ProductsTable({}: ProducstTableProps) {
             onRowSelectionModelChange={setSelectionModel}
             rowSelectionModel={selectionModel}
             onPaginationModelChange={setPaginationModel}
-            onRowClick={({ row }) => {
+            disableRowSelectionOnClick
+            onRowClick={({ row }, e) => {
+              e.stopPropagation();
+
               router.push(`/u/account/commerce/products/${row.id}`);
             }}
             sortingOrder={['asc', 'desc']}
             slotProps={{
               toolbar: {
-                onDelete: () => {},
+                placeholder: formatMessage({
+                  id: 'search.products',
+                  defaultMessage: 'Search products',
+                }),
+                onDelete: () => {
+                  setShowDeleteMany(true);
+                },
                 showDelete: selectionModel.length > 0,
                 printOptions: { disableToolbarButton: true },
                 csvOptions: { disableToolbarButton: true },
@@ -382,6 +453,7 @@ export default function ProductsTable({}: ProducstTableProps) {
                 cursor: 'pointer',
               },
             }}
+            pageSizeOptions={[5, 10, 25]}
             slots={{
               toolbar: CustomToolbar,
               noRowsOverlay: noRowsOverlay(
@@ -393,6 +465,9 @@ export default function ProductsTable({}: ProducstTableProps) {
                   id="create.products.to.see.it.here"
                   defaultMessage="Create products to see it here"
                 />,
+                <Box sx={{ fontSize: '3rem' }}>
+                  <ShoppingBagIcon fontSize="inherit" />
+                </Box>,
               ),
               loadingOverlay: LoadingOverlay,
               noResultsOverlay: noRowsOverlay(
@@ -404,6 +479,9 @@ export default function ProductsTable({}: ProducstTableProps) {
                   id="create.products.to.see.it.here"
                   defaultMessage="Create products to see it here"
                 />,
+                <Box sx={{ fontSize: '3rem' }}>
+                  <ShoppingBagIcon fontSize="inherit" />
+                </Box>,
               ),
             }}
           />

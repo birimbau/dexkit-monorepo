@@ -40,11 +40,11 @@ import LabelIcon from '@mui/icons-material/Label';
 
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import DashboardIcon from '@mui/icons-material/Dashboard';
+
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 
 export interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -226,7 +226,7 @@ function RequireLogin({
                   selected={page === 'checkouts'}
                 >
                   <ListItemIcon>
-                    <AddShoppingCartIcon />
+                    <ShoppingCartCheckoutIcon />
                   </ListItemIcon>
                   <ListItemText
                     primary={
