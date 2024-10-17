@@ -1,4 +1,9 @@
-import { DataGrid, GridColDef, GridPaginationModel } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridColDef,
+  GridPaginationModel,
+  GridSortModel,
+} from '@mui/x-data-grid';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import useCheckoutList from '../hooks/checkout/useCheckoutList';
@@ -35,10 +40,15 @@ export default function CheckoutsTable({
     pageSize: 5,
   });
 
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    { field: 'title', sort: 'asc' },
+  ]);
+
   const { data, isLoading, refetch } = useCheckoutList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: query,
+    sortModel,
   });
 
   const { formatMessage } = useIntl();
@@ -101,6 +111,8 @@ export default function CheckoutsTable({
         ),
       },
       {
+        sortable: false,
+        disableColumnMenu: true,
         flex: 1,
         field: 'description',
         headerName: formatMessage({
@@ -111,6 +123,8 @@ export default function CheckoutsTable({
       {
         field: 'actions',
         flex: 1,
+        sortable: false,
+        disableColumnMenu: true,
         headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
         renderCell: ({ row }) => (
           <Stack direction="row">
@@ -162,7 +176,38 @@ export default function CheckoutsTable({
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           loading={isLoading}
-          sx={{ height: 300 }}
+          sx={{
+            height: 300,
+            '& .MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
+            '& .MuiDataGrid-cell:focus-within': {
+              outline: 'none !important',
+            },
+            '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+              outline: 'none !important',
+            },
+            '& .MuiDataGrid-columnHeader:focus': {
+              outline: 'none !important',
+            },
+            '& .MuiDataGrid-columnHeader:focus-within': {
+              outline: 'none !important',
+            },
+            border: 'none',
+            '--DataGrid-overlayHeight': '150px', // disable cell selection style
+            '.MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
+            // pointer cursor on ALL rows
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer',
+            },
+          }}
+          sortingOrder={['asc', 'desc']}
+          onSortModelChange={setSortModel}
+          sortModel={sortModel}
+          sortingMode="server"
+          disableRowSelectionOnClick
           slots={{
             noRowsOverlay: noRowsOverlay(
               <FormattedMessage

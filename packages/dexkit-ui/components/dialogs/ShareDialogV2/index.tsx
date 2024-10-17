@@ -99,7 +99,7 @@ export default function ShareDialogV2({
   );
 
   return (
-    <Dialog {...DialogProps} maxWidth="lg" fullWidth>
+    <Dialog {...DialogProps} fullWidth>
       <AppDialogTitle
         icon={<ShareIcon />}
         title={
@@ -116,7 +116,7 @@ export default function ShareDialogV2({
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Box>
-              <Stack spacing={2}>
+              <Stack spacing={2} direction="row" justifyContent="space-between">
                 {OPTIONS.map((opt) => (
                   <ShareDialogIconButton
                     key={opt.value}

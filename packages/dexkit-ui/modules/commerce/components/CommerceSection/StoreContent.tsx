@@ -15,7 +15,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
 import Search from "@mui/icons-material/Search";
-import { useContext, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import useCategoriesBySite from "../../hooks/useCategoriesBySite";
 import useProductsBySite from "../../hooks/useProductsBySite";
 import { ProductCategoryType } from "../../types";
@@ -23,7 +23,14 @@ import ProductCard from "../ProductCard";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { SiteContext } from "../../../../providers/SiteProvider";
+import { useCommerceWishlist } from "../../hooks/useCommerceWishlist";
 import FiltersSection from "./FiltersSection";
+
+import dynamic from "next/dynamic";
+
+const ShareMenu = dynamic(
+  () => import("@dexkit/ui/components/dialogs/ShareMenu")
+);
 
 export const DEFAULT_FILTERS = {
   query: "",
@@ -106,133 +113,180 @@ export default function StoreContent({}: StoreContentProps) {
     setShowFilters(false);
   };
 
+  const {
+    handleAddToWishlist,
+    handleRemoveFromWishlist,
+    isOnWishlist,
+    wishlist,
+  } = useCommerceWishlist();
+
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [id, setId] = useState<string>();
+
+  const handleShare = useCallback((id: string) => {
+    return (el: HTMLElement) => {
+      setId(id);
+      setAnchorEl(el);
+    };
+  }, []);
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+    setId(undefined);
+  };
+
   return (
-    <Container>
-      <Grid container spacing={2} alignItems="stretch">
-        {showFilters && (
-          <Grid item xs={12} sm={3}>
-            <Box sx={{ height: "100%" }}>
-              <FiltersSection
-                categories={categories?.items ?? []}
-                filters={filters}
-                onChange={handleChangeFilters}
-                onClear={handleClear}
-              />
-            </Box>
-          </Grid>
-        )}
-        <Grid item xs={12} sm={showFilters ? 9 : 12}>
-          <Box sx={{ position: "relative" }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Box>
-                  <Stack direction="row" justifyContent="flex-end">
-                    <IconButton onClick={handleToggleFilters}>
-                      <FilterAltIcon />
-                    </IconButton>
-                    <LazyTextField
-                      onChange={(value) =>
-                        setFilters((filters) => ({ ...filters, query: value }))
-                      }
-                      value={filters.query}
-                      TextFieldProps={{
-                        placeholder: formatMessage({
-                          id: "search",
-                          defaultMessage: "Search",
-                        }),
-                        variant: "standard",
-                        InputProps: {
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Search />
-                            </InputAdornment>
-                          ),
-                        },
-                      }}
-                    />
-                  </Stack>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box>
-                  <Stack direction="row" justifyContent="flex-end">
-                    <Select
-                      displayEmpty
-                      onChange={handleChangeSort}
-                      value={filters.sort}
-                    >
-                      <MenuItem value="">
-                        <FormattedMessage
-                          id="Created"
-                          defaultMessage="Created"
-                        />
-                      </MenuItem>
-                      <MenuItem value="asc">
-                        <FormattedMessage
-                          id="low.to.high"
-                          defaultMessage="Low to High"
-                        />
-                      </MenuItem>
-                      <MenuItem value="desc">
-                        <FormattedMessage
-                          id="high.to.low"
-                          defaultMessage="High to low"
-                        />
-                      </MenuItem>
-                    </Select>
-                  </Stack>
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={2}>
-                  {products && products?.totalItems > 0 ? (
-                    products?.items?.map((product, key) => (
-                      <Grid key={key} item xs={12} sm={3}>
-                        <ProductCard product={product} />
+    <>
+      {Boolean(anchorEl) && (
+        <ShareMenu
+          MenuProps={{
+            anchorEl,
+            open: Boolean(anchorEl),
+            onClose: handleCloseMenu,
+          }}
+          onClick={() => {}}
+        />
+      )}
+
+      <Container>
+        <Grid container spacing={2} alignItems="stretch">
+          {showFilters && (
+            <Grid item xs={12} sm={3}>
+              <Box sx={{ height: "100%" }}>
+                <FiltersSection
+                  categories={categories?.items ?? []}
+                  filters={filters}
+                  onChange={handleChangeFilters}
+                  onClear={handleClear}
+                />
+              </Box>
+            </Grid>
+          )}
+          <Grid item xs={12} sm={showFilters ? 9 : 12}>
+            <Box sx={{ position: "relative" }}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Box>
+                    <Stack direction="row" justifyContent="flex-end">
+                      <IconButton onClick={handleToggleFilters}>
+                        <FilterAltIcon />
+                      </IconButton>
+                      <LazyTextField
+                        onChange={(value) =>
+                          setFilters((filters) => ({
+                            ...filters,
+                            query: value,
+                          }))
+                        }
+                        value={filters.query}
+                        TextFieldProps={{
+                          placeholder: formatMessage({
+                            id: "search",
+                            defaultMessage: "Search",
+                          }),
+                          variant: "standard",
+                          InputProps: {
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <Search />
+                              </InputAdornment>
+                            ),
+                          },
+                        }}
+                      />
+                    </Stack>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box>
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Select
+                        displayEmpty
+                        onChange={handleChangeSort}
+                        value={filters.sort}
+                      >
+                        <MenuItem value="">
+                          <FormattedMessage
+                            id="Created"
+                            defaultMessage="Created"
+                          />
+                        </MenuItem>
+                        <MenuItem value="asc">
+                          <FormattedMessage
+                            id="low.to.high"
+                            defaultMessage="Low to High"
+                          />
+                        </MenuItem>
+                        <MenuItem value="desc">
+                          <FormattedMessage
+                            id="high.to.low"
+                            defaultMessage="High to low"
+                          />
+                        </MenuItem>
+                      </Select>
+                    </Stack>
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    {products && products?.totalItems > 0 ? (
+                      products?.items?.map((product, key) => (
+                        <Grid key={key} item xs={12} sm={3}>
+                          <ProductCard
+                            isOnWinshlist={isOnWishlist(product.id)}
+                            product={product}
+                            onWishlist={
+                              isOnWishlist(product.id)
+                                ? handleRemoveFromWishlist(product.id)
+                                : handleAddToWishlist(product.id)
+                            }
+                            onShare={handleShare(product.id)}
+                          />
+                        </Grid>
+                      ))
+                    ) : (
+                      <Grid item xs={12}>
+                        <Box>
+                          <Stack sx={{ py: 2 }}>
+                            <Typography textAlign="center" variant="h5">
+                              <FormattedMessage
+                                id="no.products"
+                                defaultMessage="No Products"
+                              />
+                            </Typography>
+                            <Typography
+                              textAlign="center"
+                              variant="body1"
+                              color="text.secondary"
+                            >
+                              <FormattedMessage
+                                id="no.products.to.show"
+                                defaultMessage="No products to show"
+                              />
+                            </Typography>
+                          </Stack>
+                        </Box>
                       </Grid>
-                    ))
-                  ) : (
-                    <Grid item xs={12}>
-                      <Box>
-                        <Stack sx={{ py: 2 }}>
-                          <Typography textAlign="center" variant="h5">
-                            <FormattedMessage
-                              id="no.products"
-                              defaultMessage="No Products"
-                            />
-                          </Typography>
-                          <Typography
-                            textAlign="center"
-                            variant="body1"
-                            color="text.secondary"
-                          >
-                            <FormattedMessage
-                              id="no.products.to.show"
-                              defaultMessage="No products to show"
-                            />
-                          </Typography>
-                        </Stack>
-                      </Box>
-                    </Grid>
-                  )}
+                    )}
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <TablePagination
+                    component="div"
+                    count={products?.totalItems ?? 0}
+                    page={products?.currentPage ?? 0}
+                    onPageChange={(e, value) => {
+                      setFilters((values) => ({ ...values, page: value }));
+                    }}
+                    rowsPerPage={filters.pageSize}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TablePagination
-                  component="div"
-                  count={products?.totalItems ?? 0}
-                  page={products?.currentPage ?? 0}
-                  onPageChange={(e, value) => {
-                    setFilters((values) => ({ ...values, page: value }));
-                  }}
-                  rowsPerPage={filters.pageSize}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-              </Grid>
-            </Grid>
-          </Box>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </>
   );
 }

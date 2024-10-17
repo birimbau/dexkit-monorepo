@@ -12,6 +12,7 @@ import {
   GridColDef,
   GridPaginationModel,
   GridRowSelectionModel,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import Decimal from 'decimal.js';
 import { MouseEvent, useCallback, useMemo, useState } from 'react';
@@ -56,6 +57,10 @@ export interface ProducstTableProps {}
 export default function ProductsTable({}: ProducstTableProps) {
   const [query, setQuery] = useState('');
 
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    { field: 'name', sort: 'asc' },
+  ]);
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 5,
     pageSize: 10,
@@ -67,6 +72,7 @@ export default function ProductsTable({}: ProducstTableProps) {
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: lazyQuery,
+    sortModel: sortModel,
   });
 
   const { formatMessage } = useIntl();
@@ -146,6 +152,8 @@ export default function ProductsTable({}: ProducstTableProps) {
   const columns = useMemo(() => {
     return [
       {
+        sortable: false,
+        disableColumnMenu: true,
         field: 'image',
         headerName: formatMessage({
           id: 'image',
@@ -164,13 +172,40 @@ export default function ProductsTable({}: ProducstTableProps) {
         renderCell: ({ row }) => <Typography>{row.name}</Typography>,
       },
       {
+        disableColumnMenu: true,
+        sortable: false,
         field: 'status',
         flex: 1,
-        headerName: formatMessage({ id: 'status', defaultMessage: 'Status' }),
-        renderCell: ({ row }) => <Chip />,
+        headerName: formatMessage({
+          id: 'visibility',
+          defaultMessage: 'Visibility',
+        }),
+        renderCell: ({ row }) => {
+          if (row.publishedAt) {
+            return (
+              <Chip
+                color="success"
+                label={<FormattedMessage id="active" defaultMessage="Active" />}
+                sx={{ color: (theme) => theme.palette.common.white }}
+              />
+            );
+          }
+
+          return (
+            <Chip
+              color="error"
+              label={
+                <FormattedMessage id="inactive" defaultMessage="Inactive" />
+              }
+              sx={{ color: (theme) => theme.palette.common.white }}
+            />
+          );
+        },
       },
 
       {
+        disableColumnMenu: true,
+        sortable: false,
         field: 'category',
         flex: 1,
         headerName: formatMessage({
@@ -191,6 +226,8 @@ export default function ProductsTable({}: ProducstTableProps) {
         ),
       },
       {
+        disableColumnMenu: true,
+        sortable: false,
         field: 'price',
         flex: 1,
         headerName: formatMessage({ id: 'price', defaultMessage: 'Price' }),
@@ -208,10 +245,10 @@ export default function ProductsTable({}: ProducstTableProps) {
       },
 
       {
+        disableColumnMenu: true,
         field: 'actions',
         flex: 1,
         sortable: false,
-        disableColumnMenu: true,
         headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
         renderCell: ({ row }) => (
           <Stack direction="row" spacing={1}>
@@ -389,6 +426,7 @@ export default function ProductsTable({}: ProducstTableProps) {
                 />
               ),
             }}
+            sortModel={sortModel}
             columns={columns}
             rowCount={data?.totalItems}
             rows={data?.items ?? []}
@@ -404,6 +442,7 @@ export default function ProductsTable({}: ProducstTableProps) {
 
               router.push(`/u/account/commerce/products/${row.id}`);
             }}
+            onSortModelChange={setSortModel}
             sortingOrder={['asc', 'desc']}
             slotProps={{
               toolbar: {
@@ -426,6 +465,7 @@ export default function ProductsTable({}: ProducstTableProps) {
                 },
               },
             }}
+            sortingMode="server"
             sx={{
               height: 300,
               '& .MuiDataGrid-cell:focus': {

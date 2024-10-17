@@ -237,7 +237,7 @@ export default function UserCheckout() {
 
   const { handleConnectWallet } = useConnectWalletDialog();
 
-  const { data: availNetworks } = useCheckoutNetworks();
+  const { data: availNetworks, refetch } = useCheckoutNetworks();
 
   const chainIds = availNetworks?.map((n) => n.chainId) ?? [];
 
@@ -250,7 +250,7 @@ export default function UserCheckout() {
 
         return Boolean(token);
       });
-  }, [availNetworks]);
+  }, [JSON.stringify(chainIds), chainId]);
 
   const handlePay = () => {
     setOpen(true);
@@ -567,6 +567,7 @@ export default function UserCheckout() {
                             defaultMessage="Network"
                           />
                         }
+                        disabled={!isActive}
                         onChange={handleChangeNetwork}
                         value={chainId}
                         name="network"
@@ -620,7 +621,7 @@ export default function UserCheckout() {
                       onChange={handleChangeToken}
                       chainId={chainId}
                       token={token}
-                      disabled={disabled}
+                      disabled={disabled || !isActive}
                     />
                   </NoSsr>
                   {!token && (

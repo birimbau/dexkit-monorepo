@@ -3,6 +3,7 @@ import {
   GridColDef,
   GridPaginationModel,
   GridRowSelectionModel,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { MouseEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -36,6 +37,10 @@ export default function CategoriesTable({}: CategoriesTableProps) {
     [],
   );
 
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    { field: 'name', sort: 'asc' },
+  ]);
+
   const lazyQuery = useDebounce<string>(query, 500);
 
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
@@ -47,6 +52,7 @@ export default function CategoriesTable({}: CategoriesTableProps) {
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: lazyQuery,
+    sortModel,
   });
 
   const { formatMessage } = useIntl();
@@ -102,6 +108,9 @@ export default function CategoriesTable({}: CategoriesTableProps) {
   const columns = useMemo(() => {
     return [
       {
+        sortable: true,
+        disableColumnMenu: true,
+
         flex: 1,
         field: 'name',
         headerName: formatMessage({ id: 'name', defaultMessage: 'Name' }),
@@ -109,6 +118,8 @@ export default function CategoriesTable({}: CategoriesTableProps) {
       },
 
       {
+        sortable: false,
+        disableColumnMenu: true,
         flex: 1,
         field: 'itemCount',
         headerName: formatMessage({ id: 'items', defaultMessage: 'Items' }),
@@ -116,6 +127,8 @@ export default function CategoriesTable({}: CategoriesTableProps) {
       },
       {
         field: 'actions',
+        sortable: false,
+        disableColumnMenu: true,
         flex: 1,
         headerName: formatMessage({ id: 'actions', defaultMessage: 'Actions' }),
         renderCell: ({ row }) => (
@@ -223,15 +236,47 @@ export default function CategoriesTable({}: CategoriesTableProps) {
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           loading={isLoading}
-          sx={{ height: 300 }}
+          sx={{
+            height: 300,
+            '& .MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
+            '& .MuiDataGrid-cell:focus-within': {
+              outline: 'none !important',
+            },
+            '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+              outline: 'none !important',
+            },
+            '& .MuiDataGrid-columnHeader:focus': {
+              outline: 'none !important',
+            },
+            '& .MuiDataGrid-columnHeader:focus-within': {
+              outline: 'none !important',
+            },
+            border: 'none',
+            '--DataGrid-overlayHeight': '150px', // disable cell selection style
+            '.MuiDataGrid-cell:focus': {
+              outline: 'none',
+            },
+            // pointer cursor on ALL rows
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer',
+            },
+          }}
+          pageSizeOptions={[5, 10, 25]}
           onRowClick={({ row }, e) => {
             e.stopPropagation();
             setSelectedCategory(row);
             setShowEdit(true);
           }}
+          disableRowSelectionOnClick
           onRowSelectionModelChange={setSelectionModel}
           rowSelectionModel={selectionModel}
           checkboxSelection
+          sortModel={sortModel}
+          onSortModelChange={setSortModel}
+          sortingMode="server"
+          sortingOrder={['asc', 'desc']}
           slotProps={{
             toolbar: {
               onDelete: () => {

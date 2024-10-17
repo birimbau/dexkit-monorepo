@@ -540,6 +540,7 @@ export default function CheckoutContent({ id }: CheckoutContentProps) {
                         value={chainId}
                         name="network"
                         fullWidth
+                        disabled={!isActive}
                         renderValue={(value: number) => {
                           return (
                             <Stack
@@ -588,7 +589,7 @@ export default function CheckoutContent({ id }: CheckoutContentProps) {
                     onChange={handleChangeToken}
                     chainId={chainId}
                     token={token}
-                    disabled={disabled}
+                    disabled={disabled || !isActive}
                   />
                   {!token && (
                     <Alert severity="error">

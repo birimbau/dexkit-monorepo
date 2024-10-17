@@ -1,9 +1,14 @@
 import {
+  Box,
+  Divider,
+  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
   MenuProps,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 import XIcon from "@mui/icons-material/Close";
@@ -14,6 +19,7 @@ import PinterestIcon from "@mui/icons-material/Pinterest";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
+import Close from "@mui/icons-material/Close";
 import { useCallback } from "react";
 import { FormattedMessage } from "react-intl";
 
@@ -74,10 +80,34 @@ export default function ShareMenu({ MenuProps, onClick }: ShareMenuProps) {
     [onClick]
   );
 
+  const { onClose } = MenuProps;
+
   return (
-    <Menu {...MenuProps}>
-      {OPTIONS.map((opt) => (
-        <MenuItem key={opt.value} onClick={handleClick(opt.value)}>
+    <Menu {...MenuProps} MenuListProps={{ disablePadding: true }}>
+      <Box sx={{ px: 1.5, py: 0.5 }}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+        >
+          <Typography fontWeight="bold">
+            <FormattedMessage id="share" defaultMessage="Share" />
+          </Typography>
+          <IconButton
+            onClick={() => onClose!({}, "backdropClick")}
+            size="small"
+          >
+            <Close fontSize="small" />
+          </IconButton>
+        </Stack>
+      </Box>
+      <Divider />
+      {OPTIONS.map((opt, index, arr) => (
+        <MenuItem
+          divider={index < arr.length - 1}
+          key={opt.value}
+          onClick={handleClick(opt.value)}
+        >
           <ListItemIcon>{opt.icon}</ListItemIcon>
           <ListItemText primary={opt.title} />
         </MenuItem>

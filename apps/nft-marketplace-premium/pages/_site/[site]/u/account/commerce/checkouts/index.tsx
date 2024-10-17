@@ -5,7 +5,7 @@ import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { Button, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import ShareDialog from '@dexkit/ui/components/dialogs/ShareDialog';
+import ShareDialogV2 from '@dexkit/ui/components/dialogs/ShareDialogV2';
 import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
@@ -29,17 +29,20 @@ export default function CommerceCheckoutsPage() {
     setUrl(undefined);
   };
 
+  const handleShareContent = (value: string) => {};
+
   return (
     <>
       {url && (
-        <ShareDialog
+        <ShareDialogV2
           url={url}
-          dialogProps={{
+          DialogProps={{
             open: true,
             maxWidth: 'sm',
             fullWidth: true,
             onClose: handleClose,
           }}
+          onClick={handleShareContent}
         />
       )}
 

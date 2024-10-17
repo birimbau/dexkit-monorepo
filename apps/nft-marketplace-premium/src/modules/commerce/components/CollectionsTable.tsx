@@ -3,6 +3,7 @@ import {
   GridColDef,
   GridPaginationModel,
   GridRowSelectionModel,
+  GridSortModel,
 } from '@mui/x-data-grid';
 import { useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -21,6 +22,7 @@ import { useSnackbar } from 'notistack';
 import useDeleteManyCollections from '@dexkit/ui/modules/commerce/hooks/useDeleteManyCollections';
 
 import LabelIcon from '@mui/icons-material/Label';
+import { useRouter } from 'next/router';
 import CustomToolbar from './CustomToolbar';
 
 const AppConfirmDialog = dynamic(
@@ -32,6 +34,10 @@ export interface CollectionsTableProps {}
 export default function CollectionsTable({}: CollectionsTableProps) {
   const [query, setQuery] = useState('');
 
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    { field: 'name', sort: 'asc' },
+  ]);
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
@@ -41,6 +47,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
     limit: paginationModel.pageSize,
     page: paginationModel.page,
     q: query,
+    sortModel,
   });
 
   const { formatMessage } = useIntl();
@@ -142,6 +149,8 @@ export default function CollectionsTable({}: CollectionsTableProps) {
     handleCloseDeleteMany();
   };
 
+  const router = useRouter();
+
   return (
     <>
       {showConfirm && (
@@ -195,7 +204,9 @@ export default function CollectionsTable({}: CollectionsTableProps) {
           loading={isLoading}
           checkboxSelection
           disableRowSelectionOnClick
-          onRowClick={() => {}}
+          onRowClick={({ row }) => {
+            router.push(`/u/account/commerce/collections/${row.id}`);
+          }}
           slotProps={{
             toolbar: {
               placeholder: formatMessage({
@@ -248,6 +259,10 @@ export default function CollectionsTable({}: CollectionsTableProps) {
               </Box>,
             ),
           }}
+          sortingOrder={['asc', 'desc']}
+          sortModel={sortModel}
+          onSortModelChange={setSortModel}
+          sortingMode="server"
           sx={{
             height: 300,
             '& .MuiDataGrid-cell:focus': {

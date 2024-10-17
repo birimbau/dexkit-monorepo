@@ -25,7 +25,7 @@ export default function CheckoutTokenAutocomplete(
 ) {
   const { data, label, onChange, chainId, disabled, tokens, token } = props;
 
-  const { account, provider } = useWeb3React();
+  const { account, provider, isActive } = useWeb3React();
 
   const tokenBalances = useMultiTokenBalance({
     tokens: tokens,

@@ -502,7 +502,8 @@ export default function CheckoutPage({ id }: CheckoutPageProps) {
                         }
                         disabled={
                           checkoutQuery.data?.status === 'confirmed' ||
-                          checkoutQuery.data?.status === 'expired'
+                          checkoutQuery.data?.status === 'expired' ||
+                          !isActive
                         }
                         onChange={handleChangeNetwork}
                         value={chainId}

@@ -1,4 +1,5 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
+import { GridSortModel } from '@mui/x-data-grid';
 import { useQuery } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { ProductFormType } from '../types';
@@ -9,6 +10,7 @@ export default function useProductList(params: {
   page: number;
   limit: number;
   q?: string;
+  sortModel?: GridSortModel;
 }) {
   const { instance } = useContext(DexkitApiProvider);
 
@@ -19,13 +21,21 @@ export default function useProductList(params: {
         throw new Error('no instance');
       }
 
+      const newParams: any = { ...params };
+
+      for (const sort of params?.sortModel ?? []) {
+        newParams[sort.field] = sort.sort;
+      }
+
+      delete newParams['sortModel'];
+
       return (
         await instance.get<{
           items: ProductFormType[];
           totalItems: number;
           totalPages: number;
           currentPage: number;
-        }>('/products', { params })
+        }>('/products', { params: newParams })
       ).data;
     },
     {

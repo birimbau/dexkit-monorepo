@@ -1,8 +1,8 @@
 import {
   Box,
   Button,
+  ButtonGroup,
   Card,
-  Chip,
   IconButton,
   Skeleton,
   Stack,
@@ -17,15 +17,26 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
+import Delete from "@mui/icons-material/Delete";
 import Share from "@mui/icons-material/Share";
 import { MouseEvent } from "react";
 
 export interface ProductCardProps {
   product: Product;
+  isOnWinshlist: boolean;
+  onShare: (target: HTMLElement) => void;
+  onWishlist: () => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
-  const { isSection, setProduct } = useCommerce();
+export default function ProductCard({
+  product,
+  isOnWinshlist,
+  onShare,
+  onWishlist,
+}: ProductCardProps) {
+  const { isSection, setProduct, cart } = useCommerce();
 
   const handleClick = (e: MouseEvent) => {
     if (isSection) {
@@ -34,14 +45,37 @@ export default function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const handleAdd = () => {
+    if (!cart.item(product.id) || cart.item(product.id)?.quantity === 0) {
+      return cart.addItem({
+        name: product.name,
+        price: product.price,
+        productId: product.id,
+        quantity: 1,
+        imageUrl: product.imageUrl ?? "",
+      });
+    }
+
+    return cart.updateItem({
+      name: product.name,
+      price: product.price,
+      productId: product.id,
+      quantity: 0,
+      imageUrl: product.imageUrl ?? "",
+    });
+  };
   return (
     <Card variant="elevation" elevation={0}>
       <Stack spacing={1}>
         <Stack direction="row" justifyContent="flex-end">
-          <IconButton size="small">
-            <FavoriteBorderIcon fontSize="small" />
+          <IconButton size="small" onClick={onWishlist}>
+            {isOnWinshlist ? (
+              <FavoriteIcon fontSize="small" />
+            ) : (
+              <FavoriteBorderIcon fontSize="small" />
+            )}
           </IconButton>
-          <IconButton size="small">
+          <IconButton size="small" onClick={(e) => onShare(e.currentTarget)}>
             <Share fontSize="small" />
           </IconButton>
         </Stack>
@@ -67,7 +101,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         )}
         <Stack alignItems="flex-start" spacing={2}>
-          <Stack spacing={2} alignItems="center" direction="row">
+          <Box>
             <Typography fontWeight="bold" variant="body1">
               {product.name}
             </Typography>
@@ -79,17 +113,26 @@ export default function ProductCard({ product }: ProductCardProps) {
               />{" "}
               USD
             </Typography>
-          </Stack>
-          <Chip size="small" color="primary" label={product.category?.name} />
-          <Button
-            onClick={handleClick}
-            size="small"
-            variant="contained"
-            color="primary"
-            endIcon={<AddShoppingCartIcon />}
-          >
-            <FormattedMessage id="buy.now" defaultMessage="Buy now" />
-          </Button>
+          </Box>
+          <ButtonGroup variant="contained">
+            <Button
+              onClick={handleClick}
+              size="small"
+              variant="contained"
+              color="primary"
+            >
+              <FormattedMessage id="buy.now" defaultMessage="Buy now" />
+            </Button>
+            {!cart.item(product.id) || cart.item(product.id)?.quantity === 0 ? (
+              <Button onClick={handleAdd} size="small" variant="contained">
+                <AddShoppingCartIcon fontSize="small" />
+              </Button>
+            ) : (
+              <Button onClick={handleAdd} size="small" variant="outlined">
+                <Delete color="inherit" fontSize="small" />
+              </Button>
+            )}
+          </ButtonGroup>
         </Stack>
       </Stack>
     </Card>

@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   Divider,
+  FormControlLabel,
   Grid,
   InputAdornment,
   Stack,
@@ -14,6 +15,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -24,6 +27,11 @@ interface CheckoutNetworksBaseProps {
   networks: { chainId: number }[];
 }
 
+const commerceSettingsAtomTestnets = atomWithStorage(
+  'dexkit.commerce.show.testnets',
+  false,
+);
+
 function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
   const { activeChainIds } = useActiveChainIds();
 
@@ -33,14 +41,23 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
     setQuery(e.target.value);
   };
 
+  const [showTestnets, setShowTestnets] = useAtom(commerceSettingsAtomTestnets);
+
   const availNetworks = useMemo(() => {
     return Object.keys(NETWORKS)
       .map((key: string) => NETWORKS[parseChainId(key)])
       .filter((n) => ![ChainId.Goerli, ChainId.Mumbai].includes(n.chainId))
+      .filter((n) => {
+        if (!showTestnets && n.testnet) {
+          return false;
+        }
+
+        return true;
+      })
       .filter((n) => activeChainIds.includes(n.chainId))
       .filter((n) => n.name.toLowerCase().search(query.toLowerCase()) > -1)
       .sort((a, b) => a.name.localeCompare(b.name));
-  }, [activeChainIds, query]);
+  }, [activeChainIds, query, showTestnets]);
 
   const value: { [key: string]: boolean } = networks.reduce(
     (prev, curr: { chainId: number }) => {
@@ -90,23 +107,41 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <TextField
-          variant="standard"
-          size="small"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-          placeholder={formatMessage({
-            id: 'search.networks',
-            defaultMessage: 'Search networks',
-          })}
-          value={query}
-          onChange={handleChange}
-        />
+        <Box>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <TextField
+              variant="standard"
+              size="small"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              placeholder={formatMessage({
+                id: 'search.networks',
+                defaultMessage: 'Search networks',
+              })}
+              value={query}
+              onChange={handleChange}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showTestnets}
+                  onChange={() => setShowTestnets((value) => !value)}
+                />
+              }
+              label={
+                <FormattedMessage
+                  id="show.testnets"
+                  defaultMessage="Show testnets"
+                />
+              }
+            />
+          </Stack>
+        </Box>
       </Grid>
       <Grid item xs={6}>
         <Box>

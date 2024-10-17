@@ -15,6 +15,7 @@ import { useState } from "react";
 import ProductCard from "../ProductCard";
 
 import useCollectionProductsList from "../../hooks/useCollectionProductsList";
+import { useCommerceWishlist } from "../../hooks/useCommerceWishlist";
 
 export interface CollectionContentProps {
   id: string;
@@ -44,6 +45,13 @@ export default function CollectionContent({ id }: CollectionContentProps) {
       pageSize: parseInt(event.target.value, 10),
     }));
   };
+
+  const {
+    handleAddToWishlist,
+    handleRemoveFromWishlist,
+    isOnWishlist,
+    wishlist,
+  } = useCommerceWishlist();
 
   return (
     <Container>
@@ -81,7 +89,16 @@ export default function CollectionContent({ id }: CollectionContentProps) {
               {products && products?.totalItems > 0 ? (
                 products?.items?.map((product, key) => (
                   <Grid key={key} item xs={12} sm={3}>
-                    <ProductCard product={product} />
+                    <ProductCard
+                      isOnWinshlist={isOnWishlist(product.id)}
+                      product={product}
+                      onWishlist={
+                        isOnWishlist(product.id)
+                          ? handleRemoveFromWishlist(product.id)
+                          : handleAddToWishlist(product.id)
+                      }
+                      onShare={() => {}}
+                    />
                   </Grid>
                 ))
               ) : (
