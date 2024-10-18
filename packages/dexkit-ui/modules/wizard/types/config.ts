@@ -217,6 +217,9 @@ export interface AppConfig {
     gtag?: string;
   };
   tokens?: AppToken[];
+  commerce: {
+    enabled?: boolean;
+  };
 }
 
 export interface ConfigResponse {

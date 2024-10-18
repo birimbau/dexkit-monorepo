@@ -1,12 +1,10 @@
 import CheckoutsTable from '@/modules/commerce/components/CheckoutsTable';
 import DashboardLayout from '@/modules/commerce/components/layout/DashboardLayout';
-import LazyTextField from '@dexkit/ui/components/LazyTextField';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
-import { Button, InputAdornment, Stack, Typography } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import ShareDialogV2 from '@dexkit/ui/components/dialogs/ShareDialogV2';
-import Search from '@mui/icons-material/Search';
 import NextLink from 'next/link';
 import { useState } from 'react';
 
@@ -60,7 +58,7 @@ export default function CommerceCheckoutsPage() {
                 caption: (
                   <FormattedMessage id="checkouts" defaultMessage="Checkouts" />
                 ),
-                uri: '/u/account/commerce/orders',
+                uri: '/u/account/commerce/checkouts',
                 active: true,
               },
             ]}
@@ -80,27 +78,9 @@ export default function CommerceCheckoutsPage() {
             >
               <FormattedMessage id="create" defaultMessage="Create" />
             </Button>
-            <LazyTextField
-              TextFieldProps={{
-                size: 'small',
-                variant: 'standard',
-                placeholder: formatMessage({
-                  id: 'search.for.a.checkout',
-                  defaultMessage: 'Search for a checkout',
-                }),
-                InputProps: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>
-                  ),
-                },
-              }}
-              onChange={handleChange}
-            />
           </Stack>
-          <CheckoutsTable query={query} onShare={handleShare} />
-        </Stack>{' '}
+          <CheckoutsTable onShare={handleShare} />
+        </Stack>
       </DashboardLayout>
     </>
   );

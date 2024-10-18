@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 export default {
   experimental: {
+    productionBrowserSourceMaps: false,
+    serverSourceMaps: false,
     optimizePackageImports: ['ethers'],
     turbo: {
       resolveAlias: {

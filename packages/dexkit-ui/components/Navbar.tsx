@@ -10,24 +10,24 @@ import { useRef, useState } from "react";
 
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-    Avatar,
-    Badge,
-    Box,
-    Button,
-    ButtonBase,
-    Divider,
-    Icon,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Menu,
-    MenuItem,
-    NoSsr,
-    Popover,
-    Stack,
-    useMediaQuery,
-    useTheme,
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  ButtonBase,
+  Divider,
+  Icon,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  NoSsr,
+  Popover,
+  Stack,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { getChainLogoImage, getChainName } from "@dexkit/core/utils/blockchain";
@@ -51,20 +51,21 @@ import Link from "@dexkit/ui/components/AppLink";
 import NotificationsDialog from "@dexkit/ui/components/dialogs/NotificationsDialog";
 import { ThemeMode } from "@dexkit/ui/constants/enum";
 import {
-    useAuthUserQuery,
-    useConnectWalletDialog,
-    useCurrency,
-    useDexKitContext,
-    useDrawerIsOpen,
-    useLocale,
-    useNotifications,
-    useSelectNetworkDialog,
-    useShowAppTransactions,
-    useShowSelectCurrency,
-    useShowSelectLocale,
-    useThemeMode,
+  useAuthUserQuery,
+  useConnectWalletDialog,
+  useCurrency,
+  useDexKitContext,
+  useDrawerIsOpen,
+  useLocale,
+  useNotifications,
+  useSelectNetworkDialog,
+  useShowAppTransactions,
+  useShowSelectCurrency,
+  useShowSelectLocale,
+  useThemeMode,
 } from "@dexkit/ui/hooks";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
+import CommerceCartIconButton from "../modules/commerce/components/CommerceCartIconButton";
 import AppProfileMenu from "./AppProfileMenu";
 import { ConnectWalletButton } from "./ConnectWalletButton";
 import NavbarMenu from "./NavbarMenu";
@@ -586,7 +587,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                   </NoSsr>
                 </Stack>
               )}
-
+              {!appConfig.commerce?.enabled && <CommerceCartIconButton />}
               <IconButton
                 onClick={handleSettingsMenuClick}
                 aria-label="settings"

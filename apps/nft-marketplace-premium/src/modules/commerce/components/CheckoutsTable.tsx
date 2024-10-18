@@ -11,30 +11,30 @@ import { CheckoutFormType } from '../types';
 
 import { getWindowUrl } from '@dexkit/core/utils/browser';
 import Share from '@mui/icons-material/Share';
-import { Box, IconButton, Stack, Tooltip } from '@mui/material';
-import Link from '@mui/material/Link';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-import NextLink from 'next/link';
 import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
 
 import useDeleteCheckout from '@dexkit/ui/modules/commerce/hooks/useDeleteCheckout';
 import Delete from '@mui/icons-material/DeleteOutline';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
+import CustomToolbar from './CustomToolbar';
+
+import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 
 const AppConfirmDialog = dynamic(
   () => import('@dexkit/ui/components/AppConfirmDialog'),
 );
 
 export interface CheckoutsTableProps {
-  query: string;
   onShare: (url: string) => void;
 }
 
-export default function CheckoutsTable({
-  query,
-  onShare,
-}: CheckoutsTableProps) {
+export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
+  const [query, setQuery] = useState('');
+
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
@@ -99,16 +99,11 @@ export default function CheckoutsTable({
     return [
       {
         flex: 1,
+        sortable: true,
+        disableColumnMenu: true,
         field: 'title',
         headerName: formatMessage({ id: 'title', defaultMessage: 'Title' }),
-        renderCell: ({ row }) => (
-          <Link
-            component={NextLink}
-            href={`/u/account/commerce/checkouts/${row.id}`}
-          >
-            {row.title}
-          </Link>
-        ),
+        renderCell: ({ row }) => <Typography>{row.title}</Typography>,
       },
       {
         sortable: false,
@@ -119,6 +114,7 @@ export default function CheckoutsTable({
           id: 'description',
           defaultMessage: 'Description',
         }),
+        renderCell: ({ row }) => <Typography>{row.description}</Typography>,
       },
       {
         field: 'actions',
@@ -146,6 +142,8 @@ export default function CheckoutsTable({
     ] as GridColDef<CheckoutFormType>[];
   }, []);
 
+  const router = useRouter();
+
   return (
     <>
       {showConfirm && (
@@ -168,6 +166,12 @@ export default function CheckoutsTable({
       )}
       <Box>
         <DataGrid
+          localeText={{
+            toolbarQuickFilterPlaceholder: formatMessage({
+              id: 'search.checkouts',
+              defaultMessage: 'Search checkouts',
+            }),
+          }}
           columns={columns}
           rows={data?.items ?? []}
           rowCount={data?.totalItems}
@@ -176,6 +180,9 @@ export default function CheckoutsTable({
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           loading={isLoading}
+          onRowClick={({ row }, e) => {
+            router.push(`/u/account/commerce/checkouts/${row.id}`);
+          }}
           sx={{
             height: 300,
             '& .MuiDataGrid-cell:focus': {
@@ -208,7 +215,22 @@ export default function CheckoutsTable({
           sortModel={sortModel}
           sortingMode="server"
           disableRowSelectionOnClick
+          slotProps={{
+            toolbar: {
+              placeholder: formatMessage({
+                id: 'search.products',
+                defaultMessage: 'Search products',
+              }),
+              quickFilterProps: {
+                value: query,
+                onChange: (e) => {
+                  setQuery(e.target.value);
+                },
+              },
+            },
+          }}
           slots={{
+            toolbar: CustomToolbar,
             noRowsOverlay: noRowsOverlay(
               <FormattedMessage
                 id="no.checkouts"
@@ -218,6 +240,9 @@ export default function CheckoutsTable({
                 id="create.checkouts.to.see.it.here"
                 defaultMessage="Create checkouts to see it here"
               />,
+              <Box sx={{ fontSize: '3rem' }}>
+                <ShoppingCartCheckoutIcon fontSize="inherit" />
+              </Box>,
             ),
             loadingOverlay: LoadingOverlay,
             noResultsOverlay: noRowsOverlay(
@@ -229,6 +254,9 @@ export default function CheckoutsTable({
                 id="create.checkouts.to.see.it.here"
                 defaultMessage="Create checkouts to see it here"
               />,
+              <Box sx={{ fontSize: '3rem' }}>
+                <ShoppingCartCheckoutIcon fontSize="inherit" />
+              </Box>,
             ),
           }}
         />
