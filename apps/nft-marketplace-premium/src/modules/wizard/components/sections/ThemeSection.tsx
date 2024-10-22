@@ -12,7 +12,7 @@ import { useCallback, useMemo } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CustomThemeInterface } from '../../state';
 import { ThemeFormType } from '../../types';
-import { mapObject } from '../../utils';
+import { mapNotNullObject, mapObject } from '../../utils';
 import EditThemeForm from '../EditThemeForm';
 
 interface Props {
@@ -53,8 +53,17 @@ export default function ThemeSection({
           palette: {},
           shape: {},
         };
+        // @dev fixes error on mui when it is passed null values
+        for (const element of Object.keys(values)) {
+          //@ts-ignore
+          const color = values[element];
+          if (color === '') {
+            //@ts-ignore
+            delete values[element];
+          }
+        }
 
-        mapObject(data.palette, values, {
+        mapNotNullObject(data.palette, values, {
           'background.default': 'background',
           'background.paper': 'paper',
           'secondary.main': 'secondary',

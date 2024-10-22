@@ -52,6 +52,7 @@ import { TourProvider, useTour } from '@reactour/tour';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
+import { ErrorBoundary } from 'react-error-boundary';
 import { BuilderKit } from '../../constants';
 import { OnboardBuilderSteps } from '../../constants/onboard/steps';
 import SiteWizardProvider from '../../providers/SiteWizardProvider';
@@ -1038,182 +1039,206 @@ export function EditWizardContainer({ site }: Props) {
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
             <Box>
-              <SiteWizardProvider siteId={site?.id}>
-                <Stack spacing={2} className={'builder-forms'}>
-                  {activeMenu === ActiveMenu.General && config && (
-                    <GeneralWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-                  {activeMenu === ActiveMenu.AppVersion &&
-                    config &&
-                    site?.owner?.toLowerCase() ===
-                      user?.address?.toLowerCase() && (
-                      <AppVersionWizardContainer site={site} />
+              <ErrorBoundary
+                fallbackRender={({ error, resetErrorBoundary }) => (
+                  <Stack justifyContent="center" alignItems="center">
+                    <Typography variant="h6">
+                      <FormattedMessage
+                        id="something.went.wrong"
+                        defaultMessage="Oops, something went wrong"
+                        description="Something went wrong error message"
+                      />
+                    </Typography>
+                    <Typography variant="body1" color="textSecondary">
+                      {String(error)}
+                    </Typography>
+                    <Button color="primary" onClick={resetErrorBoundary}>
+                      <FormattedMessage
+                        id="try.again"
+                        defaultMessage="Try again"
+                        description="Try again"
+                      />
+                    </Button>
+                  </Stack>
+                )}
+              >
+                <SiteWizardProvider siteId={site?.id}>
+                  <Stack spacing={2} className={'builder-forms'}>
+                    {activeMenu === ActiveMenu.General && config && (
+                      <GeneralWizardContainer
+                        config={config}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                        onHasChanges={setHasChanges}
+                      />
+                    )}
+                    {activeMenu === ActiveMenu.AppVersion &&
+                      config &&
+                      site?.owner?.toLowerCase() ===
+                        user?.address?.toLowerCase() && (
+                        <AppVersionWizardContainer site={site} />
+                      )}
+
+                    {activeMenu === ActiveMenu.Domain && config && (
+                      <DomainWizardContainer
+                        config={config}
+                        onSave={handleSave}
+                        onHasChanges={setHasChanges}
+                        site={site}
+                      />
                     )}
 
-                  {activeMenu === ActiveMenu.Domain && config && (
-                    <DomainWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                      site={site}
-                    />
-                  )}
+                    {activeMenu === ActiveMenu.Team &&
+                      site?.owner?.toLowerCase() ===
+                        user?.address?.toLowerCase() && (
+                        <TeamWizardContainer site={site} />
+                      )}
 
-                  {activeMenu === ActiveMenu.Team &&
-                    site?.owner?.toLowerCase() ===
-                      user?.address?.toLowerCase() && (
-                      <TeamWizardContainer site={site} />
+                    {activeMenu === ActiveMenu.Ownership && config && (
+                      <OwnershipWizardContainer
+                        config={config}
+                        onSave={handleSave}
+                        onHasChanges={setHasChanges}
+                        site={site}
+                      />
                     )}
 
-                  {activeMenu === ActiveMenu.Ownership && config && (
-                    <OwnershipWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                      site={site}
-                    />
-                  )}
-
-                  {activeMenu === ActiveMenu.Theme && config && (
-                    <ThemeWizardContainer
-                      config={config}
-                      showSwap={activeBuilderKit === BuilderKit.Swap}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-
-                  {activeMenu === ActiveMenu.Pages && config && (
-                    <>
-                      <PagesContext.Provider
-                        value={{
-                          selectedKey,
-                          setSelectedKey,
-                          isEditPage,
-                          setIsEditPage,
-                          handleCancelEdit,
-                          setOldPage,
-                          oldPage,
-                        }}
-                      >
-                        <PagesWizardContainer
-                          config={config}
-                          onSave={handleSave}
-                          onChange={handleChange}
-                          onHasChanges={setHasChanges}
-                          hasChanges={hasChanges}
-                          builderKit={activeBuilderKit}
-                          siteSlug={site?.slug}
-                          previewUrl={site?.previewUrl}
-                        />
-                      </PagesContext.Provider>
-                    </>
-                  )}
-
-                  {activeMenu === ActiveMenu.MarketplaceFees && config && (
-                    <MarketplaceFeeWizardContainer
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                    />
-                  )}
-
-                  {activeMenu === ActiveMenu.SwapFees && config && (
-                    <SwapFeeWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-                  {activeMenu === ActiveMenu.Collections && (
-                    <CollectionWizardContainer
-                      site={site}
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                    />
-                  )}
-
-                  {activeMenu === ActiveMenu.Menu && config && (
-                    <PagesMenuWizardContainer
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                    />
-                  )}
-
-                  {activeMenu === ActiveMenu.Rankings &&
-                    site?.owner?.toLowerCase() ===
-                      user?.address?.toLowerCase() && (
-                      <RankingWizardContainer siteId={site?.id} />
+                    {activeMenu === ActiveMenu.Theme && config && (
+                      <ThemeWizardContainer
+                        config={config}
+                        showSwap={activeBuilderKit === BuilderKit.Swap}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                        onHasChanges={setHasChanges}
+                      />
                     )}
 
-                  {activeMenu === ActiveMenu.Tokens && config && (
-                    <TokenWizardContainer
-                      config={config}
-                      site={site}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
+                    {activeMenu === ActiveMenu.Pages && config && (
+                      <>
+                        <PagesContext.Provider
+                          value={{
+                            selectedKey,
+                            setSelectedKey,
+                            isEditPage,
+                            setIsEditPage,
+                            handleCancelEdit,
+                            setOldPage,
+                            oldPage,
+                          }}
+                        >
+                          <PagesWizardContainer
+                            config={config}
+                            onSave={handleSave}
+                            onChange={handleChange}
+                            onHasChanges={setHasChanges}
+                            hasChanges={hasChanges}
+                            builderKit={activeBuilderKit}
+                            siteSlug={site?.slug}
+                            previewUrl={site?.previewUrl}
+                          />
+                        </PagesContext.Provider>
+                      </>
+                    )}
 
-                  {activeMenu === ActiveMenu.Seo && config && (
-                    <SeoWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
+                    {activeMenu === ActiveMenu.MarketplaceFees && config && (
+                      <MarketplaceFeeWizardContainer
+                        config={config}
+                        onHasChanges={setHasChanges}
+                        onSave={handleSave}
+                      />
+                    )}
 
-                  {activeMenu === ActiveMenu.Analytics && config && (
-                    <AnalyticsWizardContainer
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                    />
-                  )}
-                  {activeMenu === ActiveMenu.Social && config && (
-                    <SocialWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-                  {activeMenu === ActiveMenu.FooterMenu && config && (
-                    <FooterMenuWizardContainer
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                    />
-                  )}
-                  {activeMenu === ActiveMenu.UserEventAnalytics && config && (
-                    <UserEventAnalyticsContainer siteId={site?.id} />
-                  )}
+                    {activeMenu === ActiveMenu.SwapFees && config && (
+                      <SwapFeeWizardContainer
+                        config={config}
+                        onSave={handleSave}
+                        onHasChanges={setHasChanges}
+                      />
+                    )}
+                    {activeMenu === ActiveMenu.Collections && (
+                      <CollectionWizardContainer
+                        site={site}
+                        config={config}
+                        onHasChanges={setHasChanges}
+                        onSave={handleSave}
+                      />
+                    )}
 
-                  {activeMenu === ActiveMenu.Integrations && config && (
-                    <IntegrationsWizardContainer siteId={site?.id} />
-                  )}
+                    {activeMenu === ActiveMenu.Menu && config && (
+                      <PagesMenuWizardContainer
+                        config={config}
+                        onHasChanges={setHasChanges}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                      />
+                    )}
 
-                  {activeMenu === ActiveMenu.Networks && config && (
-                    <NetworksWizardContainer
-                      siteId={site?.id}
-                      config={config}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-                </Stack>
-              </SiteWizardProvider>
+                    {activeMenu === ActiveMenu.Rankings &&
+                      site?.owner?.toLowerCase() ===
+                        user?.address?.toLowerCase() && (
+                        <RankingWizardContainer siteId={site?.id} />
+                      )}
+
+                    {activeMenu === ActiveMenu.Tokens && config && (
+                      <TokenWizardContainer
+                        config={config}
+                        site={site}
+                        onSave={handleSave}
+                        onHasChanges={setHasChanges}
+                      />
+                    )}
+
+                    {activeMenu === ActiveMenu.Seo && config && (
+                      <SeoWizardContainer
+                        config={config}
+                        onSave={handleSave}
+                        onHasChanges={setHasChanges}
+                      />
+                    )}
+
+                    {activeMenu === ActiveMenu.Analytics && config && (
+                      <AnalyticsWizardContainer
+                        config={config}
+                        onHasChanges={setHasChanges}
+                        onSave={handleSave}
+                      />
+                    )}
+                    {activeMenu === ActiveMenu.Social && config && (
+                      <SocialWizardContainer
+                        config={config}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                        onHasChanges={setHasChanges}
+                      />
+                    )}
+                    {activeMenu === ActiveMenu.FooterMenu && config && (
+                      <FooterMenuWizardContainer
+                        config={config}
+                        onHasChanges={setHasChanges}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                      />
+                    )}
+                    {activeMenu === ActiveMenu.UserEventAnalytics && config && (
+                      <UserEventAnalyticsContainer siteId={site?.id} />
+                    )}
+
+                    {activeMenu === ActiveMenu.Integrations && config && (
+                      <IntegrationsWizardContainer siteId={site?.id} />
+                    )}
+
+                    {activeMenu === ActiveMenu.Networks && config && (
+                      <NetworksWizardContainer
+                        siteId={site?.id}
+                        config={config}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                        onHasChanges={setHasChanges}
+                      />
+                    )}
+                  </Stack>
+                </SiteWizardProvider>
+              </ErrorBoundary>
             </Box>
             {/*false && theme && (
             <Grid item xs={12} sm={6}>
