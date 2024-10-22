@@ -2,54 +2,81 @@ import { FavoriteBorder } from "@mui/icons-material";
 import {
   Divider,
   List,
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
-import AssignmentIcon from "@mui/icons-material/Assignment";
+import AssignmentIcon from "@mui/icons-material/AssignmentOutlined";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccountsOutlined";
+import { useCallback } from "react";
 
-export interface CommerceUserMenuProps {}
+import LogoutIcon from "@mui/icons-material/Logout";
 
-export default function CommerceUserMenu({}: CommerceUserMenuProps) {
+export interface CommerceUserMenuProps {
+  enableCommerce?: boolean;
+  onAction: (params: { action: string }) => void;
+}
+
+export default function CommerceUserMenu({
+  enableCommerce,
+  onAction,
+}: CommerceUserMenuProps) {
+  const handleAction = useCallback(
+    (action: string) => {
+      return () => {
+        onAction({ action });
+      };
+    },
+    [onAction]
+  );
+
   return (
     <List disablePadding>
-      <ListItem>
+      {enableCommerce && (
+        <>
+          <ListItemButton onClick={handleAction("orders")}>
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <FormattedMessage id="my.orders" defaultMessage="My Orders" />
+              }
+            />
+          </ListItemButton>
+          <ListItemButton onClick={handleAction("wishlist")}>
+            <ListItemIcon>
+              <FavoriteBorder />
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <FormattedMessage id="wishlist" defaultMessage="Wishlist" />
+              }
+            />
+          </ListItemButton>
+          <Divider />
+        </>
+      )}
+      <ListItemButton onClick={handleAction("profile")}>
         <ListItemIcon>
-          <AssignmentIcon />
+          <ManageAccountsIcon />
         </ListItemIcon>
         <ListItemText
           primary={
-            <FormattedMessage id="my.orders" defaultMessage="My Orders" />
+            <FormattedMessage id="my.profile" defaultMessage="My Profile" />
           }
         />
-      </ListItem>
-      <ListItem>
+      </ListItemButton>
+      <ListItemButton onClick={handleAction("logout")}>
         <ListItemIcon>
-          <FavoriteBorder />
-        </ListItemIcon>
-        <ListItemText
-          primary={<FormattedMessage id="wishlist" defaultMessage="Wishlist" />}
-        />
-      </ListItem>
-      <Divider />
-      <ListItem>
-        <ListItemIcon>
-          <FavoriteBorder />
-        </ListItemIcon>
-        <ListItemText
-          primary={<FormattedMessage id="Profile" defaultMessage="Profile" />}
-        />
-      </ListItem>
-      <ListItem>
-        <ListItemIcon>
-          <FavoriteBorder />
+          <LogoutIcon />
         </ListItemIcon>
         <ListItemText
           primary={<FormattedMessage id="log.out" defaultMessage="Log out" />}
         />
-      </ListItem>
+      </ListItemButton>
     </List>
   );
 }

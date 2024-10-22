@@ -351,15 +351,7 @@ export function EditWizardContainer({ site }: Props) {
   );
 
   const renderMenu = () => (
-    <Box
-      sx={{
-        width: '100%',
-        maxWidth: 360,
-        bgcolor: 'background.paper',
-        position: 'sticky',
-        top: 0,
-      }}
-    >
+    <Box>
       <nav aria-label="settings">
         <List disablePadding>
           <ListItemButton onClick={handleClickSettings}>
@@ -375,120 +367,100 @@ export function EditWizardContainer({ site }: Props) {
             {openMenu.settings ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={openMenu.settings} timeout="auto" unmountOnExit>
-            <List component="div" sx={{ pl: 4 }}>
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={activeMenu === ActiveMenu.General}
-                  onClick={() => handleChangeTab(ActiveMenu.General)}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="general"
-                        defaultMessage={'General'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={activeMenu === ActiveMenu.Domain}
-                  onClick={() => handleChangeTab(ActiveMenu.Domain)}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="domains"
-                        defaultMessage={'Domain'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
+            <List disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.General}
+                onClick={() => handleChangeTab(ActiveMenu.General)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage id="general" defaultMessage={'General'} />
+                  }
+                />
+              </ListItemButton>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Domain}
+                onClick={() => handleChangeTab(ActiveMenu.Domain)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage id="domains" defaultMessage={'Domain'} />
+                  }
+                />
+              </ListItemButton>
 
               {site?.owner?.toLowerCase() === user?.address?.toLowerCase() && (
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.Team}
-                    onClick={() => handleChangeTab(ActiveMenu.Team)}
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage id="team" defaultMessage={'Team'} />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.Team}
+                  onClick={() => handleChangeTab(ActiveMenu.Team)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="team" defaultMessage={'Team'} />
+                    }
+                  />
+                </ListItemButton>
               )}
               {site?.owner?.toLowerCase() === user?.address?.toLowerCase() && (
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.AppVersion}
-                    onClick={() => handleChangeTab(ActiveMenu.AppVersion)}
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="version"
-                          defaultMessage={'Version'}
-                        />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.AppVersion}
+                  onClick={() => handleChangeTab(ActiveMenu.AppVersion)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="version"
+                        defaultMessage={'Version'}
+                      />
+                    }
+                  />
+                </ListItemButton>
               )}
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={activeMenu === ActiveMenu.Ownership}
-                  onClick={() => handleChangeTab(ActiveMenu.Ownership)}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="ownership"
-                        defaultMessage={'Ownership'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={activeMenu === ActiveMenu.Social}
-                  onClick={() => handleChangeTab(ActiveMenu.Social)}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="social.media"
-                        defaultMessage={'Social Media'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Ownership}
+                onClick={() => handleChangeTab(ActiveMenu.Ownership)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="ownership"
+                      defaultMessage={'Ownership'}
+                    />
+                  }
+                />
+              </ListItemButton>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Social}
+                onClick={() => handleChangeTab(ActiveMenu.Social)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="social.media"
+                      defaultMessage={'Social Media'}
+                    />
+                  }
+                />
+              </ListItemButton>
             </List>
           </Collapse>
         </List>
       </nav>
       <Divider />
       <nav aria-label="secondary mailbox folders">
-        <List>
+        <List disablePadding>
           <ListItemButton onClick={handleClickLayout}>
             <ListItemIcon>
               <SpaceDashboardIcon />
             </ListItemIcon>
 
             <ListItemText
-              primary={
-                <FormattedMessage id="layout" defaultMessage={'Layout'} />
-              }
+              primary={<FormattedMessage id="layout" defaultMessage="Layout" />}
             />
             {openMenu.layout ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={openMenu.layout} timeout="auto" unmountOnExit>
-            <List component="div" sx={{ pl: 4 }}>
+            <List component="div">
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Theme}
@@ -501,195 +473,171 @@ export function EditWizardContainer({ site }: Props) {
                   />
                 </ListItemButton>
               </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleChangeTab(ActiveMenu.Pages)}
-                  selected={activeMenu === ActiveMenu.Pages}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage id="pages" defaultMessage={'Pages'} />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleChangeTab(ActiveMenu.Menu)}
-                  selected={activeMenu === ActiveMenu.Menu}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage id="navbar" defaultMessage={'Navbar'} />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => handleChangeTab(ActiveMenu.FooterMenu)}
-                  selected={activeMenu === ActiveMenu.FooterMenu}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="footer.menu"
-                        defaultMessage={'Footer Menu'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                disablePadding
+              <ListItemButton
+                onClick={() => handleChangeTab(ActiveMenu.Pages)}
+                selected={activeMenu === ActiveMenu.Pages}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage id="pages" defaultMessage={'Pages'} />
+                  }
+                />
+              </ListItemButton>
+              <ListItemButton
+                onClick={() => handleChangeTab(ActiveMenu.Menu)}
+                selected={activeMenu === ActiveMenu.Menu}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage id="navbar" defaultMessage={'Navbar'} />
+                  }
+                />
+              </ListItemButton>
+              <ListItemButton
+                onClick={() => handleChangeTab(ActiveMenu.FooterMenu)}
+                selected={activeMenu === ActiveMenu.FooterMenu}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="footer.menu"
+                      defaultMessage={'Footer Menu'}
+                    />
+                  }
+                />
+              </ListItemButton>
+              <ListItemButton
                 onClick={() => handleChangeTab(ActiveMenu.Seo)}
                 selected={activeMenu === ActiveMenu.Seo}
               >
-                <ListItemButton>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage id="seo" defaultMessage={'SEO'} />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem
-                disablePadding
+                <ListItemText
+                  primary={<FormattedMessage id="seo" defaultMessage={'SEO'} />}
+                />
+              </ListItemButton>
+              <ListItemButton
                 onClick={() => handleChangeTab(ActiveMenu.Analytics)}
                 selected={activeMenu === ActiveMenu.Analytics}
               >
-                <ListItemButton>
-                  <ListItemText
-                    primary={
-                      <FormattedMessage
-                        id="analytics"
-                        defaultMessage={'Analytics'}
-                      />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="analytics"
+                      defaultMessage={'Analytics'}
+                    />
+                  }
+                />
+              </ListItemButton>
             </List>
           </Collapse>
         </List>
       </nav>
       <Divider />
       <nav aria-label="fees">
-        <List>
+        <List disablePadding>
           <ListItemButton onClick={handleClickFees}>
             <ListItemIcon>
               <CurrencyExchangeIcon />
             </ListItemIcon>
 
             <ListItemText
-              primary={<FormattedMessage id="fee" defaultMessage={'Fees'} />}
+              primary={<FormattedMessage id="fee" defaultMessage="Fees" />}
             />
             {openMenu.fees ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={openMenu.fees} timeout="auto" unmountOnExit>
-            <List component="div" sx={{ pl: 4 }}>
+            <List component="div">
               {activeBuilderKit !== BuilderKit.Swap && (
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.MarketplaceFees}
-                    onClick={() => handleChangeTab(ActiveMenu.MarketplaceFees)}
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="marketplace.fees.menu.container"
-                          defaultMessage={'Marketplace Fees'}
-                        />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.MarketplaceFees}
+                  onClick={() => handleChangeTab(ActiveMenu.MarketplaceFees)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="marketplace.fees.menu.container"
+                        defaultMessage={'Marketplace Fees'}
+                      />
+                    }
+                  />
+                </ListItemButton>
               )}
               {activeBuilderKit !== BuilderKit.NFT && (
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.SwapFees}
-                    onClick={() => handleChangeTab(ActiveMenu.SwapFees)}
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="swap.fees.menu.container"
-                          defaultMessage={'Swap Fees'}
-                        />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.SwapFees}
+                  onClick={() => handleChangeTab(ActiveMenu.SwapFees)}
+                >
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="swap.fees.menu.container"
+                        defaultMessage={'Swap Fees'}
+                      />
+                    }
+                  />
+                </ListItemButton>
               )}
             </List>
           </Collapse>
         </List>
       </nav>
       <Divider />
-      <nav aria-label="data">
-        <List>
-          <ListItemButton onClick={handleClickData}>
-            <ListItemIcon>
-              <DatasetIcon />
-            </ListItemIcon>
+      <List disablePadding>
+        <ListItemButton onClick={handleClickData}>
+          <ListItemIcon>
+            <DatasetIcon />
+          </ListItemIcon>
 
-            <ListItemText
-              primary={<FormattedMessage id="data" defaultMessage={'Data'} />}
-            />
-            {openMenu.data ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={openMenu.data} timeout="auto" unmountOnExit>
-            <List component="div" sx={{ pl: 4 }}>
-              {activeBuilderKit !== BuilderKit.Swap && (
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.Collections}
-                    onClick={() => handleChangeTab(ActiveMenu.Collections)}
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="collections"
-                          defaultMessage={'Collections'}
-                        />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              )}
+          <ListItemText
+            primary={<FormattedMessage id="data" defaultMessage="Data" />}
+          />
+          {openMenu.data ? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        <Collapse in={openMenu.data} timeout="auto" unmountOnExit>
+          <List component="div" sx={{ pl: 4 }}>
+            {activeBuilderKit !== BuilderKit.Swap && (
               <ListItem disablePadding>
                 <ListItemButton
-                  selected={activeMenu === ActiveMenu.Tokens}
-                  onClick={() => handleChangeTab(ActiveMenu.Tokens)}
-                >
-                  <ListItemText
-                    primary={
-                      <FormattedMessage id="tokens" defaultMessage={'Tokens'} />
-                    }
-                  />
-                </ListItemButton>
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  selected={activeMenu === ActiveMenu.Networks}
-                  onClick={() => handleChangeTab(ActiveMenu.Networks)}
+                  selected={activeMenu === ActiveMenu.Collections}
+                  onClick={() => handleChangeTab(ActiveMenu.Collections)}
                 >
                   <ListItemText
                     primary={
                       <FormattedMessage
-                        id="networks"
-                        defaultMessage="Networks"
+                        id="collections"
+                        defaultMessage={'Collections'}
                       />
                     }
                   />
                 </ListItemButton>
               </ListItem>
-            </List>
-          </Collapse>
-        </List>
-      </nav>
+            )}
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Tokens}
+                onClick={() => handleChangeTab(ActiveMenu.Tokens)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage id="tokens" defaultMessage={'Tokens'} />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton
+                selected={activeMenu === ActiveMenu.Networks}
+                onClick={() => handleChangeTab(ActiveMenu.Networks)}
+              >
+                <ListItemText
+                  primary={
+                    <FormattedMessage id="networks" defaultMessage="Networks" />
+                  }
+                />
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </Collapse>
+      </List>
       {true && (
         <nav aria-label="analytics">
           <List>

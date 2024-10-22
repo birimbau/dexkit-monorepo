@@ -1,4 +1,4 @@
-import ShoppingCart from "@mui/icons-material/ShoppingCart";
+import ShoppingCart from "@mui/icons-material/ShoppingCartOutlined";
 import { Badge, IconButton } from "@mui/material";
 import useCommerce from "../hooks/useCommerce";
 

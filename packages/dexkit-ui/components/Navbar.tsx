@@ -33,14 +33,14 @@ import {
 import { getChainLogoImage, getChainName } from "@dexkit/core/utils/blockchain";
 import AttachMoney from "@mui/icons-material/AttachMoney";
 import Language from "@mui/icons-material/Language";
-import SettingsIcon from "@mui/icons-material/Settings";
+import NotificationsIcon from "@mui/icons-material/NotificationsOutlined";
+import SettingsIcon from "@mui/icons-material/SettingsOutlined";
 import dynamic from "next/dynamic";
 import Image from "next/legacy/image";
 import { FormattedMessage } from "react-intl";
 
 import { WalletButton } from "@dexkit/ui/components/WalletButton";
 
-import Notification from "./icons/Notification";
 import Wallet from "./icons/Wallet";
 
 const SelectNetworkDialog = dynamic(
@@ -66,7 +66,7 @@ import {
 } from "@dexkit/ui/hooks";
 import { AppConfig } from "@dexkit/ui/modules/wizard/types/config";
 import CommerceCartIconButton from "../modules/commerce/components/CommerceCartIconButton";
-import AppProfileMenu from "./AppProfileMenu";
+import CommercePopover from "../modules/commerce/components/CommercePopover";
 import { ConnectWalletButton } from "./ConnectWalletButton";
 import NavbarMenu from "./NavbarMenu";
 import { ThemeModeSelector } from "./ThemeModeSelector";
@@ -190,10 +190,19 @@ function Navbar({ appConfig, isPreview }: Props) {
 
   return (
     <>
-      <AppProfileMenu
+      {/* <AppProfileMenu
         open={showProfileMenu}
         onClose={handleCloseProfileMenu}
         anchorEl={profileAnchorMenuEl}
+      /> */}
+      <CommercePopover
+        PopoverProps={{
+          open: showProfileMenu,
+          onClose: handleCloseProfileMenu,
+          anchorEl: profileAnchorMenuEl,
+          anchorOrigin: { horizontal: "left", vertical: "bottom" },
+        }}
+        enableCommerce={!appConfig.commerce?.enabled}
       />
       <Menu
         id="settings-menu"
@@ -548,16 +557,9 @@ function Navbar({ appConfig, isPreview }: Props) {
                 <ConnectWalletButton />
               ) : (
                 <Stack direction="row" alignItems="center" spacing={2}>
-                  <ButtonBase
-                    onClick={handleShowProfileMenu}
-                    sx={{ borderRadius: "50%" }}
-                  >
-                    <Avatar
-                      sx={{ height: "1.5rem", width: "1.5rem" }}
-                      src={user?.profileImageURL}
-                    />
-                  </ButtonBase>
                   <WalletButton />
+
+                  {!appConfig.commerce?.enabled && <CommerceCartIconButton />}
                   <NoSsr>
                     <IconButton
                       onClick={handleOpenTransactions}
@@ -581,19 +583,30 @@ function Navbar({ appConfig, isPreview }: Props) {
                           filteredUncheckedTransactions.length === 0
                         }
                       >
-                        <Notification />
+                        <NotificationsIcon />
                       </Badge>
                     </IconButton>
                   </NoSsr>
                 </Stack>
               )}
-              {!appConfig.commerce?.enabled && <CommerceCartIconButton />}
+
               <IconButton
                 onClick={handleSettingsMenuClick}
                 aria-label="settings"
               >
                 <SettingsIcon />
               </IconButton>
+              {isActive && (
+                <ButtonBase
+                  onClick={handleShowProfileMenu}
+                  sx={{ borderRadius: "50%" }}
+                >
+                  <Avatar
+                    sx={{ height: "1.5rem", width: "1.5rem" }}
+                    src={user?.profileImageURL}
+                  />
+                </ButtonBase>
+              )}
             </Stack>
           </Stack>
           <Box
@@ -629,7 +642,7 @@ function Navbar({ appConfig, isPreview }: Props) {
                     filteredUncheckedTransactions.length === 0
                   }
                 >
-                  <Notification />
+                  <NotificationsIcon />
                 </Badge>
               </IconButton>
             </NoSsr>

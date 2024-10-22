@@ -157,6 +157,10 @@ interface AppToken {
   tokens: TokenWhitelabelApp[];
 }
 
+export interface CommerceConfig {
+  enabled?: boolean;
+}
+
 export interface AppConfig {
   name: string;
   locale?: string;
@@ -217,9 +221,7 @@ export interface AppConfig {
     gtag?: string;
   };
   tokens?: AppToken[];
-  commerce: {
-    enabled?: boolean;
-  };
+  commerce?: CommerceConfig;
 }
 
 export interface ConfigResponse {
