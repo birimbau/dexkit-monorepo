@@ -57,8 +57,6 @@ export default function IntegrationsWizardContainer({
     return oldConfig;
   }, [config]);
 
-  console.log('parsedConfig', parsedConfig, slug);
-
   const { enqueueSnackbar } = useSnackbar();
 
   const sendConfigMutation = useSendConfigMutation({ slug: config?.slug });
@@ -99,6 +97,12 @@ export default function IntegrationsWizardContainer({
                   <FormattedMessage
                     id="set.integrations.settings.for.your.app"
                     defaultMessage="Integrate external resources and enable additional features to expand your app."
+                  />
+                </Typography>
+                <Typography variant="body2">
+                  <FormattedMessage
+                    id="set.integrations.settings.for.your.app"
+                    defaultMessage="Integrate external resources and enabled"
                   />
                 </Typography>
               </Stack>

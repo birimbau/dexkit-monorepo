@@ -30,6 +30,8 @@ import dynamic from 'next/dynamic';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
+import AdminSidebarContainer from '@dexkit/ui/modules/wizard/components/AdminSidebarContainer';
+
 import {
   QUERY_ADMIN_WHITELABEL_CONFIG_NAME,
   useSendConfigMutation,
@@ -116,26 +118,26 @@ interface Props {
 }
 
 export enum ActiveMenu {
-  General = 'general',
-  Domain = 'domain',
-  Social = 'social',
-  Team = 'team',
-  Theme = 'theme',
-  Pages = 'pages',
-  Menu = 'menu',
-  FooterMenu = 'footer-menu',
-  Seo = 'seo',
-  Analytics = 'analytics',
-  UserEventAnalytics = 'user-event-analytics',
-  MarketplaceFees = 'marketplace-fees',
-  AppVersion = 'app-version',
+  General = 'settings.general',
+  Domain = 'settings.domain',
+  Social = 'settings.social',
+  Team = 'settings.team',
+  Theme = 'layout.theme',
+  Pages = 'layout.pages',
+  Menu = 'layout.navbar',
+  FooterMenu = 'layout.footer.menu',
+  Seo = 'layout.seo',
+  Analytics = 'layout.analytics',
+  UserEventAnalytics = 'analytics.events',
+  MarketplaceFees = 'fees.marketplace.fees',
+  AppVersion = 'settings.version',
   SwapFees = 'swap-fees',
   Collections = 'collections',
-  Tokens = 'tokens',
-  Ownership = 'ownership',
+  Tokens = 'data.tokens',
+  Ownership = 'settings.ownership',
   Integrations = 'integrations',
-  Rankings = 'rankings',
-  Networks = 'networks',
+  Rankings = 'analytics.leaderboard',
+  Networks = 'data.networks',
 }
 
 export type PagesContextType = {
@@ -242,8 +244,10 @@ export function EditWizardContainer({ site }: Props) {
   const [activeMenu, setActiveMenu] = useState<ActiveMenu>(
     tab || ActiveMenu.General,
   );
+
   const [activeMenuWithChanges, setActiveMenuWithChanges] =
     useState<ActiveMenu>(tab || ActiveMenu.General);
+
   const [activeBuilderKit, setActiveBuilderKit] = useState<BuilderKit>(
     BuilderKit.ALL,
   );
@@ -350,9 +354,22 @@ export function EditWizardContainer({ site }: Props) {
     [wizardConfig, setWizardConfig],
   );
 
-  const renderMenu = () => (
-    <Box>
-      <nav aria-label="settings">
+  const renderMenu = () => {
+    if (true) {
+      return (
+        <AdminSidebarContainer
+          activeBuilderKit={activeBuilderKit}
+          isSiteOwner={isAddressEqual(site?.owner, account)}
+          onChangeMenu={(menuId: string) =>
+            handleChangeTab(menuId as ActiveMenu)
+          }
+          activeMenuId={activeMenu as string}
+        />
+      );
+    }
+
+    return (
+      <Box>
         <List disablePadding>
           <ListItemButton onClick={handleClickSettings}>
             <ListItemIcon>
@@ -445,9 +462,7 @@ export function EditWizardContainer({ site }: Props) {
             </List>
           </Collapse>
         </List>
-      </nav>
-      <Divider />
-      <nav aria-label="secondary mailbox folders">
+        <Divider />
         <List disablePadding>
           <ListItemButton onClick={handleClickLayout}>
             <ListItemIcon>
@@ -460,7 +475,7 @@ export function EditWizardContainer({ site }: Props) {
             {openMenu.layout ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={openMenu.layout} timeout="auto" unmountOnExit>
-            <List component="div">
+            <List component="div" disablePadding>
               <ListItem disablePadding>
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Theme}
@@ -530,9 +545,7 @@ export function EditWizardContainer({ site }: Props) {
             </List>
           </Collapse>
         </List>
-      </nav>
-      <Divider />
-      <nav aria-label="fees">
+        <Divider />
         <List disablePadding>
           <ListItemButton onClick={handleClickFees}>
             <ListItemIcon>
@@ -545,7 +558,7 @@ export function EditWizardContainer({ site }: Props) {
             {openMenu.fees ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
           <Collapse in={openMenu.fees} timeout="auto" unmountOnExit>
-            <List component="div">
+            <List component="div" disablePadding>
               {activeBuilderKit !== BuilderKit.Swap && (
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.MarketplaceFees}
@@ -579,23 +592,21 @@ export function EditWizardContainer({ site }: Props) {
             </List>
           </Collapse>
         </List>
-      </nav>
-      <Divider />
-      <List disablePadding>
-        <ListItemButton onClick={handleClickData}>
-          <ListItemIcon>
-            <DatasetIcon />
-          </ListItemIcon>
+        <Divider />
+        <List disablePadding>
+          <ListItemButton onClick={handleClickData}>
+            <ListItemIcon>
+              <DatasetIcon />
+            </ListItemIcon>
 
-          <ListItemText
-            primary={<FormattedMessage id="data" defaultMessage="Data" />}
-          />
-          {openMenu.data ? <ExpandLess /> : <ExpandMore />}
-        </ListItemButton>
-        <Collapse in={openMenu.data} timeout="auto" unmountOnExit>
-          <List component="div" sx={{ pl: 4 }}>
-            {activeBuilderKit !== BuilderKit.Swap && (
-              <ListItem disablePadding>
+            <ListItemText
+              primary={<FormattedMessage id="data" defaultMessage="Data" />}
+            />
+            {openMenu.data ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.data} timeout="auto" unmountOnExit>
+            <List disablePadding component="div">
+              {activeBuilderKit !== BuilderKit.Swap && (
                 <ListItemButton
                   selected={activeMenu === ActiveMenu.Collections}
                   onClick={() => handleChangeTab(ActiveMenu.Collections)}
@@ -609,9 +620,7 @@ export function EditWizardContainer({ site }: Props) {
                     }
                   />
                 </ListItemButton>
-              </ListItem>
-            )}
-            <ListItem disablePadding>
+              )}
               <ListItemButton
                 selected={activeMenu === ActiveMenu.Tokens}
                 onClick={() => handleChangeTab(ActiveMenu.Tokens)}
@@ -622,8 +631,6 @@ export function EditWizardContainer({ site }: Props) {
                   }
                 />
               </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
               <ListItemButton
                 selected={activeMenu === ActiveMenu.Networks}
                 onClick={() => handleChangeTab(ActiveMenu.Networks)}
@@ -634,113 +641,104 @@ export function EditWizardContainer({ site }: Props) {
                   }
                 />
               </ListItemButton>
-            </ListItem>
-          </List>
-        </Collapse>
-      </List>
-      {true && (
-        <nav aria-label="analytics">
-          <List>
-            <ListItemButton onClick={handleClickAnalytics}>
-              <ListItemIcon>
-                <AnalyticsIcon />
-              </ListItemIcon>
+            </List>
+          </Collapse>
+        </List>
+        <Divider />
+        <List disablePadding>
+          <ListItemButton onClick={handleClickAnalytics}>
+            <ListItemIcon>
+              <AnalyticsIcon />
+            </ListItemIcon>
 
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="analytics"
-                    defaultMessage={'Analytics'}
-                  />
-                }
-              />
-              {openMenu.analytics ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openMenu.analytics} timeout="auto" unmountOnExit>
-              <List component="div" sx={{ pl: 4 }}>
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.UserEventAnalytics}
-                    onClick={() =>
-                      handleChangeTab(ActiveMenu.UserEventAnalytics)
-                    }
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="events"
-                          defaultMessage={'Events'}
-                        />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-                <ListItem
-                  disablePadding
-                  onClick={() => handleChangeTab(ActiveMenu.Rankings)}
-                  selected={activeMenu === ActiveMenu.Rankings}
+            <ListItemText
+              primary={
+                <FormattedMessage id="analytics" defaultMessage={'Analytics'} />
+              }
+            />
+            {openMenu.analytics ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+          <Collapse in={openMenu.analytics} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem disablePadding>
+                <ListItemButton
+                  selected={activeMenu === ActiveMenu.UserEventAnalytics}
+                  onClick={() => handleChangeTab(ActiveMenu.UserEventAnalytics)}
                 >
-                  <ListItemButton>
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="leaderboard"
-                          defaultMessage={'Leaderboard'}
-                        />
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </Collapse>
-          </List>
-        </nav>
-      )}
-      {isAddressEqual(site?.owner, account) && (
-        <nav aria-label="integrations">
-          <List>
-            <ListItemButton onClick={handleClickIntegrations}>
-              <ListItemIcon>
-                <ApiIcon />
-              </ListItemIcon>
-
-              <ListItemText
-                primary={
-                  <FormattedMessage
-                    id="integrations"
-                    defaultMessage="Integrations"
+                  <ListItemText
+                    primary={
+                      <FormattedMessage id="events" defaultMessage={'Events'} />
+                    }
                   />
-                }
-              />
-              {openMenu.integrations ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Collapse in={openMenu.integrations} timeout="auto" unmountOnExit>
-              <List component="div" sx={{ pl: 4 }}>
-                <ListItem disablePadding>
-                  <ListItemButton
-                    selected={activeMenu === ActiveMenu.Integrations}
-                    onClick={() => handleChangeTab(ActiveMenu.Integrations)}
-                  >
-                    <ListItemText
-                      primary={
-                        <FormattedMessage
-                          id="general"
-                          defaultMessage="General"
-                        />
-                      }
+                </ListItemButton>
+              </ListItem>
+              <ListItem
+                disablePadding
+                onClick={() => handleChangeTab(ActiveMenu.Rankings)}
+                selected={activeMenu === ActiveMenu.Rankings}
+              >
+                <ListItemButton>
+                  <ListItemText
+                    primary={
+                      <FormattedMessage
+                        id="leaderboard"
+                        defaultMessage={'Leaderboard'}
+                      />
+                    }
+                  />
+                </ListItemButton>
+              </ListItem>
+            </List>
+          </Collapse>
+        </List>
+        <Divider />
+
+        {isAddressEqual(site?.owner, account) && (
+          <>
+            <List disablePadding>
+              <ListItemButton onClick={handleClickIntegrations}>
+                <ListItemIcon>
+                  <ApiIcon />
+                </ListItemIcon>
+
+                <ListItemText
+                  primary={
+                    <FormattedMessage
+                      id="integrations"
+                      defaultMessage="Integrations"
                     />
-                  </ListItemButton>
-                </ListItem>
-              </List>
-            </Collapse>
-          </List>
-        </nav>
-      )}
-      {/*  <Box sx={{ display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
+                  }
+                />
+                {openMenu.integrations ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={openMenu.integrations} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItem disablePadding>
+                    <ListItemButton
+                      selected={activeMenu === ActiveMenu.Integrations}
+                      onClick={() => handleChangeTab(ActiveMenu.Integrations)}
+                    >
+                      <ListItemText
+                        primary={
+                          <FormattedMessage
+                            id="general"
+                            defaultMessage="General"
+                          />
+                        }
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                </List>
+              </Collapse>
+            </List>
+          </>
+        )}
+        {/*  <Box sx={{ display: 'flex', justifyContent: 'flex-end', pr: 2 }}>
         <Typography>v{AppVersion.version}</Typography>
                     </Box>*/}
-    </Box>
-  );
+      </Box>
+    );
+  };
 
   return (
     <TourProvider
