@@ -32,6 +32,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import AdminSidebarContainer from '@dexkit/ui/modules/wizard/components/AdminSidebarContainer';
 
+import CommerceContainerRenderer from '@dexkit/ui/modules/commerce/components/containers/CommerceContainerRenderer';
+
 import {
   QUERY_ADMIN_WHITELABEL_CONFIG_NAME,
   useSendConfigMutation,
@@ -1010,6 +1012,7 @@ export function EditWizardContainer({ site }: Props) {
               >
                 <SiteWizardProvider siteId={site?.id}>
                   <Stack spacing={2} className={'builder-forms'}>
+                    <CommerceContainerRenderer containerId={activeMenu} />
                     {activeMenu === ActiveMenu.General && config && (
                       <GeneralWizardContainer
                         config={config}
