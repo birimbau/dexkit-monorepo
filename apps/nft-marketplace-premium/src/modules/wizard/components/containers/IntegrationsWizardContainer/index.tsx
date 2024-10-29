@@ -99,12 +99,6 @@ export default function IntegrationsWizardContainer({
                     defaultMessage="Integrate external resources and enable additional features to expand your app."
                   />
                 </Typography>
-                <Typography variant="body2">
-                  <FormattedMessage
-                    id="set.integrations.settings.for.your.app"
-                    defaultMessage="Integrate external resources and enabled"
-                  />
-                </Typography>
               </Stack>
             </Grid>
             <Grid item xs={12}>

@@ -2,11 +2,10 @@ import { DexkitApiProvider } from "@dexkit/core/providers";
 import { GridSortModel } from "@mui/x-data-grid";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { ProductFormType } from "../types";
 
-export const GET_PRODUCT_LIST = "GET_PRODUCT_LIST";
+export const GET_CATEGORY_LIST = "GET_CATEGORY_LIST";
 
-export default function useProductList(params: {
+export default function useCategoryList(params: {
   page: number;
   limit: number;
   q?: string;
@@ -15,7 +14,7 @@ export default function useProductList(params: {
   const { instance } = useContext(DexkitApiProvider);
 
   return useQuery(
-    [GET_PRODUCT_LIST, params],
+    [GET_CATEGORY_LIST, params],
     async () => {
       if (!instance) {
         throw new Error("no instance");
@@ -31,11 +30,16 @@ export default function useProductList(params: {
 
       return (
         await instance.get<{
-          items: ProductFormType[];
+          items: {
+            name: string;
+            id: string;
+            countItems: number;
+            active: true;
+          }[];
           totalItems: number;
           totalPages: number;
           currentPage: number;
-        }>("/products", { params: newParams })
+        }>("/product-category", { params: newParams })
       ).data;
     },
     {
