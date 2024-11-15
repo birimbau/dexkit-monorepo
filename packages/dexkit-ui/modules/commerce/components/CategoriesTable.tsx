@@ -27,6 +27,7 @@ const AppConfirmDialog = dynamic(
 
 import useDeleteManyCategories from "@dexkit/ui/modules/commerce/hooks/useDeleteManyCategories";
 import useCategoryList from "../hooks/useCategoryList";
+import useParams from "./containers/hooks/useParams";
 
 export interface CategoriesTableProps {}
 
@@ -176,6 +177,8 @@ export default function CategoriesTable({}: CategoriesTableProps) {
 
     handleCloseDeleteMany();
   };
+
+  const { setContainer } = useParams();
 
   return (
     <>

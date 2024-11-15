@@ -1,5 +1,5 @@
-import { AppDialogTitle } from '@dexkit/ui';
-import { ProductFormType } from '@dexkit/ui/modules/commerce/types';
+import { AppDialogTitle } from "@dexkit/ui";
+import { ProductFormType } from "@dexkit/ui/modules/commerce/types";
 import {
   Avatar,
   Button,
@@ -13,10 +13,10 @@ import {
   ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
-} from '@mui/material';
-import Decimal from 'decimal.js';
-import { useCallback, useState } from 'react';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+} from "@mui/material";
+import Decimal from "decimal.js";
+import { useCallback, useState } from "react";
+import { FormattedMessage, FormattedNumber } from "react-intl";
 
 export interface AddProductsDialogProps {
   DialogProps: DialogProps;
@@ -47,14 +47,14 @@ export default function AddProductsDialog({
         }
       };
     },
-    [isSelected],
+    [isSelected]
   );
 
   const { onClose } = DialogProps;
 
   const handleClose = () => {
     if (onClose) {
-      onClose({}, 'backdropClick');
+      onClose({}, "backdropClick");
     }
   };
 
@@ -71,7 +71,7 @@ export default function AddProductsDialog({
           {products.map((product, index, arr) => (
             <ListItem divider={index < arr.length - 1} key={product.id}>
               <ListItemAvatar>
-                <Avatar src={product.imageUrl ?? ''} variant="rounded" />
+                <Avatar src={product.imageUrl ?? ""} variant="rounded" />
               </ListItemAvatar>
               <ListItemText
                 primary={product.name}
@@ -80,14 +80,14 @@ export default function AddProductsDialog({
                     style="currency"
                     maximumFractionDigits={2}
                     currency="usd"
-                    value={new Decimal(product.price).div('100').toNumber()}
+                    value={new Decimal(product.price).div("100").toNumber()}
                   />
                 }
               />
               <ListItemSecondaryAction>
                 <Checkbox
-                  checked={isSelected(product.id ?? '')}
-                  onClick={handleToggle(product.id ?? '')}
+                  checked={isSelected(product.id ?? "")}
+                  onClick={handleToggle(product.id ?? "")}
                 />
               </ListItemSecondaryAction>
             </ListItem>

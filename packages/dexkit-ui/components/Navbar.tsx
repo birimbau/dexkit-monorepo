@@ -559,7 +559,11 @@ function Navbar({ appConfig, isPreview }: Props) {
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <WalletButton />
 
-                  {!appConfig.commerce?.enabled && <CommerceCartIconButton />}
+                  {appConfig.commerce?.enabled && (
+                    <NoSsr>
+                      <CommerceCartIconButton />
+                    </NoSsr>
+                  )}
                   <NoSsr>
                     <IconButton
                       onClick={handleOpenTransactions}

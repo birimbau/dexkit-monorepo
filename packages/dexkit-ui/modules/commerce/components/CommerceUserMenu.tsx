@@ -1,6 +1,4 @@
-import { FavoriteBorder } from "@mui/icons-material";
 import {
-  Divider,
   List,
   ListItemButton,
   ListItemIcon,
@@ -46,7 +44,7 @@ export default function CommerceUserMenu({
               }
             />
           </ListItemButton>
-          <ListItemButton onClick={handleAction("wishlist")}>
+          {/* <ListItemButton onClick={handleAction("wishlist")}>
             <ListItemIcon>
               <FavoriteBorder />
             </ListItemIcon>
@@ -56,7 +54,7 @@ export default function CommerceUserMenu({
               }
             />
           </ListItemButton>
-          <Divider />
+          <Divider /> */}
         </>
       )}
       <ListItemButton onClick={handleAction("profile")}>

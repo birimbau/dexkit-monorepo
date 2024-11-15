@@ -1,23 +1,17 @@
-import { atomWithStorage, useReducerAtom } from "jotai/utils";
+import { useReducerAtom } from "jotai/utils";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { FormattedMessage } from "react-intl";
 import { CommercePageSection } from "../../wizard/types/section";
+import { dexkitCartAtom } from "../atoms";
 import { CommerceContext } from "../context";
 import useCheckcart from "../hooks/useCheckcart";
 import { CartState } from "../types";
 
 export interface CommerceContextProviderProps {
   children: React.ReactNode;
-  section: CommercePageSection;
+  section?: CommercePageSection;
 }
-
-export const dexkitCartAtom = atomWithStorage<CartState>(
-  "dexkit.commerce.cart",
-  {
-    items: [],
-  }
-);
 
 const ADD_CART_ITEM = "ADD_CART_ITEM";
 const UPDATE_CART_ITEM = "UPDATE_CART_ITEM";
@@ -183,10 +177,12 @@ export default function CommerceContextProvider({
         setProduct: handleSetProduct,
         isSection,
         showCart,
-        requireEmail:
-          section.type === "commerce" &&
-          section.settings.content.type === "store" &&
-          section.settings.content.params.emailRequired,
+        requireEmail: Boolean(
+          section &&
+            section.type === "commerce" &&
+            section.settings.content.type === "store" &&
+            section.settings.content.params.emailRequired
+        ),
         openCart,
         closeCart,
         clearCart,

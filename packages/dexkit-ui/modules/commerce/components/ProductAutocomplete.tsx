@@ -20,7 +20,7 @@ export interface ProductAutocompleteProps {
 export default function ProductAutocomplete({
   name,
 }: ProductAutocompleteProps) {
-  const [props, meta, helpers] = useField<string>(name);
+  const [props, meta, helpers] = useField<string>(`${name}.productId`);
 
   const [query, setQuery] = useState("");
 
@@ -32,7 +32,7 @@ export default function ProductAutocomplete({
     q: lazyQuery,
   });
 
-  const { data: product } = useProduct({ id: props.value });
+  const { data: product, refetch } = useProduct({ id: props.value });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);

@@ -83,6 +83,8 @@ export type OrderItem = {
   price: string;
   productId: string;
   metadata: any;
-} & { product: { content?: string; digital: boolean } };
+} & {
+  product: { content?: string; digital: boolean; imageUrl: string | null };
+};
 
 export type CategoryType = z.infer<typeof CategoryFormSchema>;

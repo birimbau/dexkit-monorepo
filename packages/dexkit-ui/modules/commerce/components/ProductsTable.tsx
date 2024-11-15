@@ -40,6 +40,7 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import useDeleteManyProducts from "@dexkit/ui/modules/commerce/hooks/useDeleteManyProducts";
 import useDuplicateProduct from "../hooks/useDuplicateProduct";
 import CustomToolbar from "./CustomToolbar";
+import useParams from "./containers/hooks/useParams";
 
 const AppConfirmDialog = dynamic(
   () => import("@dexkit/ui/components/AppConfirmDialog")
@@ -148,6 +149,8 @@ export default function ProductsTable({}: ProducstTableProps) {
 
     await refetch();
   };
+
+  const { setContainer } = useParams();
 
   const columns = useMemo(() => {
     return [
@@ -440,7 +443,7 @@ export default function ProductsTable({}: ProducstTableProps) {
             onRowClick={({ row }, e) => {
               e.stopPropagation();
 
-              router.push(`/u/account/commerce/products/${row.id}`);
+              setContainer("commerce.products.edit", { id: row.id });
             }}
             onSortModelChange={setSortModel}
             sortingOrder={["asc", "desc"]}

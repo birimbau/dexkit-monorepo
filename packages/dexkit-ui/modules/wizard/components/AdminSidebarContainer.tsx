@@ -25,6 +25,7 @@ export interface AdminSidebarContainerProps {
   activeBuilderKit: string;
   onChangeMenu: (menuId: string) => void;
   activeMenuId: string;
+  commerceEnabled?: boolean;
 }
 
 export default function AdminSidebarContainer({
@@ -32,6 +33,7 @@ export default function AdminSidebarContainer({
   onChangeMenu,
   activeMenuId,
   activeBuilderKit,
+  commerceEnabled,
 }: AdminSidebarContainerProps) {
   const appConfig = useAppConfig();
   const [openMenus, setOpenMenu] = useState<{ [key: string]: boolean }>({});
@@ -263,97 +265,113 @@ export default function AdminSidebarContainer({
 
       {isSiteOwner && (
         <>
-          <Typography variant="body1" fontWeight="bold">
-            <FormattedMessage id="integrations" defaultMessage="Integrations" />
-          </Typography>
+          {commerceEnabled && (
+            <Typography variant="body1" fontWeight="bold">
+              <FormattedMessage
+                id="integrations"
+                defaultMessage="Integrations"
+              />
+            </Typography>
+          )}
 
           <Box sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
-            <AdminSidebarMenu
-              activeMenuId={activeMenuId}
-              icon={<ShoppingCart />}
-              title={
-                <FormattedMessage id="e.commerce" defaultMessage="E-Commerce" />
-              }
-              open={isMenuToggled("commerce")}
-              onSelectMenuId={onChangeMenu}
-              onToggle={handleToggleMenu("commerce")}
-              isSiteOwner={isSiteOwner}
-              options={[
-                // add builder kits,
-                {
-                  id: "commerce.dashboard",
-                  title: (
-                    <FormattedMessage
-                      id="dashboard"
-                      defaultMessage="Dashboard"
-                    />
-                  ),
-                },
-                {
-                  id: "commerce.notifications",
-                  title: (
-                    <FormattedMessage
-                      id="notifications"
-                      defaultMessage="Notifications"
-                    />
-                  ),
-                },
-                {
-                  id: "commerce.settings",
-                  title: (
-                    <FormattedMessage id="settings" defaultMessage="Settings" />
-                  ),
-                },
-                {
-                  id: "commerce.orders",
-                  title: (
-                    <FormattedMessage id="orders" defaultMessage="Orders" />
-                  ),
-                },
-                {
-                  id: "commerce.products",
-                  title: (
-                    <FormattedMessage id="products" defaultMessage="Products" />
-                  ),
-                  icon: <Inventory />,
-                  options: [
-                    {
-                      title: (
-                        <FormattedMessage id="items" defaultMessage="Items" />
-                      ),
-                      id: "commerce.products.items",
-                    },
-                    {
-                      title: (
-                        <FormattedMessage
-                          id="categories"
-                          defaultMessage="Categories"
-                        />
-                      ),
-                      id: "commerce.products.categories",
-                    },
-                    {
-                      title: (
-                        <FormattedMessage
-                          id="collections"
-                          defaultMessage="Collections"
-                        />
-                      ),
-                      id: "commerce.products.collections",
-                    },
-                  ],
-                },
-                {
-                  id: "commerce.checkouts",
-                  title: (
-                    <FormattedMessage
-                      id="checkouts"
-                      defaultMessage="Checkouts"
-                    />
-                  ),
-                },
-              ]}
-            />
+            {commerceEnabled && (
+              <AdminSidebarMenu
+                activeMenuId={activeMenuId}
+                icon={<ShoppingCart />}
+                title={
+                  <FormattedMessage
+                    id="e.commerce"
+                    defaultMessage="E-Commerce"
+                  />
+                }
+                open={isMenuToggled("commerce")}
+                onSelectMenuId={onChangeMenu}
+                onToggle={handleToggleMenu("commerce")}
+                isSiteOwner={isSiteOwner}
+                options={[
+                  // add builder kits,
+                  {
+                    id: "commerce.dashboard",
+                    title: (
+                      <FormattedMessage
+                        id="dashboard"
+                        defaultMessage="Dashboard"
+                      />
+                    ),
+                  },
+                  {
+                    id: "commerce.notifications",
+                    title: (
+                      <FormattedMessage
+                        id="notifications"
+                        defaultMessage="Notifications"
+                      />
+                    ),
+                  },
+                  {
+                    id: "commerce.settings",
+                    title: (
+                      <FormattedMessage
+                        id="settings"
+                        defaultMessage="Settings"
+                      />
+                    ),
+                  },
+                  {
+                    id: "commerce.orders",
+                    title: (
+                      <FormattedMessage id="orders" defaultMessage="Orders" />
+                    ),
+                  },
+                  {
+                    id: "commerce.products",
+                    title: (
+                      <FormattedMessage
+                        id="products"
+                        defaultMessage="Products"
+                      />
+                    ),
+                    icon: <Inventory />,
+                    options: [
+                      {
+                        title: (
+                          <FormattedMessage id="items" defaultMessage="Items" />
+                        ),
+                        id: "commerce.products.items",
+                      },
+                      {
+                        title: (
+                          <FormattedMessage
+                            id="categories"
+                            defaultMessage="Categories"
+                          />
+                        ),
+                        id: "commerce.products.categories",
+                      },
+                      {
+                        title: (
+                          <FormattedMessage
+                            id="collections"
+                            defaultMessage="Collections"
+                          />
+                        ),
+                        id: "commerce.products.collections",
+                      },
+                    ],
+                  },
+                  {
+                    id: "commerce.checkouts",
+                    title: (
+                      <FormattedMessage
+                        id="checkouts"
+                        defaultMessage="Checkouts"
+                      />
+                    ),
+                  },
+                ]}
+              />
+            )}
           </Box>
         </>
       )}

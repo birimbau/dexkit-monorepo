@@ -5,8 +5,11 @@ import Add from "@mui/icons-material/Add";
 import NextLink from "next/link";
 import DashboardLayout from "../layouts/DashboardLayout";
 import ProductsTable from "../ProductsTable";
+import useParams from "./hooks/useParams";
 
 export default function ProductsContainer() {
+  const { setContainer } = useParams();
+
   return (
     <DashboardLayout page="products">
       <Stack spacing={2}>
@@ -26,7 +29,9 @@ export default function ProductsContainer() {
             LinkComponent={NextLink}
             startIcon={<Add />}
             variant="contained"
-            href="/u/account/commerce/products/create"
+            onClick={() => {
+              setContainer("commerce.products.create");
+            }}
           >
             <FormattedMessage id="new.product" defaultMessage="New product" />
           </Button>

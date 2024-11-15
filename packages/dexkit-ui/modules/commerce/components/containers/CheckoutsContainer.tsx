@@ -6,6 +6,7 @@ import NextLink from "next/link";
 import { useState } from "react";
 import CheckoutsTable from "../CheckoutsTable";
 import DashboardLayout from "../layouts/DashboardLayout";
+import useParams from "./hooks/useParams";
 
 export default function CheckoutsContainer() {
   const [url, setUrl] = useState<string>();
@@ -19,6 +20,8 @@ export default function CheckoutsContainer() {
   };
 
   const handleShareContent = (value: string) => {};
+
+  const { setContainer } = useParams();
 
   return (
     <>
@@ -47,8 +50,10 @@ export default function CheckoutsContainer() {
           >
             <Button
               LinkComponent={NextLink}
-              href="/u/account/commerce/checkouts/create"
               variant="contained"
+              onClick={() => {
+                setContainer("commerce.checkouts.create");
+              }}
             >
               <FormattedMessage id="create" defaultMessage="Create" />
             </Button>

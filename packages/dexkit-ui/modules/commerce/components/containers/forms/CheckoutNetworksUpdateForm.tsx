@@ -22,6 +22,7 @@ import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import useCheckoutNetworks from "../../../hooks/checkout/useCheckoutNetworks";
 import useUpdateCheckoutNetworks from "../../../hooks/useUpdateCheckoutNetworks";
+import useParams from "../hooks/useParams";
 
 interface CheckoutNetworksBaseProps {
   networks: { chainId: number }[];
@@ -104,6 +105,8 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
     }
   };
 
+  const { goBack } = useParams();
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -184,7 +187,7 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
       <Grid item xs={12}>
         <Box>
           <Stack direction="row" justifyContent="flex-end" spacing={2}>
-            <Button>
+            <Button onClick={goBack}>
               <FormattedMessage id="cancel" defaultMessage="Cancel" />
             </Button>
             <Button variant="contained" onClick={handleSave}>

@@ -22,8 +22,8 @@ import { useSnackbar } from "notistack";
 import useDeleteManyCollections from "@dexkit/ui/modules/commerce/hooks/useDeleteManyCollections";
 
 import LabelIcon from "@mui/icons-material/Label";
-import { useRouter } from "next/router";
 import CustomToolbar from "./CustomToolbar";
+import useParams from "./containers/hooks/useParams";
 
 const AppConfirmDialog = dynamic(
   () => import("@dexkit/ui/components/AppConfirmDialog")
@@ -149,7 +149,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
     handleCloseDeleteMany();
   };
 
-  const router = useRouter();
+  const { setContainer } = useParams();
 
   return (
     <>
@@ -205,7 +205,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
           checkboxSelection
           disableRowSelectionOnClick
           onRowClick={({ row }) => {
-            router.push(`/u/account/commerce/collections/${row.id}`);
+            setContainer("commerce.products.collection.edit", { id: row.id });
           }}
           slotProps={{
             toolbar: {

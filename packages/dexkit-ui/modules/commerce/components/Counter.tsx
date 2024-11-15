@@ -20,6 +20,7 @@ export default function Counter({
         p: 0.5,
         borderRadius: (theme) => `${theme.shape.borderRadius}px`,
         border: (theme) => `1px solid ${theme.palette.divider}`,
+        display: "inline-block",
       }}
     >
       <Stack direction="row" alignItems="center" spacing={2}>

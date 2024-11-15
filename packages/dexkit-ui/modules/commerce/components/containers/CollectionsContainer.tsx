@@ -1,19 +1,13 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import { FormattedMessage, useIntl } from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 import NextLink from "next/link";
-import { useState } from "react";
 import CollectionsTable from "../CollectionsTable";
 import DashboardLayout from "../layouts/DashboardLayout";
+import useParams from "./hooks/useParams";
 
 export default function CollectionsContainer() {
-  const [query, setQuery] = useState("");
-
-  const handleChange = (value: string) => {
-    setQuery(value);
-  };
-
-  const { formatMessage } = useIntl();
+  const { setContainer } = useParams();
 
   return (
     <>
@@ -37,7 +31,9 @@ export default function CollectionsContainer() {
           >
             <Button
               LinkComponent={NextLink}
-              href="/u/account/commerce/collections/create"
+              onClick={() => {
+                setContainer("commerce.products.collection.create");
+              }}
               variant="contained"
             >
               <FormattedMessage id="create" defaultMessage="Create" />

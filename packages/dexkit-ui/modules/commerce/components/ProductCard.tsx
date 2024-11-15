@@ -2,7 +2,7 @@ import {
   Box,
   Button,
   ButtonGroup,
-  Card,
+  CardActionArea,
   IconButton,
   Skeleton,
   Stack,
@@ -65,7 +65,7 @@ export default function ProductCard({
     });
   };
   return (
-    <Card variant="elevation" elevation={0}>
+    <Box>
       <Stack spacing={1}>
         <Stack direction="row" justifyContent="flex-end">
           <IconButton size="small" onClick={onWishlist}>
@@ -79,27 +79,30 @@ export default function ProductCard({
             <Share fontSize="small" />
           </IconButton>
         </Stack>
-        {product.imageUrl ? (
-          <Box
-            sx={{
-              aspectRatio: "1/1",
-              height: "100%",
-              width: "100%",
-              backgroundRepeat: "no-repeat",
-              objectFit: "cover",
-              backgroundSize: "contain",
-              backgroundPosition: "center center",
-              backgroundImage: `url("${product.imageUrl}")`,
-              borderRadius: (theme) => theme.shape.borderRadius,
-              border: (theme) => `1px solid ${theme.palette.divider}`,
-            }}
-          />
-        ) : (
-          <Skeleton
-            variant="rectangular"
-            sx={{ aspectRatio: "1/1", height: "100%", width: "100%" }}
-          />
-        )}
+
+        <CardActionArea onClick={handleClick}>
+          {product.imageUrl ? (
+            <Box
+              sx={{
+                aspectRatio: "1/1",
+                height: "100%",
+                width: "100%",
+                backgroundRepeat: "no-repeat",
+                objectFit: "cover",
+                backgroundSize: "contain",
+                backgroundPosition: "center center",
+                backgroundImage: `url("${product.imageUrl}")`,
+                borderRadius: (theme) => theme.shape.borderRadius,
+                border: (theme) => `1px solid ${theme.palette.divider}`,
+              }}
+            />
+          ) : (
+            <Skeleton
+              variant="rectangular"
+              sx={{ aspectRatio: "1/1", height: "100%", width: "100%" }}
+            />
+          )}
+        </CardActionArea>
         <Stack alignItems="flex-start" spacing={2}>
           <Box>
             <Typography fontWeight="bold" variant="body1">
@@ -135,6 +138,6 @@ export default function ProductCard({
           </ButtonGroup>
         </Stack>
       </Stack>
-    </Card>
+    </Box>
   );
 }

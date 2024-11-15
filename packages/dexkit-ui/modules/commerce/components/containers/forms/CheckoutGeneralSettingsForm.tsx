@@ -9,6 +9,7 @@ import useCheckoutSettings from "../../../hooks/useCheckoutSettings";
 import useUpdateCheckoutSettings from "../../../hooks/useUpdateCheckoutSettings";
 import { CheckoutSettingsSchema } from "../../../schemas";
 import { CheckoutSettingsType } from "../../../types";
+import useParams from "../hooks/useParams";
 
 interface CheckoutGeneralSettingsFormBaseProps {
   settings: {
@@ -39,6 +40,8 @@ function CheckoutGeneralSettingsFormBase({
       enqueueSnackbar(String(err), { variant: "error" });
     }
   };
+
+  const { goBack } = useParams();
 
   return (
     <Formik
@@ -87,7 +90,7 @@ function CheckoutGeneralSettingsFormBase({
           <Grid item xs={12}>
             <div>
               <Stack spacing={2} justifyContent="flex-end" direction="row">
-                <Button disabled={isSubmitting}>
+                <Button onClick={goBack} disabled={isSubmitting}>
                   <FormattedMessage id="Cancel" defaultMessage="Cancel" />
                 </Button>
                 <Button

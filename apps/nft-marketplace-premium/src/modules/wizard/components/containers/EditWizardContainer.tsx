@@ -120,7 +120,7 @@ export enum ActiveMenu {
   MarketplaceFees = 'fees.marketplace.fees',
   AppVersion = 'settings.version',
   SwapFees = 'swap-fees',
-  Collections = 'collections',
+  Collections = 'data.collections',
   Tokens = 'data.tokens',
   Ownership = 'settings.ownership',
   Integrations = 'settings.integrations',
@@ -349,6 +349,7 @@ export function EditWizardContainer({ site }: Props) {
         isSiteOwner={isAddressEqual(site?.owner, account)}
         onChangeMenu={(menuId: string) => handleChangeTab(menuId as ActiveMenu)}
         activeMenuId={activeMenu as string}
+        commerceEnabled={wizardConfig.commerce?.enabled}
       />
     );
   };
@@ -623,7 +624,10 @@ export function EditWizardContainer({ site }: Props) {
               >
                 <SiteWizardProvider siteId={site?.id}>
                   <Stack spacing={2} className={'builder-forms'}>
-                    <CommerceContainerRenderer containerId={activeMenu} />
+                    <CommerceContainerRenderer
+                      containerId={activeMenu}
+                      key={activeMenu}
+                    />
                     {activeMenu === ActiveMenu.General && config && (
                       <GeneralWizardContainer
                         config={config}

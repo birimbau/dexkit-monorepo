@@ -13,6 +13,9 @@ import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
 import TokenDataContainer from './TokenDataContainer';
 
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import { useRouter } from 'next/router';
+
 export interface OrdersTableProps {
   query: string;
 }
@@ -33,6 +36,8 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
   });
 
   const { formatMessage } = useIntl();
+
+  const router = useRouter();
 
   const columns = useMemo(() => {
     return [
@@ -123,7 +128,37 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
         getRowId={(row) => String(row.id)}
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}
-        sx={{ height: 300 }}
+        onRowClick={({ row }) => {
+          router.push(`/c/orders/${row.id}`);
+        }}
+        disableRowSelectionOnClick
+        sx={{
+          height: 300,
+          '& .MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          '& .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus': {
+            outline: 'none !important',
+          },
+          '& .MuiDataGrid-columnHeader:focus-within': {
+            outline: 'none !important',
+          },
+          border: 'none',
+          '--DataGrid-overlayHeight': '150px', // disable cell selection style
+          '.MuiDataGrid-cell:focus': {
+            outline: 'none',
+          },
+          // pointer cursor on ALL rows
+          '& .MuiDataGrid-row:hover': {
+            cursor: 'pointer',
+          },
+        }}
         slots={{
           noRowsOverlay: noRowsOverlay(
             <FormattedMessage id="no.orders" defaultMessage="No Orders" />,
@@ -139,6 +174,9 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
               id="create.orders.to.see.it.here"
               defaultMessage="Create orders to see it here"
             />,
+            <Box sx={{ fontSize: '3rem' }}>
+              <AssignmentIcon fontSize="inherit" />
+            </Box>,
           ),
         }}
       />

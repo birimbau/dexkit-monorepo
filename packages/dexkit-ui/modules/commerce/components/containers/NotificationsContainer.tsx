@@ -10,13 +10,13 @@ import {
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
-import { PageHeader } from "@dexkit/ui/components/PageHeader";
 import NotificationsList from "@dexkit/ui/modules/commerce/components/NotificationsList";
 
 import useNotifications from "@dexkit/ui/modules/commerce/hooks/useNotifications";
 import useNotificationsCountUnread from "@dexkit/ui/modules/commerce/hooks/useNotificatonsCountUnread";
 import { useState } from "react";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { CommerceBreadcrumbs } from "./CommerceBreadcrumbs";
 
 function Notifications() {
   const [filter, setFilter] = useState({ page: 0, pageSize: 10, status: "" });
@@ -49,13 +49,13 @@ function Notifications() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <PageHeader
+        <CommerceBreadcrumbs
           breadcrumbs={[
             {
               caption: (
                 <FormattedMessage id="commerce" defaultMessage="Commerce" />
               ),
-              uri: "/u/account/commerce",
+              containerId: "commerce.dashboard",
             },
             {
               caption: (
@@ -64,7 +64,7 @@ function Notifications() {
                   defaultMessage="Notifications"
                 />
               ),
-              uri: "/u/account/commerce/notifications",
+              containerId: "commerce.notifications",
               active: true,
             },
           ]}

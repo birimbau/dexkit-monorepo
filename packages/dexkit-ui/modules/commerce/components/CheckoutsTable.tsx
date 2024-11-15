@@ -4,7 +4,7 @@ import {
   GridPaginationModel,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { useCallback, useMemo, useState } from "react";
+import { MouseEvent, useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import useCheckoutList from "../hooks/useCheckoutList";
 import { CheckoutFormType } from "../types";
@@ -23,6 +23,7 @@ import { useSnackbar } from "notistack";
 import CustomToolbar from "./CustomToolbar";
 
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import useParams from "./containers/hooks/useParams";
 
 const AppConfirmDialog = dynamic(
   () => import("@dexkit/ui/components/AppConfirmDialog")
@@ -34,6 +35,8 @@ export interface CheckoutsTableProps {
 
 export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
   const [query, setQuery] = useState("");
+
+  const { setContainer } = useParams();
 
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
@@ -62,7 +65,8 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
   const [selectedId, setSelectedId] = useState<string>();
 
   const handleDelete = useCallback((id: string) => {
-    return () => {
+    return (e: MouseEvent) => {
+      e.stopPropagation();
       setSelectedId(id);
       setShowConfirm(true);
     };
@@ -125,7 +129,11 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
         renderCell: ({ row }) => (
           <Stack direction="row">
             <IconButton
-              onClick={() => onShare(`${getWindowUrl()}/c/${row.id}`)}
+              onClick={(e) => {
+                e.stopPropagation();
+
+                onShare(`${getWindowUrl()}/c/${row.id}`);
+              }}
             >
               <Tooltip
                 title={<FormattedMessage id="share" defaultMessage="Share" />}
@@ -181,7 +189,7 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
           onPaginationModelChange={setPaginationModel}
           loading={isLoading}
           onRowClick={({ row }, e) => {
-            router.push(`/u/account/commerce/checkouts/${row.id}`);
+            setContainer("commerce.checkouts.edit", { id: row.id });
           }}
           sx={{
             height: 300,

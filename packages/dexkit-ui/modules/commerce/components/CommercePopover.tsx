@@ -22,18 +22,21 @@ export default function CommercePopover({
   const userQuery = useAuthUserQuery();
   const user = userQuery.data;
 
-  console.log(userQuery.data);
-
   const handleAction = async ({ action }: { action: string }) => {
     try {
       if (action === "logout") {
         await logoutMutation.mutateAsync();
+        return;
       }
       if (action === "wishlist") {
         router.push("/c/wishlist");
       }
-      if (action === "profile" && user) {
-        router.push(`/u/${user?.username}`);
+      if (action === "profile") {
+        if (user) {
+          router.push(`/u/${user?.username}`);
+        } else {
+          router.push(`/u/login`);
+        }
       }
       if (action === "orders") {
         router.push("/c/orders");

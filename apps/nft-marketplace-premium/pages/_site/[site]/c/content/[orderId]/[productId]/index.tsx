@@ -1,6 +1,14 @@
 import { DexkitApiProvider } from '@dexkit/core/providers';
 import { myAppsApi } from '@dexkit/ui/constants/api';
-import { Container, Grid, useTheme } from '@mui/material';
+import {
+  Alert,
+  Avatar,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import MDEditor from '@uiw/react-md-editor';
 import {
@@ -18,6 +26,7 @@ import '@uiw/react-md-editor/markdown-editor.css';
 
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import useProductContent from '@dexkit/ui/modules/commerce/hooks/useProductContent';
+import useUserProduct from '@dexkit/ui/modules/commerce/hooks/useUserProduct';
 import { FormattedMessage } from 'react-intl';
 
 export interface ProductContentPageProps {
@@ -30,8 +39,11 @@ export default function ProductContentPage({
   productId,
 }: ProductContentPageProps) {
   const { data: content } = useProductContent({ orderId, productId });
+  const { data: product } = useUserProduct({ id: productId });
 
   const theme = useTheme();
+
+  console.log('content', content);
 
   return (
     <Container>
@@ -63,15 +75,46 @@ export default function ProductContentPage({
           />
         </Grid>
         <Grid item xs={12}>
-          <MDEditor.Markdown
-            source={content?.content ?? ''}
-            style={{
-              backgroundColor: theme.palette.background.paper,
-              color: theme.palette.text.primary,
-              padding: theme.spacing(4),
-              borderRadius: theme.shape.borderRadius,
-            }}
-          />
+          <Grid container spacing={2}>
+            <Grid item>
+              <Alert severity="info" sx={{ width: 'auto' }}>
+                <FormattedMessage
+                  id="protected.product.alert"
+                  defaultMessage="This content is protected. Only you can see it"
+                />
+              </Alert>
+            </Grid>
+          </Grid>
+        </Grid>
+        {content?.content && (
+          <Grid item xs={12}>
+            <MDEditor.Markdown
+              source={content?.content ?? ''}
+              style={{
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                padding: theme.spacing(2),
+                borderRadius: theme.shape.borderRadius,
+              }}
+            />
+          </Grid>
+        )}
+
+        <Grid item xs={12}>
+          <Typography gutterBottom variant="h5">
+            <FormattedMessage
+              id="protected.product"
+              defaultMessage="Protected product"
+            />
+          </Typography>
+          <Stack spacing={2} direction="row">
+            <Avatar
+              sx={{ width: '5rem', height: '5rem' }}
+              variant="rounded"
+              src={product?.imageUrl ?? ''}
+            />
+            <Typography>{product?.name}</Typography>
+          </Stack>
         </Grid>
       </Grid>
     </Container>

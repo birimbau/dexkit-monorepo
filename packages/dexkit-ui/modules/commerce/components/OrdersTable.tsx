@@ -12,6 +12,8 @@ import useOrdersList from "../hooks/useOrdersList";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { noRowsOverlay } from "./NoRowsOverlay";
 
+import AssignmentIcon from "@mui/icons-material/Assignment";
+
 export interface OrdersTableProps {
   query: string;
   status: string;
@@ -135,7 +137,10 @@ export default function OrdersTable({ query, status }: OrdersTableProps) {
             <FormattedMessage
               id="create.orders.to.see.it.here"
               defaultMessage="Create orders to see it here"
-            />
+            />,
+            <Box sx={{ fontSize: "3rem" }}>
+              <AssignmentIcon fontSize="inherit" />
+            </Box>
           ),
           loadingOverlay: LoadingOverlay,
           noResultsOverlay: noRowsOverlay(
@@ -143,7 +148,10 @@ export default function OrdersTable({ query, status }: OrdersTableProps) {
             <FormattedMessage
               id="create.orders.to.see.it.here"
               defaultMessage="Create orders to see it here"
-            />
+            />,
+            <Box sx={{ fontSize: "3rem" }}>
+              <AssignmentIcon fontSize="inherit" />
+            </Box>
           ),
         }}
       />
