@@ -23,6 +23,7 @@ import { useSnackbar } from "notistack";
 
 import { MagicLoginType } from "@dexkit/wallet-connectors/connectors/magic";
 import { MagicOauthConnectors } from "@dexkit/wallet-connectors/connectors/magic-wagmi/magicConnector";
+import { useConnectMagic } from "@dexkit/wallet-connectors/hooks/useConnectMagic";
 import { ConnectorIcon } from "@dexkit/wallet-connectors/rainbowkit/components/ConnectorIcon";
 import { useWalletConnectors } from "@dexkit/wallet-connectors/rainbowkit/wallets/useWalletConnectors";
 import { getHashInjectionOnMobileBrowser } from "@dexkit/wallet-connectors/utils/injected";
@@ -48,6 +49,7 @@ export default function ConnectWalletDialog({
 }: ConnectWalletDialogProps) {
   const { activeChainIds } = useActiveChainIds();
   const connectWalletDialog = useConnectWalletDialog();
+  const magicConnectMutation = useConnectMagic();
 
   const connectors = useWalletConnectors({
     activeChainIds,
@@ -76,15 +78,31 @@ export default function ConnectWalletDialog({
 
   const [email, setEmail] = useState("");
 
-  const handleConnectWithEmail = () => {
-    const magicConnector = wagmiConnectors.find((c) => c.id === "magic");
+  const handleConnectWithEmail = async () => {
+    try {
+      await magicConnectMutation.mutateAsync({ email });
+      setConnectorName("magic");
+      setLoginType("email");
+      const magicConnector = wagmiConnectors.find((c) => c.id === "magic");
+      if (magicConnector) {
+        //@ts-ignore
+        magicConnector.connect({ email });
+      }
+      handleClose();
+    } catch {}
+
+    /*  const magicConnector = wagmiConnectors.find((c) => c.id === "magic");
 
     if (magicConnector) {
       //@ts-ignore
       magicConnector.connect({ email });
 
+
+
+      setConnectorName("magic");
+
       setLoginType("email");
-    }
+    }*/
 
     setEmail("");
   };
@@ -170,7 +188,8 @@ export default function ConnectWalletDialog({
           divider
           key={index}
           disabled={
-            isActivating && connectorName === `${conn?.name}:${conn?.oauth}`
+            magicConnectMutation.isLoading &&
+            connectorName === `${conn?.name}:${conn?.oauth}`
           }
           onClick={async () => {
             try {
@@ -182,8 +201,12 @@ export default function ConnectWalletDialog({
               );
 
               if (magicConnector) {
+                await magicConnectMutation.mutateAsync({
+                  oauthProvider: conn.oauth,
+                });
+
                 //@ts-ignore
-                await magicConnector.connect({ oauthProvider: conn.oauth });
+                //await magicConnector.connect({ oauthProvider: conn.oauth });
               }
 
               handleClose();
@@ -206,12 +229,13 @@ export default function ConnectWalletDialog({
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary={conn?.name} />
-          {isActivating && connectorName === `${conn?.name}:${conn?.oauth}` && (
-            <CircularProgress
-              color="primary"
-              sx={{ fontSize: (theme) => theme.spacing(2) }}
-            />
-          )}
+          {magicConnectMutation.isLoading &&
+            connectorName === `${conn?.name}:${conn?.oauth}` && (
+              <CircularProgress
+                color="primary"
+                sx={{ fontSize: (theme) => theme.spacing(2) }}
+              />
+            )}
           {isActive &&
             activeConnectorName === "Magic" &&
             loginType === conn?.oauth && (
@@ -251,9 +275,7 @@ export default function ConnectWalletDialog({
               <Stack spacing={2}>
                 <TextField
                   disabled={
-                    isActivating &&
-                    connectorName === "magic" &&
-                    loginType === "email"
+                    magicConnectMutation.isLoading && loginType === "email"
                   }
                   value={email}
                   onChange={handleChangeEmail}
@@ -265,14 +287,16 @@ export default function ConnectWalletDialog({
                 />
                 <Button
                   disabled={
-                    isActivating &&
-                    connectorName === "magic" &&
-                    loginType === "email"
+                    magicConnectMutation.isLoading && loginType === "email"
                   }
                   startIcon={
-                    isActivating &&
-                    connectorName === "magic" &&
-                    loginType === "email"
+                    magicConnectMutation.isLoading &&
+                    loginType === "email" && (
+                      <CircularProgress
+                        color="primary"
+                        sx={{ fontSize: (theme) => theme.spacing(2) }}
+                      />
+                    )
                   }
                   onClick={handleConnectWithEmail}
                   variant="contained"
