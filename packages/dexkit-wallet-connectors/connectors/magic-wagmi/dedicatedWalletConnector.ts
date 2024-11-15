@@ -135,11 +135,12 @@ export function dedicatedWalletConnector({
           phoneNumber: phoneNumber,
         })
 
-      if (await magic.user.isLoggedIn())
+      if (await magic.user.isLoggedIn()) {
         return {
           accounts: [await getAccount()],
           chainId,
         }
+      }
 
       throw new UserRejectedRequestError(Error('User Rejected Request'))
 
