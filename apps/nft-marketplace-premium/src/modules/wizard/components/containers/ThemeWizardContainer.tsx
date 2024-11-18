@@ -3,18 +3,18 @@ import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
 import Cancel from '@mui/icons-material/Cancel';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {
-    Autocomplete,
-    Box,
-    Button,
-    Divider,
-    FormControl,
-    Grid,
-    MenuItem,
-    Select,
-    Stack,
-    Switch,
-    TextField,
-    Typography,
+  Autocomplete,
+  Box,
+  Button,
+  Divider,
+  FormControl,
+  Grid,
+  MenuItem,
+  Select,
+  Stack,
+  Switch,
+  TextField,
+  Typography,
 } from '@mui/material';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -38,9 +38,9 @@ import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import appConfig from '../../../../../config/app.json';
 import ThemePreviewMenu from '../ThemePreviewMenu';
 interface Props {
-  config: AppConfig;
-  onSave: (config: AppConfig) => void;
-  onChange: (config: AppConfig) => void;
+  config: Partial<AppConfig>;
+  onSave: (config: Partial<AppConfig>) => void;
+  onChange: (config: Partial<AppConfig>) => void;
   onHasChanges?: (hasChanges: boolean) => void;
   isOnStepper?: boolean;
   stepperButtonProps?: StepperButtonProps;
@@ -66,7 +66,9 @@ export default function ThemeWizardContainer({
   stepperButtonProps,
   showSwap,
 }: Props) {
-  const [selectedThemeId, setSelectedThemeId] = useState<string>(config.theme);
+  const [selectedThemeId, setSelectedThemeId] = useState<string | undefined>(
+    config?.theme,
+  );
 
   const [selectedThemeMode, setSelectedThemeMode] = useState<ThemeMode>(
     config.defaultThemeMode || ThemeMode.light,
@@ -130,7 +132,7 @@ export default function ThemeWizardContainer({
   ]);
 
   const handleCancelEdit = () => {
-    setSelectedThemeId(config.theme);
+    setSelectedThemeId(config?.theme);
   };
 
   const handleSave = () => {

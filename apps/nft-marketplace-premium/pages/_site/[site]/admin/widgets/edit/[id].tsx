@@ -26,10 +26,10 @@ import { LoginAppButton } from 'src/components/LoginAppButton';
 import { LoginButton } from 'src/components/LoginButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
+import { useAdminWidgetConfigQuery } from '@/modules/wizard/hooks/widget';
 import { EditWidgetWizardContainer } from '@/modules/wizard/widget/components/containers/EditWidgetWizardContainer';
 import { myAppsApi } from '@dexkit/ui/constants/api';
 import { useAuth } from '@dexkit/ui/hooks/auth';
-import { useAdminWidgetConfigQuery } from 'src/hooks/widget';
 import { getAppConfig } from 'src/services/app';
 
 export const WizardWidgetEditPage: NextPage = () => {

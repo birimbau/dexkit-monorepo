@@ -1,4 +1,3 @@
-import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Box,
   Button,
@@ -63,7 +62,8 @@ function getSectionType(
 }
 
 export interface PageSectionsProps {
-  page: AppPage;
+  sections?: AppPageSection[];
+  pageTitle?: string;
   onSwap: (index: number, other: number) => void;
   onAction: (action: string, index: number) => void;
   onClose: () => void;
@@ -80,7 +80,8 @@ export interface PageSectionsProps {
 }
 
 export default function PageSections({
-  page,
+  sections,
+  pageTitle,
   pageKey,
   siteId,
   onSwap,
@@ -147,7 +148,7 @@ export default function PageSections({
 
   const filteredSections = useMemo(() => {
     return (
-      page?.sections
+      sections
         ?.map((p, index) => {
           return { ...p, index };
         })
@@ -172,7 +173,14 @@ export default function PageSections({
           return filter;
         }) || []
     );
-  }, [page, JSON.stringify(page), query, hideDesktop, hideMobile, sectionType]);
+  }, [
+    sections,
+    JSON.stringify(sections),
+    query,
+    hideDesktop,
+    hideMobile,
+    sectionType,
+  ]);
 
   const { formatMessage } = useIntl();
 
@@ -185,12 +193,17 @@ export default function PageSections({
     JSON.stringify(filteredSections),
     currPage,
     pageSize,
-    JSON.stringify(page),
+    JSON.stringify(sections),
   ]);
 
   const pageList = useMemo(() => {
     return filteredSections?.slice(offset, limit) || [];
-  }, [JSON.stringify(filteredSections), offset, limit, JSON.stringify(page)]);
+  }, [
+    JSON.stringify(filteredSections),
+    offset,
+    limit,
+    JSON.stringify(sections),
+  ]);
 
   const renderSections = () => {
     return pageList?.map((section, index) => {
@@ -259,7 +272,7 @@ export default function PageSections({
               onEditTitle(pageKey, title);
             }
           }}
-          page={page}
+          pageTitle={pageTitle}
         />
 
         <Box py={2}>

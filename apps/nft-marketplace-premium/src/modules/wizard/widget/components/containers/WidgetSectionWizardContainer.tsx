@@ -1,4 +1,4 @@
-import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
+import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import {
   Button,
   Divider,
@@ -10,22 +10,19 @@ import {
 } from '@mui/material';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { getTheme } from '../../../../theme';
-import { BuilderKit } from '../../constants';
-import { PagesContainer } from '../PagesContainer';
 
+import { PagesContainer } from '@/modules/wizard/components/PagesContainer';
+
+import { BuilderKit } from '@/modules/wizard/constants';
 import { AppConfirmDialog } from '@dexkit/ui';
-import dynamic from 'next/dynamic';
-import { PagesContext } from './EditWizardContainer';
-
-const ApiKeyIntegrationDialog = dynamic(
-  () => import('../dialogs/ApiKeyIntegrationDialog'),
-);
+import { WidgetConfig } from '@dexkit/ui/modules/wizard/types/widget';
+import { getTheme } from 'src/theme';
+import { PagesContext } from './EditWidgetWizardContainer';
 
 interface Props {
-  config: AppConfig;
-  onSave: (config: AppConfig) => void;
-  onChange: (config: AppConfig) => void;
+  config: WidgetConfig;
+  onSave: (config: WidgetConfig) => void;
+  onChange: (config: WidgetConfig) => void;
   hasChanges?: boolean;
   builderKit?: BuilderKit;
   onHasChanges: (hasChanges: boolean) => void;
@@ -33,7 +30,7 @@ interface Props {
   previewUrl?: string;
 }
 
-export default function PagesWizardContainer({
+export default function WidgetSectionWizardContainer({
   config,
   siteSlug,
   onSave,
@@ -44,7 +41,9 @@ export default function PagesWizardContainer({
   previewUrl,
 }: Props) {
   const [pages, setPages] = useState<{ [key: string]: AppPage }>(
-    structuredClone(config.pages),
+    structuredClone({
+      ['widget']: config.page,
+    }),
   );
 
   const [hasPageChanges, setHasPageChanges] = useState(false);
@@ -54,10 +53,6 @@ export default function PagesWizardContainer({
 
   const selectedTheme = useMemo(() => {
     if (config.theme !== undefined) {
-      if (config.theme === 'custom' && config.customTheme) {
-        return responsiveFontSizes(createTheme(JSON.parse(config.customTheme)));
-      }
-
       if (config.theme === 'custom' && config.customThemeDark) {
         return responsiveFontSizes(
           createTheme(JSON.parse(config.customThemeDark)),
@@ -72,15 +67,10 @@ export default function PagesWizardContainer({
 
       return responsiveFontSizes(getTheme({ name: config.theme }).theme);
     }
-  }, [
-    config.customTheme,
-    config.theme,
-    config.customThemeDark,
-    config.customThemeLight,
-  ]);
+  }, [config.theme, config.customThemeDark, config.customThemeLight]);
 
   const handleSave = () => {
-    const newConfig = { ...config, pages };
+    const newConfig = { ...config, page: pages['widget'] };
 
     onSave(newConfig);
 
@@ -100,10 +90,10 @@ export default function PagesWizardContainer({
       setPages((value) => {
         let res = cb(value);
 
-        onChange({
+        /* onChange({
           ...config,
           pages: { ...(res as { [key: string]: AppPage }) },
-        });
+        });*/
 
         onHasChanges(true);
 
@@ -144,7 +134,7 @@ export default function PagesWizardContainer({
             });
             setHasSectionChanges(false);
           } else {
-            setPages(structuredClone(config.pages));
+            // setPages(structuredClone(config.pages));
             setHasPageChanges(false);
           }
 

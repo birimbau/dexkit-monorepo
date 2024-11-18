@@ -119,7 +119,7 @@ export interface AppCollection {
   disableSecondarySells?: boolean;
 }
 
-interface AppToken {
+export interface AppToken {
   name?: string;
   logoURI?: string;
   keywords?: string[];

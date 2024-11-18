@@ -15,9 +15,9 @@ import TokensSection from '../sections/TokensSection';
 import { StepperButtons } from '../steppers/StepperButtons';
 
 interface Props {
-  config: AppConfig;
+  config: Partial<AppConfig>;
   site?: SiteResponse | null;
-  onSave: (config: AppConfig) => void;
+  onSave: (config: Partial<AppConfig>) => void;
   onHasChanges?: (hasChanges: boolean) => void;
   isOnStepper?: boolean;
   isSwap?: boolean;

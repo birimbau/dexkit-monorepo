@@ -243,7 +243,8 @@ export default function Pages({
                 onAddCustomSection={handleAdd(selectedKey, true)}
                 onEditTitle={onEditTitle}
                 pageKey={selectedKey}
-                page={pages[selectedKey]}
+                sections={pages[selectedKey]?.sections}
+                pageTitle={pages[selectedKey]?.title}
                 onSwap={handleSwap(selectedKey)}
                 onAction={handleAction(selectedKey)}
                 onClose={handlePageClose}

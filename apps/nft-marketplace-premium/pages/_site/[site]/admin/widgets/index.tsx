@@ -2,7 +2,7 @@ import MarketplacesTableSkeleton from '@/modules/admin/components/tables/Maketpl
 import WidgetsTable from '@/modules/admin/components/tables/WidgetsTable';
 import { MismatchAccount } from '@/modules/wizard/components/MismatchAccount';
 import { WelcomeMessage } from '@/modules/wizard/components/WelcomeMessage';
-import ConfigureDomainDialog from '@/modules/wizard/components/dialogs/ConfigureDomainDialog';
+import { useWidgetsByOwnerQuery } from '@/modules/wizard/hooks/widget';
 import { useDebounce } from '@dexkit/core/hooks';
 import Link from '@dexkit/ui/components/AppLink';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
@@ -38,7 +38,7 @@ import { LoginAppButton } from 'src/components/LoginAppButton';
 import AuthMainLayout from 'src/components/layouts/authMain';
 
 import { useConnectWalletDialog } from 'src/hooks/app';
-import { useWidgetsByOwnerQuery } from 'src/hooks/widget';
+
 import { getAppConfig } from 'src/services/app';
 import { ConfigResponse } from 'src/types/whitelabel';
 
@@ -189,15 +189,6 @@ export const AdminWidgetsIndexPage: NextPage = () => {
 
   return (
     <>
-      <ConfigureDomainDialog
-        dialogProps={{
-          open: isOpen,
-          onClose: handleCloseConfigDomain,
-          fullWidth: true,
-          maxWidth: 'sm',
-        }}
-        config={selectedConfig}
-      />
       <Container maxWidth={'xl'}>
         <Grid container spacing={2}>
           <Grid item xs={12}>

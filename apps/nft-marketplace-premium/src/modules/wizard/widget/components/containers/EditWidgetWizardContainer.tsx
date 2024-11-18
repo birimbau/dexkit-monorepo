@@ -17,7 +17,6 @@ import Close from '@mui/icons-material/Close';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import LinkIcon from '@mui/icons-material/Link';
 import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
@@ -27,13 +26,13 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { NextSeo } from 'next-seo';
 import dynamic from 'next/dynamic';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { isAddressEqual } from '@dexkit/core/utils';
 import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import { useAuth } from '@dexkit/ui/hooks/auth';
-import { AppConfig, AppPage } from '@dexkit/ui/modules/wizard/types/config';
+import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import DatasetIcon from '@mui/icons-material/Dataset';
@@ -42,39 +41,36 @@ import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 
-import SiteWizardProvider from '../../providers/SiteWizardProvider';
-
+import {
+  QUERY_ADMIN_WIDGET_CONFIG,
+  useSendWidgetConfigMutation,
+} from '@/modules/wizard/hooks/widget';
 import { WidgetConfig } from '@dexkit/ui/modules/wizard/types/widget';
-import { PreviewAppButton } from '../PreviewAppButton';
-import { WelcomeMessage } from '../WelcomeMessage';
-import SignConfigDialog from '../dialogs/SignConfigDialog';
-import RankingWizardContainer from './RankingWizardContainer';
+
+import CollectionWizardContainer from '@/modules/wizard/components/containers/CollectionWizardContainer';
+import TokenWizardContainer from '@/modules/wizard/components/containers/TokenWizardContainer';
+import SignConfigDialog from '@/modules/wizard/components/dialogs/SignConfigDialog';
+import { WelcomeMessage } from '@/modules/wizard/components/WelcomeMessage';
+import GeneralWizardContainer from './GeneralWizardContainer';
+import WidgetSectionWizardContainer from './WidgetSectionWizardContainer';
 
 const NetworksWizardContainer = dynamic(
-  () => import('./../../../components/containers/NetworksWizardContainer'),
-);
-
-const UserEventAnalyticsContainer = dynamic(
-  () => import('./../../../components/containers//UserEventAnalyticsContainer'),
+  () =>
+    import('@/modules/wizard/components/containers/NetworksWizardContainer'),
 );
 
 const MarketplaceFeeWizardContainer = dynamic(
   () =>
-    import('./../../../components/containers/MarketplaceFeeWizardContainer'),
-);
-
-const PagesWizardContainer = dynamic(
-  () => import('./../../../components/containers/PagesWizardContainer'),
+    import(
+      '@/modules/wizard/components/containers/MarketplaceFeeWizardContainer'
+    ),
 );
 
 const SwapFeeWizardContainer = dynamic(
-  () => import('./../../../components/containers/SwapFeeWizardContainer'),
+  () => import('@/modules/wizard/components/containers/SwapFeeWizardContainer'),
 );
 const ThemeWizardContainer = dynamic(
-  () => import('./../../../components/containers/ThemeWizardContainer'),
-);
-const TokenWizardContainer = dynamic(
-  () => import('./../../../components/containers/TokenWizardContainer'),
+  () => import('@/modules/wizard/components/containers/ThemeWizardContainer'),
 );
 
 interface Props {
@@ -84,7 +80,7 @@ interface Props {
 export enum ActiveMenu {
   General = 'general',
   Theme = 'theme',
-  Pages = 'pages',
+  Components = 'components',
   UserEventAnalytics = 'user-event-analytics',
   MarketplaceFees = 'marketplace-fees',
   SwapFees = 'swap-fees',
@@ -116,12 +112,12 @@ export const PagesContext = React.createContext<PagesContextType>({
 export function EditWidgetWizardContainer({ widget }: Props) {
   const router = useRouter();
   const { tab } = router.query as { tab?: ActiveMenu };
+  const [widgetWizard, setWidgetWizard] = useState(widget);
+
   const [hasChanges, setHasChanges] = useState(false);
   const [openHasChangesConfirm, setOpenHasChangesConfirm] = useState(false);
 
-  const { setWizardConfig, wizardConfig } = useAppWizardConfig();
-
-  const [selectedKey, setSelectedKey] = useState<string>();
+  const [selectedKey, setSelectedKey] = useState<string | undefined>('widget');
   const [isEditPage, setIsEditPage] = useState(false);
   const [oldPage, setOldPage] = useState<AppPage>();
 
@@ -132,7 +128,7 @@ export function EditWidgetWizardContainer({ widget }: Props) {
 
     setSelectedKey(undefined);
     setIsEditPage(false);
-    setWizardConfig({ ...config });
+
     setHasChanges(false);
   };
 
@@ -202,7 +198,7 @@ export function EditWidgetWizardContainer({ widget }: Props) {
 
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const sendConfigMutation = useSendConfigMutation({ slug: site?.slug });
+  const sendConfigMutation = useSendWidgetConfigMutation({ id: widget?.id });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -213,12 +209,6 @@ export function EditWidgetWizardContainer({ widget }: Props) {
   const [showConfirmSendConfig, setShowConfirmSendConfig] = useState(false);
   const { account } = useWeb3React();
 
-  useEffect(() => {
-    if (config) {
-      setWizardConfig({ ...config });
-    }
-  }, [activeMenu, config]);
-
   // Pages forms
   const handleCloseConfirmSendConfig = () => {
     setShowConfirmSendConfig(false);
@@ -228,14 +218,18 @@ export function EditWidgetWizardContainer({ widget }: Props) {
 
   const handleConfirmSendConfig = async () => {
     setShowConfirmSendConfig(false);
-    const newSite = { ...site, config: wizardConfig };
 
-    await sendConfigMutation.mutateAsync(newSite, {
-      onSuccess: () => {
-        setHasChanges(false);
-        queryClient.invalidateQueries([QUERY_ADMIN_WHITELABEL_CONFIG_NAME]);
-      },
-    });
+    if (widgetWizard) {
+      await sendConfigMutation.mutateAsync(
+        { config: widgetWizard },
+        {
+          onSuccess: () => {
+            setHasChanges(false);
+            queryClient.invalidateQueries([QUERY_ADMIN_WIDGET_CONFIG]);
+          },
+        },
+      );
+    }
 
     setShowSendingConfig(true);
   };
@@ -261,22 +255,21 @@ export function EditWidgetWizardContainer({ widget }: Props) {
     sendConfigMutation.reset();
   };
 
-  const handleSave = (_config: AppConfig) => {
+  const handleSave = (_config: Partial<WidgetConfig>) => {
     setShowConfirmSendConfig(true);
+    const newConfig = { ...widgetWizard, ..._config } as WidgetConfig;
 
-    const newConfig = { ...wizardConfig, ..._config };
-
-    setWizardConfig(newConfig);
+    setWidgetWizard(newConfig);
   };
 
   const handleChange = useCallback(
-    (_config: AppConfig) => {
-      const newConfig = { ..._config };
+    (_config: Partial<WidgetConfig>) => {
+      const newConfig = { ...widgetWizard, ..._config } as WidgetConfig;
 
-      setWizardConfig(newConfig);
+      setWidgetWizard(newConfig);
     },
 
-    [wizardConfig, setWizardConfig],
+    [widgetWizard, setWidgetWizard],
   );
 
   const renderMenu = () => (
@@ -355,12 +348,15 @@ export function EditWidgetWizardContainer({ widget }: Props) {
               </ListItem>
               <ListItem disablePadding>
                 <ListItemButton
-                  onClick={() => handleChangeTab(ActiveMenu.Pages)}
-                  selected={activeMenu === ActiveMenu.Pages}
+                  onClick={() => handleChangeTab(ActiveMenu.Components)}
+                  selected={activeMenu === ActiveMenu.Components}
                 >
                   <ListItemText
                     primary={
-                      <FormattedMessage id="pages" defaultMessage={'Pages'} />
+                      <FormattedMessage
+                        id="components"
+                        defaultMessage={'Components'}
+                      />
                     }
                   />
                 </ListItemButton>
@@ -539,7 +535,7 @@ export function EditWidgetWizardContainer({ widget }: Props) {
           </List>
         </nav>
       )}
-      {isAddressEqual(site?.owner, account) && (
+      {isAddressEqual(widget?.owner, account) && (
         <nav aria-label="integrations">
           <List>
             <ListItemButton onClick={handleClickIntegrations}>
@@ -628,7 +624,7 @@ export function EditWidgetWizardContainer({ widget }: Props) {
           setHasChanges(false);
           setOpenHasChangesConfirm(false);
           setActiveMenu(activeMenuWithChanges);
-          setWizardConfig(config);
+
           setIsEditPage(false);
           setSelectedKey(undefined);
         }}
@@ -774,16 +770,7 @@ export function EditWidgetWizardContainer({ widget }: Props) {
               justifyContent={'space-between'}
             >
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <PreviewAppButton appConfig={wizardConfig} site={site?.slug} />
-                {site?.previewUrl && (
-                  <Button
-                    href={site?.previewUrl}
-                    target={'_blank'}
-                    startIcon={<LinkIcon />}
-                  >
-                    <FormattedMessage id="open.url" defaultMessage="Open url" />
-                  </Button>
-                )}
+                {/* <PreviewAppButton appConfig={widget.} site={site?.slug} />*/}
               </Stack>
             </Stack>
           </Grid>
@@ -810,108 +797,90 @@ export function EditWidgetWizardContainer({ widget }: Props) {
           <Grid item xs={12} sm={0.1}></Grid>
           <Grid item xs={12} sm={9.8}>
             <Box>
-              <SiteWizardProvider siteId={site?.id}>
-                <Stack spacing={2} className={'builder-forms'}>
-                  {activeMenu === ActiveMenu.General && config && (
-                    <GeneralWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
+              <Stack spacing={2} className={'builder-forms'}>
+                {activeMenu === ActiveMenu.General && widgetWizard && (
+                  <GeneralWizardContainer
+                    config={widgetWizard}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                    onHasChanges={setHasChanges}
+                  />
+                )}
 
-                  {activeMenu === ActiveMenu.Theme && config && (
-                    <ThemeWizardContainer
-                      config={config}
-                      showSwap={undefined}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
+                {activeMenu === ActiveMenu.Theme && widgetWizard && (
+                  <ThemeWizardContainer
+                    config={widgetWizard}
+                    showSwap={undefined}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                    onHasChanges={setHasChanges}
+                  />
+                )}
 
-                  {activeMenu === ActiveMenu.Pages && config && (
-                    <>
-                      <PagesContext.Provider
-                        value={{
-                          selectedKey,
-                          setSelectedKey,
-                          isEditPage,
-                          setIsEditPage,
-                          handleCancelEdit,
-                          setOldPage,
-                          oldPage,
-                        }}
-                      >
-                        <PagesWizardContainer
-                          config={config}
-                          onSave={handleSave}
-                          onChange={handleChange}
-                          onHasChanges={setHasChanges}
-                          hasChanges={hasChanges}
-                          builderKit={activeBuilderKit}
-                          siteSlug={site?.slug}
-                          previewUrl={site?.previewUrl}
-                        />
-                      </PagesContext.Provider>
-                    </>
-                  )}
+                {activeMenu === ActiveMenu.Components && widgetWizard && (
+                  <>
+                    <PagesContext.Provider
+                      value={{
+                        selectedKey,
+                        setSelectedKey,
+                        isEditPage,
+                        setIsEditPage,
+                        handleCancelEdit,
+                        setOldPage,
+                        oldPage,
+                      }}
+                    >
+                      <WidgetSectionWizardContainer
+                        config={widgetWizard}
+                        onSave={handleSave}
+                        onChange={handleChange}
+                        onHasChanges={setHasChanges}
+                        hasChanges={hasChanges}
+                      />
+                    </PagesContext.Provider>
+                  </>
+                )}
 
-                  {activeMenu === ActiveMenu.MarketplaceFees && config && (
-                    <MarketplaceFeeWizardContainer
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                    />
-                  )}
+                {activeMenu === ActiveMenu.MarketplaceFees && widgetWizard && (
+                  <MarketplaceFeeWizardContainer
+                    config={widgetWizard}
+                    onHasChanges={setHasChanges}
+                    onSave={handleSave}
+                  />
+                )}
 
-                  {activeMenu === ActiveMenu.SwapFees && config && (
-                    <SwapFeeWizardContainer
-                      config={config}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-                  {activeMenu === ActiveMenu.Collections && (
-                    <CollectionWizardContainer
-                      site={site}
-                      config={config}
-                      onHasChanges={setHasChanges}
-                      onSave={handleSave}
-                    />
-                  )}
+                {activeMenu === ActiveMenu.SwapFees && widgetWizard && (
+                  <SwapFeeWizardContainer
+                    config={widgetWizard}
+                    onSave={handleSave}
+                    onHasChanges={setHasChanges}
+                  />
+                )}
+                {activeMenu === ActiveMenu.Collections && widgetWizard && (
+                  <CollectionWizardContainer
+                    config={widgetWizard}
+                    onHasChanges={setHasChanges}
+                    onSave={handleSave}
+                  />
+                )}
 
-                  {activeMenu === ActiveMenu.Rankings &&
-                    site?.owner?.toLowerCase() ===
-                      user?.address?.toLowerCase() && (
-                      <RankingWizardContainer siteId={site?.id} />
-                    )}
+                {activeMenu === ActiveMenu.Networks && widgetWizard && (
+                  <NetworksWizardContainer
+                    config={widgetWizard}
+                    onSave={handleSave}
+                    onChange={handleChange}
+                    onHasChanges={setHasChanges}
+                  />
+                )}
 
-                  {activeMenu === ActiveMenu.Tokens && config && (
-                    <TokenWizardContainer
-                      config={config}
-                      site={site}
-                      onSave={handleSave}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-
-                  {activeMenu === ActiveMenu.UserEventAnalytics && config && (
-                    <UserEventAnalyticsContainer siteId={site?.id} />
-                  )}
-
-                  {activeMenu === ActiveMenu.Networks && config && (
-                    <NetworksWizardContainer
-                      siteId={site?.id}
-                      config={config}
-                      onSave={handleSave}
-                      onChange={handleChange}
-                      onHasChanges={setHasChanges}
-                    />
-                  )}
-                </Stack>
-              </SiteWizardProvider>
+                {activeMenu === ActiveMenu.Tokens && widgetWizard && (
+                  <TokenWizardContainer
+                    config={widgetWizard}
+                    onSave={handleSave}
+                    onHasChanges={setHasChanges}
+                  />
+                )}
+              </Stack>
             </Box>
             {/*false && theme && (
             <Grid item xs={12} sm={6}>

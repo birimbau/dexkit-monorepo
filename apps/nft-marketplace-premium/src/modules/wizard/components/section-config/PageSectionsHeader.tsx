@@ -1,5 +1,4 @@
 import { useIsMobile } from '@dexkit/core';
-import { AppPage } from '@dexkit/ui/modules/wizard/types/config';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
@@ -21,7 +20,7 @@ export interface PageSectionsHeaderProps {
   onPreview: () => void;
   onClone: () => void;
   onEditTitle: (title: string) => void;
-  page: AppPage;
+  pageTitle?: string;
 }
 
 export default function PageSectionsHeader({
@@ -29,7 +28,7 @@ export default function PageSectionsHeader({
   onPreview,
   onClone,
   onEditTitle,
-  page,
+  pageTitle,
 }: PageSectionsHeaderProps) {
   const [isEditTitle, setIsEditTitle] = useState(false);
 
@@ -42,7 +41,7 @@ export default function PageSectionsHeader({
     }, 300);
   };
 
-  const [title, setTitle] = useState(page?.title ?? '');
+  const [title, setTitle] = useState(pageTitle ?? '');
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -55,7 +54,7 @@ export default function PageSectionsHeader({
 
   const handleCancel = () => {
     setIsEditTitle(false);
-    setTitle(page?.title || '');
+    setTitle(pageTitle || '');
   };
 
   const isMobile = useIsMobile();
@@ -101,7 +100,7 @@ export default function PageSectionsHeader({
                 cursor: 'pointer',
               }}
             >
-              {page?.title}
+              {pageTitle || ''}
             </Typography>
           </ButtonBase>
         )}

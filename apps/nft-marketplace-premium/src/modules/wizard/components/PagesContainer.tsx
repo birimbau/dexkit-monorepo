@@ -73,7 +73,7 @@ export function PagesContainer({
   site,
 }: Props) {
   const [showConfirmRemove, setShowConfirmRemove] = useState(false);
-  const [selectedSectionIndex, setSelectedSectionindex] = useState<number>(-1);
+  const [selectedSectionIndex, setSelectedSectionIndex] = useState<number>(-1);
   const [pageToClone, setPageToClone] = useState<string>();
 
   const [activeSection, setActiveSection] = useState<PageSectionKey>();
@@ -84,7 +84,7 @@ export function PagesContainer({
 
   const handleEditPageSections = (page: string, index: number) => {
     setSelectedPage(page);
-    setSelectedSectionindex(index);
+    setSelectedSectionIndex(index);
   };
 
   const handleSavePageSections = (section: AppPageSection, index: number) => {
@@ -119,19 +119,19 @@ export function PagesContainer({
 
   const handleRemovePageSections = (page: string, index: number) => {
     setSelectedPage(page);
-    setSelectedSectionindex(index);
+    setSelectedSectionIndex(index);
 
     setShowConfirmRemove(true);
   };
 
   const handleAddPageSections = (page: string) => {
     setSelectedPage(page);
-    setSelectedSectionindex(-1);
+    setSelectedSectionIndex(-1);
   };
 
   const handleCloseConfirmRemove = () => {
     setShowConfirmRemove(false);
-    setSelectedSectionindex(-1);
+    setSelectedSectionIndex(-1);
     setSelectedPage(undefined);
   };
 
