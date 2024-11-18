@@ -12,7 +12,10 @@ import ProtectedContent from '@/modules/home/components/ProtectedContent';
 import { SectionsRenderer } from '@/modules/wizard/components/sections/SectionsRenderer';
 
 import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
-import { GatedCondition } from '@dexkit/ui/modules/wizard/types/config';
+import {
+  GatedCondition,
+  PageSectionsLayout,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { AuthProvider } from '@dexkit/ui/providers/authProvider';
 import { NoSsr } from '@mui/material';
@@ -30,6 +33,7 @@ const EmbedPage: NextPage<{
   gatedLayout?: GatedPageLayout;
   result: boolean;
   hideLayout: boolean;
+  layout?: PageSectionsLayout;
   partialResults: { [key: number]: boolean };
   balances: { [key: number]: string };
   slug?: string;
@@ -41,6 +45,7 @@ const EmbedPage: NextPage<{
   conditions,
   hideLayout,
   gatedLayout,
+  layout,
   slug,
 }) => {
   if (isProtected) {
@@ -52,6 +57,7 @@ const EmbedPage: NextPage<{
             <ProtectedContent
               site={site}
               page={page}
+              pageLayout={layout}
               isProtected={isProtected}
               conditions={conditions}
               layout={gatedLayout}
@@ -71,6 +77,7 @@ const EmbedPage: NextPage<{
             isProtected={isProtected}
             conditions={conditions}
             layout={gatedLayout}
+            pageLayout={layout}
             slug={slug}
           />
         </AuthMainLayout>
@@ -82,13 +89,13 @@ const EmbedPage: NextPage<{
     return (
       <NoSsr>
         <GlobalDialogs />
-        <SectionsRenderer sections={sections} />
+        <SectionsRenderer sections={sections} layout={layout} />
       </NoSsr>
     );
   } else {
     return (
       <MainLayout disablePadding noSsr={true}>
-        <SectionsRenderer sections={sections} />
+        <SectionsRenderer sections={sections} layout={layout} />
       </MainLayout>
     );
   }
@@ -142,6 +149,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         gatedLayout: homePage?.gatedPageLayout,
         site: params?.site,
         page: sitePage,
+        layout: homePage.layout,
         balances: {},
         partialResults: {},
         ...configResponse,
@@ -153,6 +161,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: homePage.sections,
+      layout: homePage.layout,
       page: sitePage,
       hideLayout: hideM,
 

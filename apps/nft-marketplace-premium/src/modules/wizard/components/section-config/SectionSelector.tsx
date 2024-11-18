@@ -11,7 +11,7 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { SectionCategory, sections } from './Sections';
+import { SECTION_TYPES_DATA, SectionCategory } from './Sections';
 
 interface Props {
   onClickSection: ({ sectionType }: { sectionType: SectionType }) => void;
@@ -135,8 +135,7 @@ export function SectionSelector({ onClickSection }: Props) {
                 </Grid>
                 <Grid item xs={12}>
                   <Grid container spacing={2} flexWrap="wrap">
-                    {sections
-                      .filter((s) => s.category === cat.value)
+                    {SECTION_TYPES_DATA.filter((s) => s.category === cat.value)
                       .filter((s) => {
                         if (search) {
                           return (

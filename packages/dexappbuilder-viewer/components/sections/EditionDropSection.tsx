@@ -1,34 +1,36 @@
 import { EditionDropPageSection } from "@dexkit/ui/modules/wizard/types/section";
 import {
-    useActiveClaimConditionForWallet,
-    useClaimConditions,
-    useClaimerProofs,
-    useClaimIneligibilityReasons,
-    useContract,
-    useContractMetadata,
-    useTotalCirculatingSupply,
+  useActiveClaimConditionForWallet,
+  useClaimConditions,
+  useClaimerProofs,
+  useClaimIneligibilityReasons,
+  useContract,
+  useContractMetadata,
+  useTotalCirculatingSupply,
 } from "@thirdweb-dev/react";
 
+import { NETWORK_FROM_SLUG } from "@dexkit/core/constants/networks";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { formatUnits } from "@dexkit/core/utils/ethers/formatUnits";
 import { ConnectWalletButton } from "@dexkit/ui/components/ConnectWalletButton";
+import { SwitchNetworkButton } from "@dexkit/ui/components/SwitchNetworkButton";
 import { useDexKitContext } from "@dexkit/ui/hooks";
 import {
-    useErc20AllowanceMutation,
-    useErc20ApproveMutationV2,
+  useErc20AllowanceMutation,
+  useErc20ApproveMutationV2,
 } from "@dexkit/ui/hooks/balances";
 import { useInterval } from "@dexkit/ui/hooks/misc";
 import { useTrackUserEventsMutation } from "@dexkit/ui/hooks/userEvents";
 import { useWeb3React } from "@dexkit/wallet-connectors/hooks/useWeb3React";
 import {
-    Alert,
-    Button,
-    Card,
-    CardContent,
-    Grid,
-    Skeleton,
-    TextField,
-    Typography,
+  Alert,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  Skeleton,
+  TextField,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -104,10 +106,10 @@ export function parseIneligibility(
 }
 
 export function EditionDropSection({ section }: Props) {
-  const { tokenId, address } = section.config;
+  const { tokenId, address, network } = section.config;
   const trackUserEventsMutation = useTrackUserEventsMutation();
   const { createNotification, watchTransactionDialog } = useDexKitContext();
-
+  const networkChainId = NETWORK_FROM_SLUG(network)?.chainId;
   const { account, chainId, provider } = useWeb3React();
   const [quantity, setQuantity] = useState(1);
   const { contract: editionDrop } = useContract(address);
@@ -657,7 +659,13 @@ export function EditionDropSection({ section }: Props) {
                           defaultMessage={"Sold out"}
                         />
                       </Typography>
-                    ) : account ? (
+                    ) : !account ? (
+                      <ConnectWalletButton />
+                    ) : chainId !== networkChainId ? (
+                      <Box>
+                        <SwitchNetworkButton desiredChainId={networkChainId} />
+                      </Box>
+                    ) : (
                       <Button
                         disabled={
                           !canClaim ||
@@ -765,8 +773,6 @@ export function EditionDropSection({ section }: Props) {
                           buttonText
                         )}
                       </Button>
-                    ) : (
-                      <ConnectWalletButton />
                     )}
                   </Stack>
                 ) : (

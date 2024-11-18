@@ -1,4 +1,7 @@
-import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import {
+  AppConfig,
+  PageSectionsLayout,
+} from '@dexkit/ui/modules/wizard/types/config';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dialog, DialogProps, IconButton, Typography } from '@mui/material';
@@ -17,6 +20,7 @@ interface Props {
   page?: string;
   site?: string;
   index?: number;
+  layout?: PageSectionsLayout;
 }
 
 export default function PreviewPageDialog({
@@ -29,6 +33,7 @@ export default function PreviewPageDialog({
   page,
   site,
   index,
+  layout,
 }: Props) {
   const { onClose } = dialogProps;
 
@@ -62,6 +67,7 @@ export default function PreviewPageDialog({
         page={page}
         site={site}
         index={index}
+        layout={layout}
         title={
           <Typography variant="body1">
             <FormattedMessage

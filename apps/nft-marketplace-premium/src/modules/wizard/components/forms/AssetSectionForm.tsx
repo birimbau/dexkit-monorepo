@@ -206,7 +206,7 @@ export default function AssetSectionForm({
                   <Grid item xs={12}>
                     <Box>
                       <CollectionItemAutocomplete
-                        formValue={{
+                        value={{
                           chainId: NETWORK_FROM_SLUG(values.network)?.chainId,
                           contractAddress: values.address.toLowerCase(),
                         }}

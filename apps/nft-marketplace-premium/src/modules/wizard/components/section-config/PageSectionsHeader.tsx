@@ -2,6 +2,7 @@ import { useIsMobile } from '@dexkit/core';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import Check from '@mui/icons-material/Check';
 import Close from '@mui/icons-material/Close';
+import Dashboard from '@mui/icons-material/Dashboard';
 import Visibility from '@mui/icons-material/VisibilityOutlined';
 import {
   Button,
@@ -21,6 +22,8 @@ export interface PageSectionsHeaderProps {
   onClone: () => void;
   onEditTitle: (title: string) => void;
   pageTitle?: string;
+  onEditLayout: () => void;
+  page: AppPage;
 }
 
 export default function PageSectionsHeader({
@@ -29,6 +32,8 @@ export default function PageSectionsHeader({
   onClone,
   onEditTitle,
   pageTitle,
+  onEditLayout,
+  page,
 }: PageSectionsHeaderProps) {
   const [isEditTitle, setIsEditTitle] = useState(false);
 
@@ -118,6 +123,9 @@ export default function PageSectionsHeader({
 
       <Button onClick={onPreview} startIcon={<Visibility />}>
         <FormattedMessage id="preview" defaultMessage="Preview" />
+      </Button>
+      <Button startIcon={<Dashboard />} onClick={onEditLayout}>
+        <FormattedMessage id="edit.layout" defaultMessage="Edit layout" />
       </Button>
     </Stack>
   );

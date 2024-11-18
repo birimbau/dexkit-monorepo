@@ -4,6 +4,7 @@ import { GatedPageLayout } from '@dexkit/ui/modules/wizard/types';
 import {
   AppPage,
   GatedCondition,
+  PageSectionsLayout,
 } from '@dexkit/ui/modules/wizard/types/config';
 import Add from '@mui/icons-material/Add';
 import Search from '@mui/icons-material/Search';
@@ -19,6 +20,7 @@ import {
   Experimental_CssVarsProvider as CssVarsProvider,
   SupportedColorScheme,
 } from '@mui/material/styles';
+import dynamic from 'next/dynamic';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { PageSectionKey } from '../../hooks/sections';
@@ -28,6 +30,10 @@ import PageGatedContent from '../gated-content/PageGatedContent';
 import Page from './Page';
 import PageSections from './PageSections';
 import PagesPagination from './PagesPagination';
+
+const EditPageSectionsLayoutDialog = dynamic(
+  () => import('../dialogs/EditPageSectionsLayoutDialog'),
+);
 
 export interface PagesProps {
   pages: {
@@ -45,6 +51,7 @@ export interface PagesProps {
     layout?: GatedPageLayout,
     enableGatedConditions?: boolean,
   ) => void;
+  onUpdatePageLayout: (page: string, layout: PageSectionsLayout) => void;
   onRemovePage: (page: string) => void;
   onChangeName: (page: string, index: number, name: string) => void;
   theme?: {
@@ -64,6 +71,7 @@ export default function Pages({
   activeSection,
   onAdd,
   onClonePage,
+  onUpdatePageLayout,
   onUpdateGatedConditions,
   onRemovePage,
   onEditTitle,
@@ -199,6 +207,37 @@ export default function Pages({
     setSelectedKey(undefined);
   };
 
+  const [showLayoutEdit, setShowLayoutEdit] = useState(false);
+
+  const handleCloseLayout = () => {
+    setShowLayoutEdit(false);
+  };
+
+  const handleEditLayout = () => {
+    setShowLayoutEdit(true);
+  };
+
+  const handleConfirmEditLayout = (layout: PageSectionsLayout) => {
+    if (selectedKey) {
+      onUpdatePageLayout(selectedKey, layout);
+    }
+  };
+
+  const renderPageLayoutDialog = () => {
+    return (
+      <EditPageSectionsLayoutDialog
+        DialogProps={{
+          open: showLayoutEdit,
+          maxWidth: 'sm',
+          fullWidth: true,
+          onClose: handleCloseLayout,
+        }}
+        layout={selectedKey ? pages[selectedKey].layout : undefined}
+        onConfirm={handleConfirmEditLayout}
+      />
+    );
+  };
+
   const renderPreviewDialog = () => {
     if (showPreview && selectedKey) {
       return (
@@ -215,6 +254,7 @@ export default function Pages({
             name={pages[selectedKey]?.title}
             page={selectedKey}
             site={site}
+            layout={pages[selectedKey].layout}
           />
         </CssVarsProvider>
       );
@@ -235,6 +275,7 @@ export default function Pages({
     return (
       <Box px={{ sm: 4 }}>
         {renderPreviewDialog()}
+        {renderPageLayoutDialog()}
         <Grid container spacing={2}>
           {isEditPage && (
             <Grid item xs={12}>
@@ -253,6 +294,7 @@ export default function Pages({
                 activeSection={activeSection}
                 onClone={() => onClonePage(selectedKey)}
                 onChangeName={handleChangeName(selectedKey)}
+                onEditLayout={handleEditLayout}
                 siteId={site}
               />
             </Grid>
@@ -265,6 +307,7 @@ export default function Pages({
   return (
     <>
       {renderPreviewDialog()}
+      {renderPageLayoutDialog()}
       <Box sx={{ px: { sm: 4 } }}>
         <Grid container spacing={2}>
           <Grid item xs={12}>

@@ -40,8 +40,6 @@ export interface StepperButtonProps {
   isFirstStep?: boolean;
 }
 
-
-
 export type MintNFTFormType = {
   name: string;
   description?: string;
@@ -83,5 +81,6 @@ export type AssetFormType = {
 export interface GamificationPoint {
   userEventType?: string;
   points?: number;
+  title?: string;
   filter?: string;
 }

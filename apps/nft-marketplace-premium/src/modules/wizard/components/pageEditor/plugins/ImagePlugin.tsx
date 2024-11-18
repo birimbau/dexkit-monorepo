@@ -17,6 +17,7 @@ type Data = {
   action: string;
   targetBlank: boolean;
   padding: number;
+  priority: boolean;
 };
 
 // you can pass the shape of the data as the generic type argument
@@ -42,6 +43,10 @@ const ImagePlugin: CellPlugin<Data> = {
             alt: {
               type: 'string',
               title: 'Image alternative description',
+            },
+            priority: {
+              type: 'boolean',
+              title: 'Load image with priority',
             },
             width: {
               type: 'number',
@@ -127,6 +132,10 @@ const ImagePlugin: CellPlugin<Data> = {
             alt: {
               type: 'string',
               title: 'Image alternative description',
+            },
+            priority: {
+              type: 'boolean',
+              title: 'Load image with priority',
             },
             width: {
               type: 'number',

@@ -1,39 +1,30 @@
 import {
-  Alert,
-  AlertTitle,
-  Autocomplete as AutocompleteMUI,
-  AutocompleteRenderInputParams,
-  Box,
   Button,
+  CircularProgress,
   Divider,
-  Fab,
-  FormControl,
   Stack,
-  TextField as TextFieldMUI,
+  TextField,
   Typography,
 } from '@mui/material';
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
 
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { FormattedMessage, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Grid, LinearProgress } from '@mui/material';
-import { Field, FieldArray, Form, Formik } from 'formik';
-import { TextField } from 'formik-mui';
+import { Grid } from '@mui/material';
+import { FieldArray, Form, Formik } from 'formik';
 import { useState } from 'react';
 
 import { useAddAppRankingMutation } from '@/modules/wizard/hooks';
+import { AppRanking } from '@/modules/wizard/types/ranking';
 import { UserEvents } from '@dexkit/core/constants/userEvents';
 import { beautifyCamelCase } from '@dexkit/core/utils';
+import Add from '@mui/icons-material/Add';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import moment from 'moment';
 import { useSnackbar } from 'notistack';
 import { GamificationPoint } from '../../../types';
-import CollectionFilterForm from './Filters/CollectionFilterForm';
-import DropCollectionFilterForm from './Filters/DropCollectionFilter';
-import SwapFilterForm from './Filters/SwapFilterForm';
+import ChangeListener from '../../ChangeListener';
+import LeaderboardRule from './LeaderboardRule';
 
 const userEvents = [
   {
@@ -75,8 +66,9 @@ const options = userEvents.map((op) => op.value);
 const GamificationPointSchema = Yup.array(
   Yup.object().shape({
     userEventType: Yup.string().required(),
-    points: Yup.number().required(),
+    points: Yup.number().required().min(0),
     filter: Yup.string(),
+    title: Yup.string().optional(),
   }),
 );
 
@@ -95,9 +87,13 @@ interface Props {
   rankingId?: number;
   onCancel?: () => void;
   onSubmit?: (settings: GamificationPoint[]) => void;
+  onSave: () => void;
   settings?: GamificationPoint[] | string;
+  onChange: () => void;
   from?: string;
   to?: string;
+  ranking: AppRanking;
+  title?: string;
 }
 // @see https://stackoverflow.com/a/66558369
 function localDate({ dateString }: { dateString: string }) {
@@ -113,19 +109,24 @@ export default function GamificationPointForm({
   rankingId,
   onCancel,
   onSubmit,
+  onSave,
+  onChange,
   settings,
   from,
   to,
+  ranking,
+  title,
 }: Props) {
   const { enqueueSnackbar } = useSnackbar();
   const { formatMessage } = useIntl();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const mutationAddRanking = useAddAppRankingMutation();
+
   const handleAppRankingUpdatedSuccess = () => {
     enqueueSnackbar(
       formatMessage({
-        defaultMessage: 'App leaderboard updated',
-        id: 'app.leaderboard.updated',
+        defaultMessage: 'leaderboard Updated',
+        id: 'leaderboard.updated',
       }),
       {
         variant: 'success',
@@ -152,6 +153,27 @@ export default function GamificationPointForm({
       },
     );
   };
+
+  const [newIndex, setNewIndex] = useState(-1);
+
+  const handleAddNew = (index: number, cb: () => void) => {
+    return () => {
+      setNewIndex(index);
+      cb();
+    };
+  };
+
+  const handleRemoveItem = (cb: () => void) => {
+    return () => {
+      setNewIndex(-1);
+      cb();
+    };
+  };
+
+  const handleSave = () => {
+    setNewIndex(-1);
+  };
+
   return (
     <>
       <Formik
@@ -161,9 +183,10 @@ export default function GamificationPointForm({
               {
                 siteId,
                 rankingId,
-                from: values.from === '' ? undefined : values.from,
-                to: values.to === '' ? undefined : values.to,
+                from: values.from === '' ? moment().format() : values.from,
+                to: values.to === '' ? moment().format() : values.to,
                 settings: values.settings,
+                title,
               },
               {
                 onSuccess: handleAppRankingUpdatedSuccess,
@@ -172,6 +195,7 @@ export default function GamificationPointForm({
             );
 
             //   onSubmit(values.settings);
+            onSave();
           }
           helper.setSubmitting(false);
         }}
@@ -182,7 +206,7 @@ export default function GamificationPointForm({
             ? typeof settings === 'string'
               ? (JSON.parse(settings) as GamificationPoint[])
               : settings
-            : ([{ userEventType: UserEvents.swap }] as GamificationPoint[]),
+            : ([] as GamificationPoint[]),
         }}
         validationSchema={RankingPointsScheme}
       >
@@ -190,6 +214,7 @@ export default function GamificationPointForm({
           handleChange,
           submitForm,
           isSubmitting,
+          setFieldTouched,
           isValid,
           values,
           setFieldValue,
@@ -197,345 +222,171 @@ export default function GamificationPointForm({
           resetForm,
           touched,
         }) => (
-          <Form>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography sx={{ pb: 2 }} variant="subtitle1">
-                  <FormattedMessage
-                    id={'filter.by.data'}
-                    defaultMessage={'Filter by date'}
-                  ></FormattedMessage>
-                  :
-                </Typography>
-
-                <Stack spacing={2} direction={'row'}>
-                  <Field
-                    component={TextField}
-                    type={'datetime-local'}
-                    sx={{ maxWidth: '350px' }}
-                    name={`from`}
-                    label={<FormattedMessage id="From" defaultMessage="From" />}
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                  <Field
-                    component={TextField}
-                    type={'datetime-local'}
-                    sx={{ maxWidth: '350px' }}
-                    name={`to`}
-                    label={<FormattedMessage id="to" defaultMessage="to" />}
-                    fullWidth
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </Stack>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Alert severity="info">
-                  <AlertTitle>
-                    <FormattedMessage
-                      id="info.alert.title.filter.ranking.points"
-                      defaultMessage="Define and attribute points to each user event to build a ranking"
-                    />
-                  </AlertTitle>
-                </Alert>
-                {false && (
-                  <Box sx={{ p: 2 }}>
-                    <Button variant="contained" onClick={() => setOpen(true)}>
-                      <FormattedMessage
-                        id={'preview'}
-                        defaultMessage={'Preview'}
-                      ></FormattedMessage>
-                    </Button>
-                  </Box>
-                )}
-              </Grid>
-            </Grid>
-
-            <FieldArray
-              name="settings"
-              render={(arrayHelpers) => (
-                <Box sx={{ p: 2 }}>
-                  {values.settings.map((setting, index) => (
-                    <Box sx={{ p: 2 }} key={index}>
-                      <Grid container spacing={2} key={index}>
-                        {index !== 0 && (
-                          <Grid item xs={12}>
-                            <Divider />
-                          </Grid>
-                        )}
-
-                        <Grid item xs={12}>
-                          <Stack
-                            direction="row"
-                            justifyContent={'space-between'}
-                            alignItems="center"
-                          >
-                            <Typography align="left">
-                              <b>
-                                <FormattedMessage
-                                  id="rule.index.value"
-                                  defaultMessage="Rule {index}"
-                                  values={{
-                                    index: index + 1,
-                                  }}
-                                />
-                              </b>
-                            </Typography>
-                            <Fab
-                              variant="extended"
-                              onClick={() => arrayHelpers.remove(index)}
-                            >
-                              <DeleteIcon />
-                            </Fab>
-                          </Stack>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <FormControl fullWidth variant="filled">
-                            <AutocompleteMUI
-                              value={userEvents.find(
-                                (u) =>
-                                  u.value ===
-                                  values.settings[index]?.userEventType,
-                              )}
-                              options={userEvents}
-                              onChange={(e: any, value: any) =>
-                                setFieldValue(
-                                  `settings[${index}].userEventType`,
-                                  value?.value,
-                                )
-                              }
-                              isOptionEqualToValue={(
-                                option: any,
-                                value: any,
-                              ) => {
-                                return option.value === value;
-                              }}
-                              getOptionLabel={(option: {
-                                name?: string;
-                                value?: string;
-                              }) => option?.name || ' '}
-                              style={{ width: 350 }}
-                              renderInput={(
-                                params: AutocompleteRenderInputParams,
-                              ) => (
-                                <TextFieldMUI
-                                  {...params}
-                                  // We have to manually set the corresponding fields on the input component
-
-                                  //@ts-ignore
-                                  error={
-                                    //@ts-ignore
-                                    touched[
-                                      `settings[${index}].userEventType`
-                                    ] &&
-                                    //@ts-ignore
-                                    !!errors[`settings[${index}].userEventType`]
-                                  }
-                                  helperText={
-                                    //@ts-ignore
-                                    errors[`settings[${index}].userEventType`]
-                                  }
-                                  label={
-                                    <FormattedMessage
-                                      id="user.event"
-                                      defaultMessage="User Event"
-                                    />
-                                  }
-                                  variant="outlined"
-                                />
-                              )}
-                            />
-                          </FormControl>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <Field
-                            component={TextField}
-                            type={'number'}
-                            sx={{ maxWidth: '350px' }}
-                            name={`settings[${index}].points`}
+          <>
+            {Object.keys(touched).length > 0 && (
+              <ChangeListener
+                isValid={isValid}
+                onChange={onChange}
+                values={values}
+              />
+            )}
+            <Form>
+              <FieldArray
+                name="settings"
+                render={({ handleInsert, handleRemove }) => (
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1">
+                        <FormattedMessage
+                          id="active.period"
+                          defaultMessage="Active period"
+                        />
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <DateTimePicker
+                            ampm={false}
+                            value={moment(values.from)}
                             label={
                               <FormattedMessage
-                                id="points"
-                                defaultMessage="Points"
+                                id="From"
+                                defaultMessage="From"
                               />
                             }
-                            fullWidth
+                            onChange={(value) => {
+                              setFieldValue('from', value?.format(), true);
+                              setFieldTouched('from', true, true);
+                            }}
+                            renderInput={(props) => (
+                              <TextField
+                                {...props}
+                                error={Boolean(errors.from)}
+                                helperText={Boolean(errors.from) && errors.from}
+                              />
+                            )}
+                            componentsProps={{
+                              actionBar: {
+                                actions: ['clear', 'today'],
+                              },
+                            }}
+                            InputProps={{ fullWidth: true }}
                           />
                         </Grid>
-
-                        {values.settings[index]?.userEventType ===
-                          UserEvents.swap && (
-                          <Grid item xs={12}>
-                            <Accordion sx={{ maxWidth: '350px' }}>
-                              <AccordionSummary
-                                expandIcon={<ArrowDownwardIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="filter"
-                                    defaultMessage="Filter"
-                                  />
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <SwapFilterForm
-                                  item={
-                                    values?.settings[index]?.filter
-                                      ? JSON.parse(
-                                          values?.settings[index]
-                                            ?.filter as string,
-                                        )
-                                      : undefined
-                                  }
-                                  onChange={(item) =>
-                                    setFieldValue(
-                                      `settings[${index}].filter`,
-                                      item ? JSON.stringify(item) : undefined,
-                                    )
-                                  }
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </Grid>
-                        )}
-
-                        {(values.settings[index]?.userEventType ===
-                          UserEvents.nftAcceptListERC721 ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.nftAcceptOfferERC721 ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.nftAcceptOfferERC1155 ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.nftAcceptListERC1155) && (
-                          <Grid item xs={12}>
-                            <Accordion sx={{ maxWidth: '350px' }}>
-                              <AccordionSummary
-                                expandIcon={<ArrowDownwardIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="filter"
-                                    defaultMessage="Filter"
-                                  />
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <CollectionFilterForm
-                                  item={
-                                    values?.settings[index]?.filter
-                                      ? JSON.parse(
-                                          values?.settings[index]
-                                            ?.filter as string,
-                                        )
-                                      : undefined
-                                  }
-                                  onChange={(item) =>
-                                    setFieldValue(
-                                      `settings[${index}].filter`,
-                                      item ? JSON.stringify(item) : undefined,
-                                    )
-                                  }
-                                  isERC1155={
-                                    values.settings[index]?.userEventType ===
-                                      UserEvents.nftAcceptOfferERC1155 ||
-                                    values.settings[index]?.userEventType ===
-                                      UserEvents.nftAcceptListERC1155
-                                  }
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </Grid>
-                        )}
-                        {(values.settings[index]?.userEventType ===
-                          UserEvents.buyDropCollection ||
-                          values.settings[index]?.userEventType ===
-                            UserEvents.buyDropEdition) && (
-                          <Grid item xs={12}>
-                            <Accordion sx={{ maxWidth: '350px' }}>
-                              <AccordionSummary
-                                expandIcon={<ArrowDownwardIcon />}
-                                aria-controls="panel1-content"
-                                id="panel1-header"
-                              >
-                                <Typography>
-                                  <FormattedMessage
-                                    id="filter"
-                                    defaultMessage="Filter"
-                                  />
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <DropCollectionFilterForm
-                                  item={
-                                    values?.settings[index]?.filter
-                                      ? JSON.parse(
-                                          values?.settings[index]
-                                            ?.filter as string,
-                                        )
-                                      : undefined
-                                  }
-                                  onChange={(item) =>
-                                    setFieldValue(
-                                      `settings[${index}].filter`,
-                                      item ? JSON.stringify(item) : undefined,
-                                    )
-                                  }
-                                  isERC1155={
-                                    values.settings[index]?.userEventType ===
-                                    UserEvents.buyDropEdition
-                                  }
-                                />
-                              </AccordionDetails>
-                            </Accordion>
-                          </Grid>
-                        )}
+                        <Grid item>
+                          <DateTimePicker
+                            ampm={false}
+                            label={
+                              <FormattedMessage
+                                id="to.date"
+                                defaultMessage="To"
+                              />
+                            }
+                            componentsProps={{
+                              actionBar: {
+                                actions: ['clear', 'today'],
+                              },
+                            }}
+                            onChange={(value) => {
+                              setFieldValue('to', value?.format(), true);
+                              setFieldTouched('to', true, true);
+                            }}
+                            renderInput={(props) => (
+                              <TextField
+                                {...props}
+                                error={Boolean(errors.to)}
+                                helperText={Boolean(errors.to) && errors.to}
+                              />
+                            )}
+                            value={moment(values.to)}
+                            InputProps={{ fullWidth: true }}
+                          />
+                        </Grid>
                       </Grid>
-                    </Box>
-                  ))}
+                    </Grid>
+                    {values.settings.map((rule, index) => (
+                      <Grid item xs={12} key={index}>
+                        <div>
+                          <Stack spacing={2}>
+                            <LeaderboardRule
+                              index={index}
+                              key={index}
+                              setFieldValue={setFieldValue}
+                              values={values}
+                              touched={touched}
+                              errors={errors}
+                              ranking={ranking}
+                              onRemove={handleRemoveItem(handleRemove(index))}
+                              isNew={newIndex === index}
+                              onSave={handleSave}
+                            />
+                            <Divider />
+                          </Stack>
+                        </div>
+                      </Grid>
+                    ))}
+                    {newIndex === -1 && (
+                      <>
+                        <Grid item xs={12}>
+                          <Button
+                            onClick={handleAddNew(
+                              values.settings.length,
+                              handleInsert(values.settings.length, {
+                                points: 1,
+                              }),
+                            )}
+                            startIcon={<Add />}
+                            variant="outlined"
+                          >
+                            <FormattedMessage
+                              id="new.rule"
+                              defaultMessage="New rule"
+                            />
+                          </Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Divider />
+                        </Grid>
+                      </>
+                    )}
 
-                  <Box
-                    sx={{ p: 2 }}
-                    display={'flex'}
-                    justifyContent={'flex-end'}
-                  >
-                    <Button
-                      variant="contained"
-                      onClick={() => arrayHelpers.push({})}
-                    >
-                      <FormattedMessage
-                        id="add.rule"
-                        defaultMessage="Add rule"
-                      />
-                    </Button>
-                  </Box>
-                </Box>
-              )}
-            />
-
-            {isSubmitting && <LinearProgress />}
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              <Button
-                disabled={!isValid || isSubmitting}
-                variant="contained"
-                onClick={submitForm}
-              >
-                <FormattedMessage id="save" defaultMessage="Save" />
-              </Button>
-              <Button onClick={() => resetForm()}>
-                <FormattedMessage id="cancel" defaultMessage="Cancel" />
-              </Button>
-            </Stack>
-          </Form>
+                    <Grid item xs={12}>
+                      <div>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          justifyContent="flex-end"
+                        >
+                          <Button
+                            disabled={isSubmitting}
+                            onClick={() => resetForm()}
+                          >
+                            <FormattedMessage
+                              id="cancel"
+                              defaultMessage="Cancel"
+                            />
+                          </Button>
+                          <Button
+                            disabled={!isValid || isSubmitting}
+                            variant="contained"
+                            onClick={submitForm}
+                            startIcon={
+                              isSubmitting ? (
+                                <CircularProgress color="inherit" size="1rem" />
+                              ) : undefined
+                            }
+                          >
+                            <FormattedMessage id="save" defaultMessage="Save" />
+                          </Button>
+                        </Stack>
+                      </div>
+                    </Grid>
+                  </Grid>
+                )}
+              />
+            </Form>
+          </>
         )}
       </Formik>
     </>

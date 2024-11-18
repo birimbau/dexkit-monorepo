@@ -385,7 +385,7 @@ export default function GatedConditionsFormDialog({
                                           });
                                         });
                                       }}
-                                      formValue={selectedCollections[index]}
+                                      value={selectedCollections[index]}
                                     />
                                   </Grid>
                                 )}

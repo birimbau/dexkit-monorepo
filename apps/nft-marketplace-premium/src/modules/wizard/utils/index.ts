@@ -109,6 +109,7 @@ export function generateCSSVarsTheme({
     fontFamily = `'${selectedFont.family}', ${selectedFont.category}`;
   }
 
+
   if (selectedThemeId === 'custom') {
     return fontFamily
       ? extendTheme({
@@ -187,5 +188,22 @@ export function mapObject(
 ) {
   for (const key of Object.keys(keys)) {
     set(obj, key, get(other, keys[key]));
+  }
+}
+/**
+ * If value is undefined it not maps the value
+ * @param obj 
+ * @param other 
+ * @param keys 
+ */
+export function mapNotNullObject(
+  obj: any,
+  other: any,
+  keys: { [key: string]: string }
+) {
+  for (const key of Object.keys(keys)) {
+    if (get(other, keys[key])) {
+      set(obj, key, get(other, keys[key]));
+    }
   }
 }

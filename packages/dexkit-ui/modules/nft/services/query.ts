@@ -68,6 +68,7 @@ export async function fetchAssetForQueryClient({ item, queryClient }: { item: { 
       tokenURI: assetApi.tokenURI || '',
       collectionName: assetApi.collectionName || '',
       symbol: assetApi.symbol || '',
+      protocol: assetApi?.protocol,
       metadata: { ...rawMetadata, image },
       owner: asset?.owner,
     };

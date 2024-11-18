@@ -84,20 +84,40 @@ export default function EvmTransferNft({
   const nftTransfer = useNftTransfer({
     contractAddress,
     provider,
-    onSubmit: ({ hash }) => {
+    onSubmit: ({ hash, quantity, to }) => {
       if (hash && chainId) {
-        const values = {
-          id: tokenId as string,
-          name: nft?.collectionName as string,
-        };
-        createNotification({
-          type: "transaction",
-          icon: "receipt",
-          subtype: "nftTransfer",
-          values,
-        });
-        watchTransactionDialog.open("nftTransfer", values);
-        watchTransactionDialog.watch(hash);
+        if (nft?.protocol === "ERC1155") {
+          const values = {
+            id: tokenId as string,
+            name: nftMetadata?.name as string,
+            quantity: quantity ? String(quantity) : "1",
+            address: to as string,
+          };
+          createNotification({
+            type: "transaction",
+            icon: "receipt",
+            subtype: "nftEditionTransfer",
+            metadata: { chainId, hash },
+            values,
+          });
+          watchTransactionDialog.open("nftEditionTransfer", values);
+
+          watchTransactionDialog.watch(hash);
+        } else {
+          const values = {
+            id: tokenId as string,
+            name: nft?.collectionName as string,
+          };
+          createNotification({
+            type: "transaction",
+            icon: "receipt",
+            subtype: "nftTransfer",
+            metadata: { chainId, hash },
+            values,
+          });
+          watchTransactionDialog.open("nftTransfer", values);
+          watchTransactionDialog.watch(hash);
+        }
       }
     },
     onConfirm: ({ hash, to, isERC1155, quantity }) => {
@@ -124,12 +144,18 @@ export default function EvmTransferNft({
   });
 
   const handleSubmit = async (
-    { address }: { address: string },
+    { address, quantity }: { address: string; quantity?: string },
     helpers: FormikHelpers<{ address: string }>
   ) => {
     if (tokenId && account) {
       await nftTransfer.mutateAsync(
-        { tokenId, from: account, to: address },
+        {
+          tokenId,
+          from: account,
+          to: address,
+          protocol: nft?.protocol,
+          quantity: quantity ? String(quantity) : undefined,
+        },
         {
           onError: (err) => {
             nftTransfer.reset();

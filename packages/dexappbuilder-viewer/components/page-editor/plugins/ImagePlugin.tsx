@@ -19,6 +19,7 @@ type Data = {
   action: string;
   targetBlank: boolean;
   padding: number;
+  priority: boolean;
 };
 
 // you can pass the shape of the data as the generic type argument
@@ -26,6 +27,7 @@ const ImagePlugin: CellPlugin<Data> = {
   Renderer: ({ data, isEditMode }) => {
     const src = data?.src;
     const alt = data?.alt;
+    const priority = data?.priority ? true : false;
     const openInNewWindow = data?.targetBlank;
     let image;
     if (src && src.startsWith(DEXKIT_BASE_FILES_HOST)) {
@@ -38,6 +40,7 @@ const ImagePlugin: CellPlugin<Data> = {
               : undefined,
           }}
           src={src}
+          priority={priority}
           height={data.height ? data.height : 250}
           width={data.width ? data.width : 250}
         />

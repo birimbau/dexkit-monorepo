@@ -17,6 +17,7 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicatorOutlined';
 import { CSS } from '@dnd-kit/utilities';
 
 import { useIsMobile } from '@dexkit/core';
+import { PageSectionsLayout } from '@dexkit/ui/modules/wizard/types/config';
 import { AppPageSection } from '@dexkit/ui/modules/wizard/types/section';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { CheckOutlined, CloseOutlined } from '@mui/icons-material';
@@ -42,6 +43,7 @@ export interface PageSectionProps {
   index?: number;
   page?: string;
   siteId?: string;
+  layout?: PageSectionsLayout;
 }
 
 export default function PageSection({
@@ -58,6 +60,7 @@ export default function PageSection({
   siteId,
   page,
   index,
+  layout,
 }: PageSectionProps) {
   const {
     transform,
@@ -274,6 +277,7 @@ export default function PageSection({
             site={siteId}
             index={index}
             disabled={true}
+            layout={layout}
           />
         )}
       </Card>

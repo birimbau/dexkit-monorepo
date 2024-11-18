@@ -1,6 +1,5 @@
-
-import { CodePageSection } from '@dexkit/ui/modules/wizard/types/section';
-import { Widget } from '../Widget';
+import { CodePageSection } from "@dexkit/ui/modules/wizard/types/section";
+import { Widget } from "../Widget";
 
 export interface CodeSectionProps {
   section: CodePageSection;

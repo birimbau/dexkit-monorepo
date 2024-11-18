@@ -40,7 +40,7 @@ import { BuilderKit } from '../../../constants';
 import PreviewPagePlatform from '../../PreviewPagePlatform';
 import { SectionFormRender } from '../SectionFormRender';
 import { SectionSelector } from '../SectionSelector';
-import { sections } from '../Sections';
+import { SECTION_TYPES_DATA } from '../Sections';
 
 interface Props {
   dialogProps: DialogProps;
@@ -170,7 +170,9 @@ export default function EditSectionDialog({
 
   useEffect(() => {
     if (sectionType) {
-      setSectionMetadata(sections.find((s) => s.type === sectionType));
+      setSectionMetadata(
+        SECTION_TYPES_DATA.find((s) => s.type === sectionType),
+      );
     } else {
       setSectionMetadata(undefined);
     }
