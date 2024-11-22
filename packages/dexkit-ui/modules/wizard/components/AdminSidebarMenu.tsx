@@ -17,6 +17,7 @@ export interface AdminSidebarMenuProps {
   title: React.ReactNode;
   activeMenuId: string;
   isSiteOwner?: boolean;
+  subtitle?: React.ReactNode;
   onSelectMenuId: (id: string) => void;
   options: {
     id: string;
@@ -34,6 +35,7 @@ export interface AdminSidebarMenuProps {
 export default function AdminSidebarMenu({
   icon,
   title,
+  subtitle,
   open,
   onToggle,
   onSelectMenuId,
@@ -105,9 +107,13 @@ export default function AdminSidebarMenu({
 
   return (
     <List disablePadding>
-      <ListItemButton onClick={onToggle}>
+      <ListItemButton dense={Boolean(subtitle)} onClick={onToggle}>
         <ListItemIcon>{icon}</ListItemIcon>
-        <ListItemText primary={title} />
+        <ListItemText
+          primary={title}
+          secondary={subtitle}
+          secondaryTypographyProps={{ variant: "caption" }}
+        />
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>

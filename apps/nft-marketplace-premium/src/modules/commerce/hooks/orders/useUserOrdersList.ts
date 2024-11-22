@@ -10,6 +10,7 @@ export default function useUserOrderList(params: {
   limit: number;
   q?: string;
   address: string;
+  status: string;
 }) {
   const { instance } = useContext(DexkitApiProvider);
 

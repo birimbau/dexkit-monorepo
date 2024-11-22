@@ -1,6 +1,7 @@
 import LazyTextField from "@dexkit/ui/components/LazyTextField";
-import { PageHeader } from "@dexkit/ui/components/PageHeader";
 import {
+  Box,
+  Divider,
   InputAdornment,
   MenuItem,
   Select,
@@ -50,58 +51,24 @@ export default function OrdersContainer() {
   return (
     <DashboardLayout page="orders">
       <Stack spacing={2}>
-        <PageHeader
-          breadcrumbs={[
-            {
-              caption: (
-                <FormattedMessage id="commerce" defaultMessage="Commerce" />
-              ),
-              uri: "/u/account/commerce",
-            },
-            {
-              caption: <FormattedMessage id="orders" defaultMessage="Orders" />,
-              uri: "/u/account/commerce/orders",
-              active: true,
-            },
-          ]}
-        />
-
-        <Stack
-          direction="row"
-          alignItems="baseline"
-          justifyContent="space-between"
-        >
+        <Box>
           <Typography variant="h6">
             <FormattedMessage id="orders" defaultMessage="Orders" />
           </Typography>
+          <Typography variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="review.and.manage.all.customer.orders."
+              defaultMessage="Review and manage all customer orders."
+            />
+          </Typography>
+        </Box>
+        <Divider />
+        <Stack direction="row" alignItems="baseline" spacing={2}>
           <Stack direction="row" alignItems="baseline" spacing={2}>
-            <Select
-              value={status}
-              onChange={(e) => setStatus(e.target.value ?? "")}
-              variant="standard"
-              displayEmpty
-            >
-              <MenuItem value="">
-                <FormattedMessage id="all" defaultMessage="All" />
-              </MenuItem>
-              {Object.keys(statusText)
-                .map((key) => ({ ...statusText[key], key }))
-                .sort((a, b) =>
-                  a.defaultMessage.localeCompare(b.defaultMessage)
-                )
-                .map((n) => (
-                  <MenuItem key={n.key} value={n.key}>
-                    <FormattedMessage
-                      id={n.id}
-                      defaultMessage={n.defaultMessage}
-                    />
-                  </MenuItem>
-                ))}
-            </Select>
             <LazyTextField
               TextFieldProps={{
                 size: "small",
-                variant: "standard",
+                variant: "outlined",
                 placeholder: formatMessage({
                   id: "search.for.a.product",
                   defaultMessage: "Search for an order",
@@ -117,6 +84,28 @@ export default function OrdersContainer() {
               onChange={handleChange}
             />
           </Stack>
+          <Select
+            value={status}
+            onChange={(e) => setStatus(e.target.value ?? "")}
+            variant="outlined"
+            displayEmpty
+            size="small"
+          >
+            <MenuItem value="">
+              <FormattedMessage id="all.status" defaultMessage="All status" />
+            </MenuItem>
+            {Object.keys(statusText)
+              .map((key) => ({ ...statusText[key], key }))
+              .sort((a, b) => a.defaultMessage.localeCompare(b.defaultMessage))
+              .map((n) => (
+                <MenuItem key={n.key} value={n.key}>
+                  <FormattedMessage
+                    id={n.id}
+                    defaultMessage={n.defaultMessage}
+                  />
+                </MenuItem>
+              ))}
+          </Select>
         </Stack>
         <OrdersTable query={query} status={status} />
       </Stack>

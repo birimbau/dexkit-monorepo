@@ -135,6 +135,7 @@ export type OrderItem = {
   quantity: number;
   price: string;
   productId: string;
+  product?: Product;
   metadata: any;
 };
 

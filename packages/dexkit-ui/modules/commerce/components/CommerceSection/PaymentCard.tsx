@@ -11,10 +11,12 @@ import Wallet from "@mui/icons-material/Wallet";
 import {
   Alert,
   Avatar,
+  Box,
   Button,
   Card,
   CardContent,
   CircularProgress,
+  Divider,
   FormControl,
   InputLabel,
   ListItemIcon,
@@ -289,7 +291,8 @@ export default function PaymentCard() {
             disabled ||
             !token ||
             (requireEmail && (!email || !isValidEmail)) ||
-            total.isZero()
+            total.isZero() ||
+            showConfirm
           }
           fullWidth
           onClick={handlePay}
@@ -303,12 +306,8 @@ export default function PaymentCard() {
             />
           ) : hasSufficientBalance ? (
             <FormattedMessage
-              id="pay.amount.symbol"
-              defaultMessage="Pay {amount} {tokenSymbol}"
-              values={{
-                tokenSymbol: token?.symbol,
-                amount: total.toString(),
-              }}
+              id="confirm.payment"
+              defaultMessage="Confirm payment"
             />
           ) : (
             <FormattedMessage
@@ -379,7 +378,34 @@ export default function PaymentCard() {
 
       <Card>
         <CardContent>
+          <Typography variant="h5">
+            <FormattedMessage id="checkout" defaultMessage="Checkout" />
+          </Typography>
+        </CardContent>
+        <Divider />
+        <CardContent>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="body1">
+              <FormattedMessage id="total" defaultMessage="Total" />
+            </Typography>
+            <Typography variant="h6">
+              {total.toString()} {token?.symbol}
+            </Typography>
+          </Stack>
+        </CardContent>
+        <Divider />
+        <CardContent>
           <Stack spacing={2}>
+            <Typography variant="body2" color="text.secondary">
+              <FormattedMessage
+                id="select.the.token.for.payment"
+                defaultMessage="Select the token for payment:"
+              />
+            </Typography>
             {chainId !== undefined && (
               <FormControl fullWidth>
                 <InputLabel>
@@ -448,26 +474,6 @@ export default function PaymentCard() {
                 />
               </Alert>
             )}
-
-            {requireEmail && (
-              <TextField
-                value={email}
-                onChange={handleChangeEmail}
-                fullWidth
-                label={<FormattedMessage id="email" defaultMessage="Email" />}
-                type="email"
-                error={!isValidEmail || email === ""}
-                helperText={
-                  !isValidEmail || !Boolean(email) ? (
-                    <FormattedMessage
-                      id="email.is.required"
-                      defaultMessage="Email is required"
-                    />
-                  ) : undefined
-                }
-                required
-              />
-            )}
             {token && (
               <Stack
                 direction="row"
@@ -475,26 +481,92 @@ export default function PaymentCard() {
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <Typography variant="body1">
-                  <FormattedMessage id="balance" defaultMessage="Balance" />
+                <Typography variant="body2">
+                  <FormattedMessage
+                    id="wallet.balance"
+                    defaultMessage="Wallet balance"
+                  />
                 </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {balanceQuery.isLoading ? (
-                    <Skeleton />
-                  ) : (
-                    <FormattedNumber
-                      value={decimalBalance.toNumber()}
-                      maximumFractionDigits={token?.decimals}
-                    />
-                  )}{" "}
-                  {token?.symbol}
-                </Typography>
+                <Box>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: (theme) =>
+                        !hasSufficientBalance
+                          ? theme.palette.error.light
+                          : theme.palette.success.light,
+                    }}
+                  >
+                    {balanceQuery.isLoading ? (
+                      <Skeleton />
+                    ) : (
+                      <FormattedNumber
+                        value={decimalBalance.toNumber()}
+                        maximumFractionDigits={token?.decimals}
+                      />
+                    )}{" "}
+                    {token?.symbol}
+                  </Typography>
+                  {!hasSufficientBalance && (
+                    <Typography
+                      variant="body2"
+                      sx={{ color: (theme) => theme.palette.error.main }}
+                    >
+                      <FormattedMessage
+                        id="insufficient.balance"
+                        defaultMessage="Insufficient balance"
+                      />
+                    </Typography>
+                  )}
+                </Box>
               </Stack>
             )}
-
-            {renderPayButton()}
           </Stack>
         </CardContent>
+        {requireEmail && (
+          <>
+            <Divider />
+            <CardContent>
+              <Stack spacing={2}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    <FormattedMessage
+                      id="email.confirmation"
+                      defaultMessage="Email confirmation:"
+                    />
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    <FormattedMessage
+                      id="email.confirmation.this.email.text"
+                      defaultMessage="This email will be used for order status updates."
+                    />
+                  </Typography>
+                </Box>
+                <TextField
+                  value={email}
+                  onChange={handleChangeEmail}
+                  fullWidth
+                  label={
+                    <FormattedMessage id="email.alt" defaultMessage="Email" />
+                  }
+                  type="email"
+                  error={!isValidEmail || email === ""}
+                  helperText={
+                    !isValidEmail || !Boolean(email) ? (
+                      <FormattedMessage
+                        id="email.is.required"
+                        defaultMessage="Email is required"
+                      />
+                    ) : undefined
+                  }
+                  required
+                />
+              </Stack>
+            </CardContent>
+          </>
+        )}
+        <Divider />
+        <CardContent>{renderPayButton()}</CardContent>
       </Card>
     </>
   );

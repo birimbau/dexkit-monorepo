@@ -2,34 +2,48 @@ import useUserOrder from '@/modules/commerce/hooks/orders/useUserOrder';
 import useUserOrderItems from '@/modules/commerce/hooks/orders/useUserOrderItems';
 import { Order } from '@/modules/commerce/types';
 import { DexkitApiProvider } from '@dexkit/core/providers';
-import { getBlockExplorerUrl, truncateAddress } from '@dexkit/core/utils';
 import { useTokenDataQuery } from '@dexkit/ui';
 import MainLayout from '@dexkit/ui/components/layouts/main';
-import { PageHeader } from '@dexkit/ui/components/PageHeader';
 
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import {
   Avatar,
   Box,
   Button,
-  Card,
-  CardContent,
   Container,
   Grid,
-  Link,
+  IconButton,
   Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TableFooter,
   TableHead,
   TableRow,
   Typography,
 } from '@mui/material';
 import Decimal from 'decimal.js';
 import { useRouter } from 'next/router';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, useIntl } from 'react-intl';
 import { myAppsApi } from 'src/services/whitelabel';
+
+import dynamic from 'next/dynamic';
+
+import { useCallback, useState } from 'react';
+
+const ConfirmOpenContentDialog = dynamic(
+  () =>
+    import(
+      '@dexkit/ui/modules/commerce/components/dialogs/ConfirmOpenContentDialog'
+    ),
+);
+
+import { copyToClipboard } from '@dexkit/core/utils';
+import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
+import OrderDetailsCard from '@dexkit/ui/modules/commerce/components/OrderDetailsCard';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import FileCopy from '@mui/icons-material/FileCopy';
 
 interface OrderComponentProps {
   order: Order;
@@ -43,182 +57,203 @@ function OrderComponent({ order }: OrderComponentProps) {
     address: order.contractAddress,
   });
 
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(true);
+  };
+
+  const [selected, setSelected] = useState<{
+    productId: string;
+    orderId: string;
+  }>();
+
+  const handleOpen = useCallback((orderId: string, productId: string) => {
+    return () => {
+      setOpen(true);
+      setSelected({ orderId, productId });
+    };
+  }, []);
+
+  const handleConfirm = () => {
+    if (selected) {
+      window.open(
+        `/c/content/${selected?.orderId}/${selected?.productId}`,
+        '_blank',
+      );
+    }
+    setOpen(false);
+    setSelected(undefined);
+  };
+
+  const { formatMessage } = useIntl();
+
+  const handleCopy = () => {
+    if (order.id) {
+      copyToClipboard(order.id);
+    }
+  };
+
+  const router = useRouter();
+
   return (
-    <Container>
-      <Stack spacing={2}>
-        <PageHeader
-          breadcrumbs={[
-            {
-              caption: (
-                <FormattedMessage id="my.orders" defaultMessage="My Orders" />
-              ),
-              uri: '/c/orders',
-            },
-            {
-              caption: order.id.substring(10),
-              uri: `/c/orders/${order.id}`,
-              active: true,
-            },
-          ]}
+    <>
+      {open && (
+        <ConfirmOpenContentDialog
+          onConfirm={handleConfirm}
+          DialogProps={{ open, onClose: handleClose }}
         />
-        <Box>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <Card>
-                <CardContent>
-                  <Typography gutterBottom variant="h6">
-                    <FormattedMessage
-                      id="order.details"
-                      defaultMessage="Order Details"
-                    />
-                  </Typography>
-                  <Stack spacing={0}>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
+      )}
+
+      <Container>
+        <Stack spacing={2}>
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <IconButton
+              onClick={() => router.push('/c/orders')}
+              color="primary"
+            >
+              <ArrowBack color="primary" />
+            </IconButton>
+            <Typography variant="h5">
+              <FormattedMessage
+                id="order.id.order.alt"
+                defaultMessage="Order ID: {order}"
+                values={{
+                  order: (
+                    <Typography
+                      variant="inherit"
+                      component="span"
+                      color="text.secondary"
                     >
-                      <Typography fontWeight="bold">
-                        <FormattedMessage id="id" defaultMessage="ID" />
-                      </Typography>
-                      <Typography variant="body2">
-                        {order.id.substring(10)}
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Typography fontWeight="bold">
-                        <FormattedMessage
-                          id="creator"
-                          defaultMessage="Creator"
-                        />
-                      </Typography>
-                      <Typography variant="body2">
-                        <Link
-                          target="_blank"
-                          href={`${getBlockExplorerUrl(
-                            order.chainId,
-                          )}/address/${order.senderAddress}`}
-                        >
-                          {truncateAddress(order.senderAddress)}
-                        </Link>
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Typography fontWeight="bold">
-                        <FormattedMessage id="token" defaultMessage="Token" />
-                      </Typography>
-                      <Typography variant="body2">
-                        <Link
-                          target="_blank"
-                          href={`${getBlockExplorerUrl(
-                            order.chainId,
-                          )}/address/${order.contractAddress}`}
-                        >
-                          {tokenData?.name}
-                        </Link>
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      direction="row"
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Typography fontWeight="bold">
-                        <FormattedMessage id="total" defaultMessage="Total" />
-                      </Typography>
-                      <Typography variant="body2">
-                        {order.amount} {tokenData?.symbol.toUpperCase()}
-                      </Typography>
-                    </Stack>
-                  </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12}>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <FormattedMessage
-                          id="product"
-                          defaultMessage="Product"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <FormattedMessage
-                          id="quantity"
-                          defaultMessage="Quantity"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <FormattedMessage id="total" defaultMessage="Total" />
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {items?.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
-                          <Stack
-                            direction="row"
-                            spacing={2}
-                            sx={{ height: '100%' }}
-                          >
-                            <Avatar
-                              variant="rounded"
-                              sx={{ height: '5rem', width: '5rem' }}
-                              src={item.product.imageUrl ?? ''}
+                      {order.id.substring(10)}
+                    </Typography>
+                  ),
+                }}
+              />
+            </Typography>
+            <CopyIconButton
+              iconButtonProps={{
+                onClick: handleCopy,
+                size: 'small',
+              }}
+              tooltip={formatMessage({
+                id: 'copy',
+                defaultMessage: 'Copy',
+                description: 'Copy text',
+              })}
+              activeTooltip={formatMessage({
+                id: 'copied',
+                defaultMessage: 'Copied!',
+                description: 'Copied text',
+              })}
+            >
+              <FileCopy />
+            </CopyIconButton>
+          </Stack>
+          <Box>
+            <Grid container spacing={2} justifyContent="center">
+              <Grid item xs={8}>
+                <OrderDetailsCard order={order} />
+                <Box>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>
+                            <FormattedMessage
+                              id="product"
+                              defaultMessage="Product"
                             />
-                            <Stack
-                              sx={{ height: '100%' }}
-                              justifyContent="space-between"
-                            >
-                              <Typography gutterBottom variant="body1">
-                                {item.title}
-                              </Typography>
-                              {item.product.digital && (
-                                <Button
-                                  variant="text"
-                                  size="small"
-                                  startIcon={<LockOpenIcon />}
-                                  target="_blank"
-                                  href={`/c/content/${order.id}/${item.productId}`}
+                          </TableCell>
+                          <TableCell>
+                            <FormattedMessage
+                              id="quantity"
+                              defaultMessage="Quantity"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <FormattedMessage
+                              id="total"
+                              defaultMessage="Total"
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {items?.map((item, index) => (
+                          <TableRow key={index}>
+                            <TableCell>
+                              <Stack
+                                direction="row"
+                                spacing={2}
+                                sx={{ height: '100%' }}
+                              >
+                                <Avatar
+                                  variant="rounded"
+                                  sx={{ height: '5rem', width: '5rem' }}
+                                  src={item.product.imageUrl ?? ''}
+                                />
+                                <Stack
+                                  sx={{ height: '100%' }}
+                                  justifyContent="space-between"
                                 >
-                                  <FormattedMessage
-                                    id="view.protected.content"
-                                    defaultMessage="View protected content"
-                                  />
-                                </Button>
-                              )}
-                            </Stack>
-                          </Stack>
-                        </TableCell>
-                        <TableCell>{item.quantity}</TableCell>
+                                  <Typography gutterBottom variant="body1">
+                                    {item.title}
+                                  </Typography>
+                                  {item.product.digital && (
+                                    <Button
+                                      variant="text"
+                                      size="small"
+                                      startIcon={<LockOpenIcon />}
+                                      onClick={handleOpen(
+                                        order.id,
+                                        item.productId,
+                                      )}
+                                    >
+                                      <FormattedMessage
+                                        id="view.protected.content"
+                                        defaultMessage="View protected content"
+                                      />
+                                    </Button>
+                                  )}
+                                </Stack>
+                              </Stack>
+                            </TableCell>
+                            <TableCell>{item.quantity}</TableCell>
+                            <TableCell>
+                              {new Decimal(item.quantity)
+                                .mul(item.price)
+                                .toNumber()}{' '}
+                              {tokenData?.symbol.toUpperCase()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                      <TableFooter>
+                        <TableCell></TableCell>
                         <TableCell>
-                          {new Decimal(item.quantity)
-                            .mul(item.price)
-                            .toNumber()}{' '}
-                          {tokenData?.symbol.toUpperCase()}
+                          <Typography variant="body1" color="text.primary">
+                            <FormattedMessage
+                              id="total"
+                              defaultMessage="Total"
+                            />
+                          </Typography>
                         </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                        <TableCell>
+                          <Typography variant="h5" color="text.primary">
+                            {order.amount} {tokenData?.symbol.toUpperCase()}
+                          </Typography>
+                        </TableCell>
+                      </TableFooter>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
-      </Stack>
-    </Container>
+          </Box>
+        </Stack>
+      </Container>
+    </>
   );
 }
 

@@ -51,6 +51,16 @@ export default function CartContent({ disableHeader }: CartContentProps) {
     };
   };
 
+  const handleDelete = (productId: string) => {
+    return () => {
+      const cartItem = item(productId ?? "");
+
+      if (cartItem) {
+        updateItem({ ...cartItem, quantity: 0 });
+      }
+    };
+  };
+
   return (
     <Box>
       <Grid container spacing={2}>
@@ -71,10 +81,10 @@ export default function CartContent({ disableHeader }: CartContentProps) {
                   <FormattedMessage id="product" defaultMessage="Product" />
                 </TableCell>
                 <TableCell>
-                  <FormattedMessage id="price" defaultMessage="Price" />
+                  <FormattedMessage id="quantity" defaultMessage="Quantity" />
                 </TableCell>
                 <TableCell>
-                  <FormattedMessage id="quantity" defaultMessage="Quantity" />
+                  <FormattedMessage id="total" defaultMessage="Total" />
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -85,6 +95,7 @@ export default function CartContent({ disableHeader }: CartContentProps) {
                   item={item}
                   onIncrement={handleIncrement(item.productId)}
                   onDecrement={handleDecrement(item.productId)}
+                  onDelete={handleDelete(item.productId)}
                 />
               ))}
             </TableBody>

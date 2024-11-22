@@ -21,6 +21,8 @@ import useUserProduct from "../../hooks/useUserProduct";
 import Counter from "../Counter";
 import ContentHeader from "./ContentHeader";
 
+import { useRouter } from "next/router";
+
 const Image = styled("img")((theme) => ({
   height: "auto",
   width: "100%",
@@ -71,6 +73,14 @@ export default function ProductContent({
     }
   };
 
+  const handleDelete = () => {
+    if (cartItem) {
+      updateItem({ ...cartItem, quantity: 0 });
+    }
+  };
+
+  const router = useRouter();
+
   const handleAddToCart = () => {
     if (product) {
       addItem({
@@ -80,6 +90,7 @@ export default function ProductContent({
         quantity: 1,
         imageUrl: product.imageUrl ?? undefined,
       });
+      router.push("/c/cart");
     }
   };
 
@@ -149,6 +160,7 @@ export default function ProductContent({
                   value={cartItem?.quantity ?? 0}
                   onIncrement={handleIncrement}
                   onDecrement={handleDecrement}
+                  onDelete={handleDelete}
                 />
               </Box>
             )}
@@ -172,7 +184,7 @@ export default function ProductContent({
                 variant="contained"
                 color="primary"
               >
-                <FormattedMessage id="buy now" defaultMessage="Buy now" />
+                <FormattedMessage id="buy.now" defaultMessage="Buy now" />
               </Button>
             )}
           </Stack>

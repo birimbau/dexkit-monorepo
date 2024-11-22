@@ -11,8 +11,8 @@ export default function ContentHeader({ onBack, title }: ContentHeaderProps) {
   return (
     <Box>
       <Stack alignItems="center" direction="row" spacing={1}>
-        <IconButton onClick={onBack}>
-          <ArrowBack />
+        <IconButton color="primary" onClick={onBack}>
+          <ArrowBack color="inherit" />
         </IconButton>
         <Typography variant="h5">{title}</Typography>
       </Stack>

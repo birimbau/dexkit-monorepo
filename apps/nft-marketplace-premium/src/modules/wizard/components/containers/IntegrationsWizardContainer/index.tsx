@@ -68,8 +68,8 @@ export default function IntegrationsWizardContainer({
       await sendConfigMutation.mutateAsync({ config: newConfig });
       enqueueSnackbar(
         <FormattedMessage
-          id="integration.updated"
-          defaultMessage="Integration Updated"
+          id="integration.updated.alt"
+          defaultMessage="Integration updated"
         />,
         { variant: 'success' },
       );

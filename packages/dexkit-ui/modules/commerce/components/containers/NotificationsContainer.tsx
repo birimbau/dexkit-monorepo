@@ -1,7 +1,7 @@
 import {
+  Button,
   Divider,
   Grid,
-  Paper,
   Stack,
   Tab,
   TablePagination,
@@ -14,9 +14,11 @@ import NotificationsList from "@dexkit/ui/modules/commerce/components/Notificati
 
 import useNotifications from "@dexkit/ui/modules/commerce/hooks/useNotifications";
 import useNotificationsCountUnread from "@dexkit/ui/modules/commerce/hooks/useNotificatonsCountUnread";
+import { useSnackbar } from "notistack";
 import { useState } from "react";
+import { AppConfirmDialog } from "../../../../components";
+import useNotificationsMarkAllAsRead from "../../hooks/useNotificatonsMarkAllAsRead";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { CommerceBreadcrumbs } from "./CommerceBreadcrumbs";
 
 function Notifications() {
   const [filter, setFilter] = useState({ page: 0, pageSize: 10, status: "" });
@@ -24,6 +26,8 @@ function Notifications() {
   const { data: unread, refetch: refetchUnread } = useNotificationsCountUnread({
     scope: "Store",
   });
+
+  const { mutateAsync: markAllAsRead } = useNotificationsMarkAllAsRead();
 
   const { data: notifications, refetch } = useNotifications({
     page: filter.page,
@@ -46,101 +50,153 @@ function Notifications() {
     }));
   };
 
-  return (
-    <Grid container spacing={2}>
-      <Grid item xs={12}>
-        <CommerceBreadcrumbs
-          breadcrumbs={[
-            {
-              caption: (
-                <FormattedMessage id="commerce" defaultMessage="Commerce" />
-              ),
-              containerId: "commerce.dashboard",
-            },
-            {
-              caption: (
-                <FormattedMessage
-                  id="notifications"
-                  defaultMessage="Notifications"
-                />
-              ),
-              containerId: "commerce.notifications",
-              active: true,
-            },
-          ]}
-        />
-      </Grid>
-      <Grid item xs={12}>
-        <Typography variant="h6">
-          <FormattedMessage id="notifications" defaultMessage="Notifications" />
-        </Typography>
-      </Grid>
-      <Grid item xs={12}>
-        <Paper>
-          <Tabs
-            onChange={async (e, value) => {
-              setFilter((filter) => ({ ...filter, page: 0, status: value }));
+  const [showConfirm, setShowConfirm] = useState(false);
 
-              await refetch();
-            }}
-            value={filter.status}
-          >
-            <Tab
-              value=""
-              label={<FormattedMessage id="all" defaultMessage="All" />}
+  const handleClose = () => {
+    setShowConfirm(false);
+  };
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleConfirm = async () => {
+    try {
+      await markAllAsRead({
+        ids: notifications?.items.map((item) => item.id) ?? [],
+      });
+      enqueueSnackbar(
+        <FormattedMessage
+          id="all.notifications.are.read"
+          defaultMessage="All notifications are read"
+        />,
+        {
+          variant: "success",
+        }
+      );
+    } catch (err) {
+      enqueueSnackbar(String(err), { variant: "error" });
+    }
+    await refetch();
+    setShowConfirm(false);
+  };
+
+  const handleMarkAllAsRead = async () => {
+    setShowConfirm(true);
+  };
+
+  return (
+    <>
+      <AppConfirmDialog
+        DialogProps={{
+          open: showConfirm,
+          onClose: handleClose,
+          maxWidth: "sm",
+          fullWidth: true,
+        }}
+        title={
+          <FormattedMessage
+            id="mark.all.notifications.as.read"
+            defaultMessage="Mark notifications"
+          />
+        }
+        onConfirm={handleConfirm}
+      >
+        <Typography variant="body1">
+          <FormattedMessage
+            id="do.you.want.to.mark.all.as.read"
+            defaultMessage="Do you want to mark all as read?"
+          />
+        </Typography>
+      </AppConfirmDialog>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h6">
+            <FormattedMessage
+              id="notifications"
+              defaultMessage="Notifications"
             />
-            <Tab
-              value="unread"
-              label={
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  {unread?.count !== undefined && unread?.count > 0 && (
-                    <Stack
-                      justifyContent="center"
-                      alignItems="center"
-                      component="span"
-                      sx={(theme) => ({
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.text.primary,
-                        px: 0.75,
-                        py: 0.25,
-                        borderRadius: theme.shape.borderRadius,
-                      })}
-                    >
-                      {unread?.count}
-                    </Stack>
-                  )}
-                  <Typography>
-                    <FormattedMessage id="unread" defaultMessage="Unread" />
-                  </Typography>
-                </Stack>
-              }
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            <FormattedMessage
+              id="view.all.notifications.of.actions.happening.in.your.store."
+              defaultMessage="View all notifications of actions happening in your store."
             />
-            <Tab
-              value="read"
-              label={<FormattedMessage id="read" defaultMessage="Read" />}
-            />
-          </Tabs>
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Divider />
+          <Stack alignItems="center" direction="row">
+            <Tabs
+              onChange={async (e, value) => {
+                setFilter((filter) => ({ ...filter, page: 0, status: value }));
+
+                await refetch();
+              }}
+              value={filter.status}
+              sx={{ mr: 2 }}
+            >
+              <Tab
+                value=""
+                label={<FormattedMessage id="all" defaultMessage="All" />}
+              />
+              <Tab
+                value="unread"
+                label={
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    {unread?.count !== undefined && unread?.count > 0 && (
+                      <Stack
+                        justifyContent="center"
+                        alignItems="center"
+                        component="span"
+                        sx={(theme) => ({
+                          backgroundColor: theme.palette.primary.main,
+                          color: theme.palette.text.primary,
+                          px: 0.75,
+                          py: 0.25,
+                          borderRadius: theme.shape.borderRadius,
+                        })}
+                      >
+                        {unread?.count}
+                      </Stack>
+                    )}
+                    <Typography>
+                      <FormattedMessage id="unread" defaultMessage="Unread" />
+                    </Typography>
+                  </Stack>
+                }
+              />
+              <Tab
+                value="read"
+                label={<FormattedMessage id="read" defaultMessage="Read" />}
+              />
+            </Tabs>
+            <Button onClick={handleMarkAllAsRead} size="small">
+              <FormattedMessage
+                id="mark.all.as.read"
+                defaultMessage="Mark all as read"
+              />
+            </Button>
+          </Stack>
           <Divider />
           <NotificationsList
             onRefetch={handleRefetch}
             notifications={notifications?.items ?? []}
           />
-        </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <TablePagination
+            component="div"
+            count={notifications?.totalItems ?? 0}
+            page={notifications?.currentPage ?? 0}
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            onPageChange={(e, value) => {
+              setFilter((values) => ({ ...values, page: value }));
+            }}
+            rowsPerPage={filter.pageSize}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Grid>
       </Grid>
-      <Grid item xs={12}>
-        <TablePagination
-          component="div"
-          count={notifications?.totalItems ?? 0}
-          page={notifications?.currentPage ?? 0}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          onPageChange={(e, value) => {
-            setFilter((values) => ({ ...values, page: value }));
-          }}
-          rowsPerPage={filter.pageSize}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Grid>
-    </Grid>
+    </>
   );
 }
 

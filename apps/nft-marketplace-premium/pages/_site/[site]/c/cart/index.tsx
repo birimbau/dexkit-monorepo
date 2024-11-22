@@ -1,33 +1,35 @@
-import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import CommerceContextProvider from '@dexkit/ui/modules/commerce/components/CommerceContextProvider';
 import CartContent from '@dexkit/ui/modules/commerce/components/CommerceSection/CartContent';
 import CommerceUserLayout from '@dexkit/ui/modules/commerce/components/CommerceUserLayout';
-import { Box, Container, Stack } from '@mui/material';
+import ArrowBack from '@mui/icons-material/ArrowBack';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
+import { useRouter } from 'next/router';
 import { FormattedMessage } from 'react-intl';
 import AuthMainLayout from 'src/components/layouts/authMain';
 import { REVALIDATE_PAGE_TIME } from 'src/constants';
 import { getAppConfig } from 'src/services/app';
 
 export default function CommerceCartPage() {
+  const router = useRouter();
   return (
     <Container>
       <Stack spacing={2}>
-        <PageHeader
-          breadcrumbs={[
-            {
-              caption: (
-                <FormattedMessage id="my.orders" defaultMessage="My Orders" />
-              ),
-              uri: '/c/orders',
-            },
-            {
-              caption: <FormattedMessage id="cart" defaultMessage="Cart" />,
-              uri: '/c/orders/cart',
-              active: true,
-            },
-          ]}
-        />
+        <Box>
+          <Button
+            size="small"
+            startIcon={<ArrowBack />}
+            onClick={() => router.back()}
+          >
+            <FormattedMessage
+              id="continue.shoppging"
+              defaultMessage="Continue shopping"
+            />
+          </Button>
+        </Box>
+        <Typography variant="h5">
+          <FormattedMessage id="cart" defaultMessage="Cart" />
+        </Typography>
         <Box>
           <CommerceContextProvider>
             <CartContent disableHeader />

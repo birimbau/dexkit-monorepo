@@ -3,8 +3,8 @@ import { Container, InputAdornment, Stack, Typography } from '@mui/material';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import UserOrdersTable from '@/modules/commerce/components/UserOrdersTable';
-import { PageHeader } from '@dexkit/ui/components/PageHeader';
 import CommerceUserLayout from '@dexkit/ui/modules/commerce/components/CommerceUserLayout';
+import OrderStatusSelect from '@dexkit/ui/modules/commerce/components/OrderStatusSelect';
 import Search from '@mui/icons-material/Search';
 import { GetStaticProps, GetStaticPropsContext } from 'next';
 import { useState } from 'react';
@@ -21,31 +21,23 @@ export default function CommerceOrdersPage() {
 
   const { formatMessage } = useIntl();
 
+  const [status, setStatus] = useState('');
+
+  const handleChangeStatus = (status: string) => {
+    setStatus(status);
+  };
+
   return (
     <Container>
       <Stack spacing={2}>
-        <PageHeader
-          breadcrumbs={[
-            {
-              caption: (
-                <FormattedMessage id="my.orders" defaultMessage="My Orders" />
-              ),
-              uri: '/c/orders',
-            },
-          ]}
-        />
-        <Stack
-          direction="row"
-          alignItems="baseline"
-          justifyContent="space-between"
-        >
-          <Typography variant="h6">
-            <FormattedMessage id="my.orders" defaultMessage="My Orders" />
-          </Typography>
+        <Typography variant="h5">
+          <FormattedMessage id="my.orders" defaultMessage="My Orders" />
+        </Typography>
+        <Stack direction="row" alignItems="baseline" spacing={2}>
           <LazyTextField
             TextFieldProps={{
               size: 'small',
-              variant: 'standard',
+              variant: 'outlined',
               placeholder: formatMessage({
                 id: 'search.for.a.product',
                 defaultMessage: 'Search for an order',
@@ -60,8 +52,9 @@ export default function CommerceOrdersPage() {
             }}
             onChange={handleChange}
           />
+          <OrderStatusSelect status={status} onChange={handleChangeStatus} />
         </Stack>
-        <UserOrdersTable query={query} />
+        <UserOrdersTable query={query} status={status} />
       </Stack>
     </Container>
   );

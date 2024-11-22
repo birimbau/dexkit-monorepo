@@ -516,6 +516,17 @@ function Navbar({ appConfig, isPreview }: Props) {
                 </Stack>
               )
             )}
+            {isActive && (
+              <ButtonBase
+                onClick={handleShowProfileMenu}
+                sx={{ borderRadius: "50%" }}
+              >
+                <Avatar
+                  sx={{ height: "1.5rem", width: "1.5rem" }}
+                  src={user?.profileImageURL}
+                />
+              </ButtonBase>
+            )}
             <Stack
               direction="row"
               spacing={2}
@@ -600,17 +611,6 @@ function Navbar({ appConfig, isPreview }: Props) {
               >
                 <SettingsIcon />
               </IconButton>
-              {isActive && (
-                <ButtonBase
-                  onClick={handleShowProfileMenu}
-                  sx={{ borderRadius: "50%" }}
-                >
-                  <Avatar
-                    sx={{ height: "1.5rem", width: "1.5rem" }}
-                    src={user?.profileImageURL}
-                  />
-                </ButtonBase>
-              )}
             </Stack>
           </Stack>
           <Box

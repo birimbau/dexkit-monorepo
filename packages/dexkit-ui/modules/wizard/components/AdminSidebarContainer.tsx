@@ -285,6 +285,7 @@ export default function AdminSidebarContainer({
                     defaultMessage="E-Commerce"
                   />
                 }
+                subtitle={<FormattedMessage id="beta" defaultMessage="BETA" />}
                 open={isMenuToggled("commerce")}
                 onSelectMenuId={onChangeMenu}
                 onToggle={handleToggleMenu("commerce")}

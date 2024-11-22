@@ -1,4 +1,11 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Chip,
+  Grid,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { FormattedMessage } from "react-intl";
 import { CommerceConfig } from "../../wizard/types/config";
 import CommerceIntegrationForm from "./CommerceIntegrationForm";
@@ -17,9 +24,20 @@ export default function CommerceIntegrationCard({
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography gutterBottom variant="h6" fontWeight="bold">
-              <FormattedMessage id="ecommerce" defaultMessage="E-Commerce" />
-            </Typography>
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Typography gutterBottom variant="h6" fontWeight="bold">
+                <FormattedMessage id="ecommerce" defaultMessage="E-Commerce" />
+              </Typography>
+              <Chip
+                label={<FormattedMessage id="beta" defaultMessage="BETA" />}
+                sx={{ fontWeight: "bold" }}
+                size="small"
+              />
+            </Stack>
             <Typography variant="body2" color="text.secondary">
               <FormattedMessage
                 id="commerce.integration.card.description"

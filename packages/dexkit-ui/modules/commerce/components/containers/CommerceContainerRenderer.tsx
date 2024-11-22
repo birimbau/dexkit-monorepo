@@ -11,6 +11,7 @@ import EditCheckoutContainer from "./EditCheckoutContainer";
 import EditCollectionContainer from "./EditCollectionContainer";
 import EditProductContainer from "./EditProductContainer";
 import NotificationsContainer from "./NotificationsContainer";
+import OrderContainer from "./OrderContainer";
 import OrdersContainer from "./OrdersContainer";
 import ProductsContainer from "./ProductsContainer";
 import SettingsContainer from "./SettingsContainer";
@@ -20,6 +21,7 @@ export const CONTAINERS: { [key: string]: React.ReactNode } = {
   "commerce.notifications": <NotificationsContainer />,
   "commerce.settings": <SettingsContainer />,
   "commerce.orders": <OrdersContainer />,
+  "commerce.order.edit": <OrderContainer />,
   "commerce.products.items": <ProductsContainer />,
   "commerce.products.edit": <EditProductContainer />,
   "commerce.products.create": <CreateProductContainer />,

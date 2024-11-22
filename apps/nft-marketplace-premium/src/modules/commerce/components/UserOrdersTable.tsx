@@ -5,22 +5,24 @@ import { Order } from '../types';
 
 import { getBlockExplorerUrl } from '@dexkit/core/utils';
 import { useWeb3React } from '@dexkit/wallet-connectors/hooks/useWeb3React';
-import { Box } from '@mui/material';
-import Link from '@mui/material/Link';
-import NextLink from 'next/link';
+import { Box, IconButton, Stack, Tooltip, useTheme } from '@mui/material';
 import useUserOrderList from '../hooks/orders/useUserOrdersList';
 import { LoadingOverlay } from './LoadingOverlay';
 import { noRowsOverlay } from './NoRowsOverlay';
 import TokenDataContainer from './TokenDataContainer';
 
+import OrderStatusBadge from '@dexkit/ui/modules/commerce/components/OrderStatusBadge';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import OpenInNew from '@mui/icons-material/OpenInNew';
+import moment from 'moment';
 import { useRouter } from 'next/router';
 
 export interface OrdersTableProps {
   query: string;
+  status: string;
 }
 
-export default function UserOrdersTable({ query }: OrdersTableProps) {
+export default function UserOrdersTable({ query, status }: OrdersTableProps) {
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
     pageSize: 5,
@@ -33,29 +35,45 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
     page: paginationModel.page,
     q: query,
     address: account ?? '',
+    status,
   });
 
   const { formatMessage } = useIntl();
 
   const router = useRouter();
 
+  const theme = useTheme();
+
   const columns = useMemo(() => {
     return [
       {
         flex: 1,
         field: 'order',
+        disableColumnMenu: true,
+        sortable: false,
         headerName: formatMessage({
           id: 'order.id',
           defaultMessage: 'Order ID',
         }),
-        renderCell: ({ row }) => (
-          <Link component={NextLink} href={`/c/orders/${row.id}`}>
-            {row.id.substring(10)}
-          </Link>
-        ),
+        renderCell: ({ row }) => row.id.substring(10),
       },
       {
         flex: 1,
+        disableColumnMenu: true,
+        sortable: false,
+        field: 'createdAt',
+        headerName: formatMessage({
+          id: 'created.on',
+          defaultMessage: 'Created On',
+        }),
+        renderCell: ({ row }) => {
+          return moment(row.createdAt).format('L LTS');
+        },
+      },
+      {
+        flex: 1,
+        disableColumnMenu: true,
+        sortable: false,
         field: 'total',
         headerName: formatMessage({
           id: 'total',
@@ -74,44 +92,53 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
       },
       {
         flex: 1,
-        field: 'contractAddress',
+        disableColumnMenu: true,
+        sortable: false,
+        field: 'status',
         headerName: formatMessage({
-          id: 'token',
-          defaultMessage: 'Token',
+          id: 'status',
+          defaultMessage: 'Status',
         }),
         renderCell: ({ row }) => {
           return (
-            <Link
-              target="_blank"
-              href={`${getBlockExplorerUrl(row.chainId)}/address/${
-                row.contractAddress
-              }`}
-            >
-              <TokenDataContainer
-                contractAddress={row.contractAddress}
-                chainId={row.chainId}
-              >
-                {({ name }) => name}
-              </TokenDataContainer>
-            </Link>
+            <OrderStatusBadge status={row.status} palette={theme.palette} />
           );
         },
       },
+
       {
         flex: 1,
-        field: 'hash',
+        field: 'actions',
+        disableColumnMenu: true,
+        sortable: false,
         headerName: formatMessage({
-          id: 'transaction',
-          defaultMessage: 'Transaction',
+          id: 'actions',
+          defaultMessage: 'Actions',
         }),
         renderCell: ({ row }) => {
           return (
-            <Link
-              target="_blank"
-              href={`${getBlockExplorerUrl(row.chainId)}/tx/${row.hash}`}
-            >
-              <FormattedMessage id="transaction" defaultMessage="Transaction" />
-            </Link>
+            <Box>
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                  target="_blank"
+                  href={`${getBlockExplorerUrl(row.chainId)}/tx/${row.hash}`}
+                >
+                  <Tooltip
+                    title={
+                      <FormattedMessage
+                        id="view.transaction.on.blockchain"
+                        defaultMessage="View transaction on blockchain"
+                      />
+                    }
+                  >
+                    <OpenInNew />
+                  </Tooltip>
+                </IconButton>
+              </Stack>
+            </Box>
           );
         },
       },
@@ -166,6 +193,9 @@ export default function UserOrdersTable({ query }: OrdersTableProps) {
               id="create.orders.to.see.it.here"
               defaultMessage="Create orders to see it here"
             />,
+            <Box sx={{ fontSize: '3rem' }}>
+              <AssignmentIcon fontSize="inherit" />
+            </Box>,
           ),
           loadingOverlay: LoadingOverlay,
           noResultsOverlay: noRowsOverlay(

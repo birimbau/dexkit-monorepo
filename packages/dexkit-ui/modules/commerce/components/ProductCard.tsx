@@ -23,6 +23,8 @@ import Delete from "@mui/icons-material/Delete";
 import Share from "@mui/icons-material/Share";
 import { MouseEvent } from "react";
 
+import { useRouter } from "next/router";
+
 export interface ProductCardProps {
   product: Product;
   isOnWinshlist: boolean;
@@ -38,7 +40,27 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { isSection, setProduct, cart } = useCommerce();
 
+  const router = useRouter();
+
   const handleClick = (e: MouseEvent) => {
+    if (isSection) {
+      e.preventDefault();
+
+      if (!cart.item(product.id) || cart.item(product.id)?.quantity === 0) {
+        cart.addItem({
+          name: product.name,
+          price: product.price,
+          productId: product.id,
+          quantity: 1,
+          imageUrl: product.imageUrl ?? "",
+        });
+
+        router.push("/c/cart");
+      }
+    }
+  };
+
+  const handleClickImage = (e: MouseEvent) => {
     if (isSection) {
       e.preventDefault();
       setProduct(product.id);
@@ -80,7 +102,7 @@ export default function ProductCard({
           </IconButton>
         </Stack>
 
-        <CardActionArea onClick={handleClick}>
+        <CardActionArea onClick={handleClickImage}>
           {product.imageUrl ? (
             <Box
               sx={{

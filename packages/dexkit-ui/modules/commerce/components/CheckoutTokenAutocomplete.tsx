@@ -102,7 +102,16 @@ export default function CheckoutTokenAutocomplete(
       renderInput={(params) => (
         <TextField
           {...params}
-          label={<FormattedMessage id="token" defaultMessage="Token" />}
+          label={
+            token ? (
+              <FormattedMessage id="token" defaultMessage="Token" />
+            ) : (
+              <FormattedMessage
+                id="search.token"
+                defaultMessage="Search token"
+              />
+            )
+          }
           inputProps={{
             ...params.inputProps,
             autoComplete: "off", // disable autocomplete and autofill
