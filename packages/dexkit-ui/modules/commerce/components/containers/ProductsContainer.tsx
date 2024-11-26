@@ -39,7 +39,7 @@ export default function ProductsContainer() {
           <Alert severity="info">
             <FormattedMessage
               id="product.inactive.not.display.info"
-              defaultMessage={`Products with the status "Inactive" will not be displayed in your e-commerce store.`}
+              defaultMessage="Products with visibility set to 'Inactive' will not be displayed in your e-commerce store."
             />
           </Alert>
         </Stack>
