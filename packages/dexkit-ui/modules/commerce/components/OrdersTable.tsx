@@ -124,7 +124,7 @@ export default function OrdersTable({ query, status }: OrdersTableProps) {
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}
         sx={{
-          height: 300,
+          height: data?.items.length === 0 ? 300 : undefined,
           "& .MuiDataGrid-cell:focus": {
             outline: "none",
           },

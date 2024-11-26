@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
 import Add from "@mui/icons-material/Add";
@@ -24,6 +24,7 @@ export default function ProductsContainer() {
             />
           </Typography>
         </Box>
+        <Divider />
         <Stack spacing={2} alignItems="flex-start">
           <Button
             LinkComponent={NextLink}

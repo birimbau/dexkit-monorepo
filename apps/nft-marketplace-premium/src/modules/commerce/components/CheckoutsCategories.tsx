@@ -222,7 +222,7 @@ export default function CategoriesTable({}: CategoriesTableProps) {
         >
           <FormattedMessage
             id="do.you.really.want.to.delete.this.category"
-            defaultMessage="Do you really want to delete this categogry?"
+            defaultMessage="Do you really want to delete this category?"
           />
         </AppConfirmDialog>
       )}

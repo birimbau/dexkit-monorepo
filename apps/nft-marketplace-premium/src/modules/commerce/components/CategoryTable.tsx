@@ -126,7 +126,7 @@ export default function CategoryTable({ query, onShare }: CategoryTableProps) {
         >
           <FormattedMessage
             id="do.you.really.want.to.delete.this.category"
-            defaultMessage="Do you really want to delete this categogry?"
+            defaultMessage="Do you really want to delete this category?"
           />
         </AppConfirmDialog>
       )}

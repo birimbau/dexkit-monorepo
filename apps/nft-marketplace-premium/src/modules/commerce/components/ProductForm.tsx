@@ -15,6 +15,7 @@ import {
   InputAdornment,
   Stack,
   Switch,
+  Typography,
 } from '@mui/material';
 import { Field, useFormikContext } from 'formik';
 import { TextField } from 'formik-mui';
@@ -158,10 +159,21 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
           onConfirm={handleConfirm}
           isConfirming={isLoading}
           title={
-            <FormattedMessage
-              id="delete.product"
-              defaultMessage="Delete product"
-            />
+            <strong>
+              <FormattedMessage
+                id="delete.product.product"
+                defaultMessage="Delete Product: {product}"
+                values={{
+                  product: (
+                    <Typography
+                      component="span"
+                      fontWeight="400"
+                      variant="inherit"
+                    ></Typography>
+                  ),
+                }}
+              />
+            </strong>
           }
         >
           <FormattedMessage

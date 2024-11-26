@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
 import { useState } from "react";
@@ -26,12 +26,14 @@ export default function CategoriesContainer() {
   return (
     <>
       <DashboardLayout page="categories">
-        <CreateCategoryFormDialog
-          DialogProps={{ open, onClose: handleClose }}
-          onRefetch={async () => {
-            await queryClient.refetchQueries([GET_CATEGORY_LIST]);
-          }}
-        />
+        {open && (
+          <CreateCategoryFormDialog
+            DialogProps={{ open, onClose: handleClose }}
+            onRefetch={async () => {
+              await queryClient.refetchQueries([GET_CATEGORY_LIST]);
+            }}
+          />
+        )}
         <Stack spacing={2}>
           <Box>
             <Typography variant="h6">
@@ -44,6 +46,7 @@ export default function CategoriesContainer() {
               />
             </Typography>
           </Box>
+          <Divider />
           <Box>
             <Button
               startIcon={<Add />}

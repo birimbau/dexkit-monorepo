@@ -1,11 +1,10 @@
-import Info from "@mui/icons-material/InfoOutlined";
 import {
   Alert,
   AlertTitle,
   Box,
+  Divider,
   Grid,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { FormattedMessage } from "react-intl";
@@ -31,58 +30,62 @@ export default function SettingsContainer() {
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography variant="body1" fontWeight="bold">
-                <FormattedMessage
-                  id="general.settings"
-                  defaultMessage="General Settings"
-                />
-              </Typography>
-              <Typography color="text.secondary" variant="body2">
-                <FormattedMessage
-                  id="recipient.information"
-                  defaultMessage="Recipient information"
-                />
-              </Typography>
+              <Divider />
             </Grid>
-            <Grid item xs={12}>
-              <Alert severity="warning">
-                <AlertTitle>
-                  <FormattedMessage
-                    id="alert.for.wallet.address"
-                    defaultMessage="Alert for wallet address"
-                  />
-                </AlertTitle>
-                <Typography>
-                  <FormattedMessage
-                    id="unique.address.alert"
-                    defaultMessage="Please enter the unique address where you will receive payments for your sales. Ensure it is correct to avoid any loss of funds."
-                  />
-                </Typography>
-              </Alert>
-            </Grid>
-            <Grid item xs={12}>
-              <CheckoutGeneralSettingsForm />
+            <Grid item xs={6}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography
+                    color="text.secondary"
+                    variant="body2"
+                    fontWeight="bold"
+                  >
+                    <FormattedMessage
+                      id="recipient.information"
+                      defaultMessage="Recipient information"
+                    />
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Alert severity="warning">
+                    <AlertTitle sx={{ fontWeight: "bold" }}>
+                      <FormattedMessage
+                        id="alert.for.wallet.address"
+                        defaultMessage="Alert for wallet address"
+                      />
+                    </AlertTitle>
+                    <Typography>
+                      <FormattedMessage
+                        id="unique.address.alert"
+                        defaultMessage="Please verify that the recipient wallet address is correct to avoid losing funds. This is where you will receive payments for your sales."
+                      />
+                    </Typography>
+                  </Alert>
+                </Grid>
+                <Grid item xs={12}>
+                  <CheckoutGeneralSettingsForm />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={12}>
               <Box>
-                <Stack direction="row" alignItems="center" spacing={1}>
-                  <Typography variant="body1" fontWeight="bold">
-                    <FormattedMessage
-                      id="payment.networks"
-                      defaultMessage="Payment Networks"
-                    />
-                  </Typography>
-                  <Tooltip
-                    title={
-                      <FormattedMessage
-                        id="select.crypto.networks.tooltip"
-                        defaultMessage="Select the crypto networks you want to accept for payments during checkout."
-                      />
-                    }
-                  >
-                    <Info color="primary" />
-                  </Tooltip>
-                </Stack>
+                <Typography
+                  variant="body1"
+                  fontWeight="bold"
+                  color="text.secondary"
+                >
+                  <FormattedMessage
+                    id="payment.networks"
+                    defaultMessage="Payment Networks"
+                  />
+                </Typography>
+
+                <Typography variant="body1" color="text.secondary">
+                  <FormattedMessage
+                    id="payment.networks.subtext"
+                    defaultMessage="Select the crypto networks you want to accept for payments during checkout."
+                  />
+                </Typography>
               </Box>
             </Grid>
             <Grid item xs={12}>

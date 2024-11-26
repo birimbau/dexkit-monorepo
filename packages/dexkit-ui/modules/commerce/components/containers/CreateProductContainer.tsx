@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { useSnackbar } from "notistack";
 import { FormattedMessage } from "react-intl";
@@ -28,7 +28,7 @@ function CreateProductComponent() {
         />,
         { variant: "success" }
       );
-      setContainer("");
+      setContainer("commerce.products.items");
     } catch (err) {
       enqueueSnackbar(String(err), { variant: "error" });
     }
@@ -36,6 +36,20 @@ function CreateProductComponent() {
 
   return (
     <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="h5">
+          <FormattedMessage id="items" defaultMessage="Items" />
+        </Typography>
+        <Typography>
+          <FormattedMessage
+            id="create.and.manage.your.products"
+            defaultMessage="Create and manage your products"
+          />
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
       <Grid item xs={12}>
         <CommerceBreadcrumbs
           breadcrumbs={[
@@ -54,8 +68,8 @@ function CreateProductComponent() {
             {
               caption: (
                 <FormattedMessage
-                  id="create.product"
-                  defaultMessage="Create Product"
+                  id="new.product"
+                  defaultMessage="New Product"
                 />
               ),
               containerId: "commerce.products.create",
@@ -63,14 +77,6 @@ function CreateProductComponent() {
             },
           ]}
         />
-      </Grid>
-      <Grid item xs={12}>
-        <Typography variant="h5">
-          <FormattedMessage
-            id="create.product"
-            defaultMessage="Create product"
-          />
-        </Typography>
       </Grid>
       <Grid item xs={12}>
         <Formik

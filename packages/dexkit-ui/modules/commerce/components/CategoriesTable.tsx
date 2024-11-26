@@ -34,6 +34,8 @@ export interface CategoriesTableProps {}
 export default function CategoriesTable({}: CategoriesTableProps) {
   const [query, setQuery] = useState("");
 
+  const [categoryName, setCategoryName] = useState<string>();
+
   const [selectionModel, setSelectionModel] = useState<GridRowSelectionModel>(
     []
   );
@@ -68,17 +70,19 @@ export default function CategoriesTable({}: CategoriesTableProps) {
 
   const [showDeleteMany, setShowDeleteMany] = useState(false);
 
-  const handleDelete = useCallback((id: string) => {
+  const handleDelete = useCallback((id: string, name: string) => {
     return (e: MouseEvent) => {
       e.stopPropagation();
       setSelectedId(id);
       setShowConfirm(true);
+      setCategoryName(name);
     };
   }, []);
 
   const handleClose = () => {
     setShowConfirm(false);
     setSelectedId(undefined);
+    setCategoryName(undefined);
   };
 
   const handleConfirm = async () => {
@@ -134,7 +138,7 @@ export default function CategoriesTable({}: CategoriesTableProps) {
         headerName: formatMessage({ id: "actions", defaultMessage: "Actions" }),
         renderCell: ({ row }) => (
           <Stack direction="row">
-            <IconButton onClick={handleDelete(row.id ?? "")}>
+            <IconButton onClick={handleDelete(row.id ?? "", row.name)}>
               <Delete color="error" />
             </IconButton>
           </Stack>
@@ -165,8 +169,8 @@ export default function CategoriesTable({}: CategoriesTableProps) {
 
       enqueueSnackbar(
         <FormattedMessage
-          id="categories.are.deleted"
-          defaultMessage="Categories are deleted"
+          id="categories.deleted"
+          defaultMessage="Categories deleted"
         />,
         { variant: "success" }
       );
@@ -189,14 +193,14 @@ export default function CategoriesTable({}: CategoriesTableProps) {
           isConfirming={isDeletingMany}
           title={
             <FormattedMessage
-              id="delete.collections.s"
-              defaultMessage="Delete collection(s)"
+              id="delete.categories.alt"
+              defaultMessage="Delete Categories"
             />
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.amount.collections"
-            defaultMessage="Do you really want to delete {amount} collection(s)?"
+            id="are.you.sure.you.want.to.delete.amount.categories?"
+            defaultMessage="Are you sure you want to delete {amount} categories?"
             values={{ amount: selectionModel.length }}
           />
         </AppConfirmDialog>
@@ -217,15 +221,28 @@ export default function CategoriesTable({}: CategoriesTableProps) {
           onConfirm={handleConfirm}
           isConfirming={isLoading}
           title={
-            <FormattedMessage
-              id="delete.category"
-              defaultMessage="Delete category"
-            />
+            <strong>
+              <FormattedMessage
+                id="delete.category.name"
+                defaultMessage="Delete Category: {category}"
+                values={{
+                  category: (
+                    <Typography
+                      variant="inherit"
+                      fontWeight="400"
+                      component="span"
+                    >
+                      {categoryName}
+                    </Typography>
+                  ),
+                }}
+              />
+            </strong>
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.this.category"
-            defaultMessage="Do you really want to delete this categogry?"
+            id="Are.you.sure.you.want.to.delete.this.category"
+            defaultMessage="Are you sure you want to delete this category?"
           />
         </AppConfirmDialog>
       )}
@@ -240,7 +257,7 @@ export default function CategoriesTable({}: CategoriesTableProps) {
           onPaginationModelChange={setPaginationModel}
           loading={isLoading}
           sx={{
-            height: 300,
+            height: data?.items.length === 0 ? 300 : undefined,
             "& .MuiDataGrid-cell:focus": {
               outline: "none",
             },

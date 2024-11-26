@@ -6,6 +6,7 @@ import Search from "@mui/icons-material/Search";
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   FormControlLabel,
   Grid,
@@ -131,7 +132,7 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
             />
             <FormControlLabel
               control={
-                <Switch
+                <Checkbox
                   checked={showTestnets}
                   onChange={() => setShowTestnets((value) => !value)}
                 />
@@ -165,15 +166,7 @@ function CheckoutNetworksBase({ networks }: CheckoutNetworksBaseProps) {
                       checked={Boolean(checked[network.chainId])}
                       onClick={handleToggle(network.chainId)}
                     />
-                    <Typography
-                      sx={
-                        network.testnet
-                          ? { color: (theme) => theme.palette.error.main }
-                          : undefined
-                      }
-                    >
-                      {network.name}
-                    </Typography>
+                    <Typography>{network.name}</Typography>
                   </Stack>
                 </Box>
               </Grid>

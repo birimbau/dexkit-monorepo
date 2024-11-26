@@ -58,6 +58,8 @@ export interface ProducstTableProps {}
 export default function ProductsTable({}: ProducstTableProps) {
   const [query, setQuery] = useState("");
 
+  const [productName, setProductName] = useState<string>();
+
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: "name", sort: "asc" },
   ]);
@@ -115,17 +117,19 @@ export default function ProductsTable({}: ProducstTableProps) {
     };
   }, []);
 
-  const handleDelete = useCallback((id: string) => {
+  const handleDelete = useCallback((id: string, name: string) => {
     return (e: MouseEvent) => {
       e.stopPropagation();
       setSelectedId(id);
       setShowConfirm(true);
+      setProductName(name);
     };
   }, []);
 
   const handleClose = () => {
     setShowConfirm(false);
     setSelectedId(undefined);
+    setProductName(undefined);
   };
 
   const handleConfirm = async () => {
@@ -276,7 +280,10 @@ export default function ProductsTable({}: ProducstTableProps) {
                 <ContentCopyIcon fontSize="small" />
               </Tooltip>
             </IconButton>
-            <IconButton size="small" onClick={handleDelete(row.id ?? "")}>
+            <IconButton
+              size="small"
+              onClick={handleDelete(row.id ?? "", row.name)}
+            >
               <Tooltip
                 title={<FormattedMessage id="delete" defaultMessage="Delete" />}
               >
@@ -330,8 +337,8 @@ export default function ProductsTable({}: ProducstTableProps) {
 
       enqueueSnackbar(
         <FormattedMessage
-          id="products.are.deleted"
-          defaultMessage="Products are deleted"
+          id="products.deleted"
+          defaultMessage="Products deleted"
         />,
         { variant: "success" }
       );
@@ -360,14 +367,25 @@ export default function ProductsTable({}: ProducstTableProps) {
           isConfirming={isLoading}
           title={
             <FormattedMessage
-              id="delete.product"
-              defaultMessage="Delete product"
+              id="delete.product.name"
+              defaultMessage="Delete Product: {product}"
+              values={{
+                product: (
+                  <Typography
+                    fontWeight="400"
+                    variant="inherit"
+                    component="span"
+                  >
+                    {productName}
+                  </Typography>
+                ),
+              }}
             />
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.this.product"
-            defaultMessage="Do you really want to delete this product?"
+            id="are.you.sure.you.want.to.delete.this.product"
+            defaultMessage="Are you sure you want to delete this product?"
           />
         </AppConfirmDialog>
       )}
@@ -380,13 +398,13 @@ export default function ProductsTable({}: ProducstTableProps) {
           title={
             <FormattedMessage
               id="delete.products"
-              defaultMessage="Delete products"
+              defaultMessage="Delete Products"
             />
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.amount.products"
-            defaultMessage="Do you really want to delete {amount} products?"
+            id="are.you.sure.you.want.to.delete.amount.products?"
+            defaultMessage="Are you sure you want to delete {amount} products?"
             values={{ amount: selectionModel.length }}
           />
         </AppConfirmDialog>
@@ -470,7 +488,7 @@ export default function ProductsTable({}: ProducstTableProps) {
             }}
             sortingMode="server"
             sx={{
-              height: 300,
+              height: data?.items.length === 0 ? 300 : undefined,
               "& .MuiDataGrid-cell:focus": {
                 outline: "none",
               },

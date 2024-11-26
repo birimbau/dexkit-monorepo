@@ -15,6 +15,7 @@ import {
   InputAdornment,
   Stack,
   Switch,
+  Typography,
 } from "@mui/material";
 import { Field, useFormikContext } from "formik";
 import { TextField } from "formik-mui";
@@ -161,10 +162,23 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
           onConfirm={handleConfirm}
           isConfirming={isLoading}
           title={
-            <FormattedMessage
-              id="delete.product"
-              defaultMessage="Delete product"
-            />
+            <strong>
+              <FormattedMessage
+                id="delete.product.name"
+                defaultMessage="Delete Product: {product}"
+                values={{
+                  product: (
+                    <Typography
+                      component="span"
+                      fontWeight="400"
+                      variant="inherit"
+                    >
+                      {values.name}
+                    </Typography>
+                  ),
+                }}
+              />
+            </strong>
           }
         >
           <FormattedMessage
@@ -183,7 +197,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
         }}
       />
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={3}>
           <ButtonBase
             onClick={handleSelectOpen}
             sx={{
@@ -208,9 +222,8 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
           >
             <Stack
               sx={{
-                height: 150,
                 maxHeight: 300,
-                minHeight: 50,
+                minHeight: 150,
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
@@ -226,7 +239,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
             </Stack>
           </ButtonBase>
         </Grid>
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={12} sm={5}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Button onClick={handleShowPreview} startIcon={<Visibility />}>
@@ -241,7 +254,9 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 component={TextField}
                 name="name"
                 fullWidth
-                label={<FormattedMessage id="item" defaultMessage="Item" />}
+                label={
+                  <FormattedMessage id="product" defaultMessage="Product" />
+                }
               />
             </Grid>
 
@@ -317,8 +332,8 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 />
                 <FormHelperText sx={{ m: 0 }}>
                   <FormattedMessage
-                    id="turn.off.to.set.the.item.msg"
-                    defaultMessage="Turn off to set the item as “Inactive” and hide it from the store."
+                    id="turn.on.to.set.the.item.msg"
+                    defaultMessage='Turn on to set the product as "Active" and display it in the store.'
                   />
                 </FormHelperText>
               </FormControl>

@@ -161,7 +161,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
           title={
             <FormattedMessage
               id="delete.collection"
-              defaultMessage="Delete collection"
+              defaultMessage="Delete Collection "
             />
           }
         >

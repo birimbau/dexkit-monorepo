@@ -42,7 +42,6 @@ export function CommerceBreadcrumbs({
             display: "block",
             textOverflow: "ellipsis",
             overflow: "hidden",
-            fontWeight: 600,
           }}
           variant="h6"
         >
@@ -92,7 +91,6 @@ export function CommerceBreadcrumbs({
                 onClick={handleClick(breadcrumb.containerId, breadcrumb.params)}
                 color={breadcrumb?.active ? "primary" : "text.primary"}
                 sx={{ cursor: "pointer" }}
-                fontWeight="bold"
                 underline="none"
               >
                 {breadcrumb.caption}

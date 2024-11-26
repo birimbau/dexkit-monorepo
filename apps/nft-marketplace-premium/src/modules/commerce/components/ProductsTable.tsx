@@ -57,6 +57,8 @@ export interface ProducstTableProps {}
 export default function ProductsTable({}: ProducstTableProps) {
   const [query, setQuery] = useState('');
 
+  const [productName, setProductName] = useState<string>();
+
   const [sortModel, setSortModel] = useState<GridSortModel>([
     { field: 'name', sort: 'asc' },
   ]);
@@ -114,17 +116,19 @@ export default function ProductsTable({}: ProducstTableProps) {
     };
   }, []);
 
-  const handleDelete = useCallback((id: string) => {
+  const handleDelete = useCallback((id: string, name: string) => {
     return (e: MouseEvent) => {
       e.stopPropagation();
       setSelectedId(id);
       setShowConfirm(true);
+      setProductName(name);
     };
   }, []);
 
   const handleClose = () => {
     setShowConfirm(false);
     setSelectedId(undefined);
+    setProductName(undefined);
   };
 
   const handleConfirm = async () => {
@@ -273,7 +277,10 @@ export default function ProductsTable({}: ProducstTableProps) {
                 <ContentCopyIcon fontSize="small" />
               </Tooltip>
             </IconButton>
-            <IconButton size="small" onClick={handleDelete(row.id ?? '')}>
+            <IconButton
+              size="small"
+              onClick={handleDelete(row.id ?? '', row.name)}
+            >
               <Tooltip
                 title={<FormattedMessage id="delete" defaultMessage="Delete" />}
               >
@@ -358,13 +365,20 @@ export default function ProductsTable({}: ProducstTableProps) {
           title={
             <FormattedMessage
               id="delete.product"
-              defaultMessage="Delete product"
+              defaultMessage="Delete product {product}"
+              values={{
+                product: (
+                  <Typography variant="inherit" fontWeight="400">
+                    {productName}
+                  </Typography>
+                ),
+              }}
             />
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.this.product"
-            defaultMessage="Do you really want to delete this product?"
+            id="are.you.sure.you.want.to.delete.this.product"
+            defaultMessage="Are you sure you want to delete this product?"
           />
         </AppConfirmDialog>
       )}

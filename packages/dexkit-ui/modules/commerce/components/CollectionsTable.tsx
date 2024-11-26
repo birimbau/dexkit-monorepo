@@ -5,11 +5,11 @@ import {
   GridRowSelectionModel,
   GridSortModel,
 } from "@mui/x-data-grid";
-import { useCallback, useMemo, useState } from "react";
+import { MouseEvent, useCallback, useMemo, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 import { CategoryType } from "../types";
 
-import { Box, IconButton, Stack } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { LoadingOverlay } from "./LoadingOverlay";
 import { noRowsOverlay } from "./NoRowsOverlay";
 
@@ -59,11 +59,14 @@ export default function CollectionsTable({}: CollectionsTableProps) {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
+  const [collectionName, setCollectioName] = useState<string>();
 
   const [showDeleteMany, setShowDeleteMany] = useState(false);
 
-  const handleDelete = useCallback((id: string) => {
-    return () => {
+  const handleDelete = useCallback((id: string, name: string) => {
+    return (e: MouseEvent) => {
+      e.stopPropagation();
+      setCollectioName(name);
       setSelectedId(id);
       setShowConfirm(true);
     };
@@ -72,6 +75,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
   const handleClose = () => {
     setShowConfirm(false);
     setSelectedId(undefined);
+    setCollectioName(undefined);
   };
 
   const handleConfirm = async () => {
@@ -110,7 +114,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
         headerName: formatMessage({ id: "actions", defaultMessage: "Actions" }),
         renderCell: ({ row }) => (
           <Stack direction="row">
-            <IconButton onClick={handleDelete(row.id ?? "")}>
+            <IconButton onClick={handleDelete(row.id ?? "", row.name)}>
               <Delete color="error" />
             </IconButton>
           </Stack>
@@ -159,15 +163,28 @@ export default function CollectionsTable({}: CollectionsTableProps) {
           onConfirm={handleConfirm}
           isConfirming={isLoading}
           title={
-            <FormattedMessage
-              id="delete.collection"
-              defaultMessage="Delete collection"
-            />
+            <strong>
+              <FormattedMessage
+                id="delete.collection.name"
+                defaultMessage="Delete Collection: {collection}"
+                values={{
+                  collection: (
+                    <Typography
+                      component="span"
+                      variant="inherit"
+                      fontWeight="400"
+                    >
+                      {collectionName}
+                    </Typography>
+                  ),
+                }}
+              />
+            </strong>
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.this.collection"
-            defaultMessage="Do you really want to delete this collection?"
+            id="are.you.sure.you.want.to.delete.this.collection"
+            defaultMessage="Are you sure you want to delete this collection?"
           />
         </AppConfirmDialog>
       )}
@@ -179,14 +196,14 @@ export default function CollectionsTable({}: CollectionsTableProps) {
           isConfirming={isDeletingMany}
           title={
             <FormattedMessage
-              id="delete.collections.s"
-              defaultMessage="Delete collection(s)"
+              id="delete.collections"
+              defaultMessage="Delete collections"
             />
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.amount.collections"
-            defaultMessage="Do you really want to delete {amount} collection(s)?"
+            id="are.you.sure.you.want.to.delete.amount.collections"
+            defaultMessage="Are you sure you want to delete {amount} collections?"
             values={{ amount: selectionModel.length }}
           />
         </AppConfirmDialog>
@@ -264,7 +281,7 @@ export default function CollectionsTable({}: CollectionsTableProps) {
           onSortModelChange={setSortModel}
           sortingMode="server"
           sx={{
-            height: 300,
+            height: data?.items.length === 0 ? 300 : undefined,
             "& .MuiDataGrid-cell:focus": {
               outline: "none",
             },

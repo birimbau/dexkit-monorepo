@@ -63,8 +63,8 @@ function CheckoutGeneralSettingsFormBase({
                   fullWidth
                   label={
                     <FormattedMessage
-                      id="receiver.account"
-                      defaultMessage="Receiver Account"
+                      id="recipient.wallet.address"
+                      defaultMessage="Recipient wallet address"
                     />
                   }
                 />
@@ -76,8 +76,8 @@ function CheckoutGeneralSettingsFormBase({
                   fullWidth
                   label={
                     <FormattedMessage
-                      id="receiver.email"
-                      defaultMessage="Receiver Email"
+                      id="recipient.email"
+                      defaultMessage="Recipient e-mail"
                     />
                   }
                 />
@@ -90,9 +90,6 @@ function CheckoutGeneralSettingsFormBase({
           <Grid item xs={12}>
             <div>
               <Stack spacing={2} justifyContent="flex-end" direction="row">
-                <Button onClick={goBack} disabled={isSubmitting}>
-                  <FormattedMessage id="Cancel" defaultMessage="Cancel" />
-                </Button>
                 <Button
                   startIcon={
                     isSubmitting ? (

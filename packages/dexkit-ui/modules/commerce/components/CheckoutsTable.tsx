@@ -61,14 +61,17 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
   const { mutateAsync: deleteCheckout, isLoading: isLoadingDelete } =
     useDeleteCheckout();
 
+  const [checkoutName, setCheckoutName] = useState<string>();
+
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedId, setSelectedId] = useState<string>();
 
-  const handleDelete = useCallback((id: string) => {
+  const handleDelete = useCallback((id: string, name: string) => {
     return (e: MouseEvent) => {
       e.stopPropagation();
       setSelectedId(id);
       setShowConfirm(true);
+      setCheckoutName(name);
     };
   }, []);
 
@@ -141,7 +144,7 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
                 <Share />
               </Tooltip>
             </IconButton>
-            <IconButton onClick={handleDelete(row.id ?? "")}>
+            <IconButton onClick={handleDelete(row.id ?? "", row.title)}>
               <Delete color="error" />
             </IconButton>
           </Stack>
@@ -161,14 +164,25 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
           isConfirming={isLoadingDelete}
           title={
             <FormattedMessage
-              id="delete.checkout"
-              defaultMessage="Delete checkout"
+              id="delete.checkout.name"
+              defaultMessage="Delete Checkout: {checkout}"
+              values={{
+                checkout: (
+                  <Typography
+                    variant="inherit"
+                    fontWeight="400"
+                    component="span"
+                  >
+                    {checkoutName}
+                  </Typography>
+                ),
+              }}
             />
           }
         >
           <FormattedMessage
-            id="do.you.really.want.to.delete.this.checkout"
-            defaultMessage="Do you really want to delete this checkout?"
+            id="are.you.sure.you.want.to.delete.this.checkout"
+            defaultMessage="Are you sure you want to delete this checkout?"
           />
         </AppConfirmDialog>
       )}

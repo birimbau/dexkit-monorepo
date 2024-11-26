@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
 import NextLink from "next/link";
@@ -24,6 +24,7 @@ export default function CollectionsContainer() {
               />
             </Typography>
           </Box>
+          <Divider />
           <Stack
             direction="row"
             alignItems="center"
