@@ -72,7 +72,7 @@ export default function AdminSidebarMenu({
             <ListItemButton onClick={handleToggleMenu(opt.id)}>
               <ListItemIcon>{opt.icon}</ListItemIcon>
               <ListItemText primary={opt.title} />
-              {open ? <ExpandLess /> : <ExpandMore />}
+              {isMenuToggled(opt.id) ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
             <Collapse in={isMenuToggled(opt.id)} timeout="auto" unmountOnExit>
               <List disablePadding>
@@ -83,7 +83,7 @@ export default function AdminSidebarMenu({
                     onClick={() => onSelectMenuId(o.id)}
                   >
                     <ListItemIcon></ListItemIcon>
-                    <ListItemText sx={{ ml: 2 }} primary={o.title} />
+                    <ListItemText sx={{ ml: 4 }} primary={o.title} />
                   </ListItemButton>
                 ))}
               </List>

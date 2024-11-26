@@ -563,7 +563,11 @@ export function EditWizardContainer({ site }: Props) {
                 onChangeMenu={(menu) => setActiveBuilderKit(menu)}
               />
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <PreviewAppButton appConfig={wizardConfig} site={site?.slug} />
+                <PreviewAppButton
+                  appConfig={wizardConfig}
+                  site={site?.slug}
+                  siteId={site?.id}
+                />
                 {site?.previewUrl && (
                   <Button
                     href={site?.previewUrl}

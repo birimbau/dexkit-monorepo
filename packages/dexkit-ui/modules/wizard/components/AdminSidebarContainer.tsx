@@ -1,17 +1,16 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
-import AnalyticsIcon from "@mui/icons-material/Analytics";
-import SettingsIcon from "@mui/icons-material/Settings";
-import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
+import AnalyticsIcon from "@mui/icons-material/AnalyticsOutlined";
+import SettingsIcon from "@mui/icons-material/SettingsOutlined";
+import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboardOutlined";
 
-import { Inventory } from "@mui/icons-material";
-import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import ShoppingCart from "@mui/icons-material/ShoppingCartOutlined";
 import { useCallback, useState } from "react";
 import AdminSidebarMenu from "./AdminSidebarMenu";
 
-import DatasetIcon from "@mui/icons-material/Dataset";
+import DatasetIcon from "@mui/icons-material/DatasetOutlined";
 import { useAppConfig } from "../../../hooks";
 
 export enum BuilderKit {
@@ -333,7 +332,6 @@ export default function AdminSidebarContainer({
                         defaultMessage="Products"
                       />
                     ),
-                    icon: <Inventory />,
                     options: [
                       {
                         title: (
