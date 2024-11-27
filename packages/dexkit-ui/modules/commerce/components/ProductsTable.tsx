@@ -65,7 +65,7 @@ export default function ProductsTable({}: ProducstTableProps) {
   ]);
 
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    page: 5,
+    page: 0,
     pageSize: 10,
   });
 

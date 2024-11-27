@@ -48,7 +48,7 @@ export default function CategoriesTable({}: CategoriesTableProps) {
 
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
     page: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
 
   const { data, isLoading, refetch } = useCategoryList({

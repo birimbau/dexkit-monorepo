@@ -273,6 +273,7 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
                 }
                 multiline
                 rows={3}
+                inputProps={{ style: { resize: "both" } }}
               />
             </Grid>
             <Grid item xs={12}>
