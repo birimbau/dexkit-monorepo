@@ -1,7 +1,14 @@
 import { Token } from '@dexkit/core/types';
-import { List } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 import { CheckoutItem } from '../types';
 
+import { FormattedMessage } from 'react-intl';
 import CheckoutUserItemsTableRow from './CheckoutUserItemsTableRow';
 
 export interface CheckoutUserItemListProps {
@@ -16,15 +23,30 @@ export default function CheckoutUserItemList({
   editable,
 }: CheckoutUserItemListProps) {
   return (
-    <List disablePadding>
-      {items?.map((item: CheckoutItem, index: number) => (
-        <CheckoutUserItemsTableRow
-          item={item}
-          key={index}
-          token={token}
-          editable={editable}
-        />
-      ))}
-    </List>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>
+            <FormattedMessage id="product" defaultMessage="Product" />
+          </TableCell>
+          <TableCell>
+            <FormattedMessage id="quantity" defaultMessage="Quantity" />
+          </TableCell>
+          <TableCell>
+            <FormattedMessage id="total" defaultMessage="Total" />
+          </TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {items?.map((item: CheckoutItem, index: number) => (
+          <CheckoutUserItemsTableRow
+            item={item}
+            key={index}
+            token={token}
+            editable={editable}
+          />
+        ))}
+      </TableBody>
+    </Table>
   );
 }

@@ -320,12 +320,8 @@ export default function UserCheckout() {
             />
           ) : hasSufficientBalance ? (
             <FormattedMessage
-              id="pay.amount.symbol"
-              defaultMessage="Pay {amount} {tokenSymbol}"
-              values={{
-                tokenSymbol: token?.symbol,
-                amount: total.toString(),
-              }}
+              id="confirm.payment"
+              defaultMessage="Confirm Payment"
             />
           ) : (
             <FormattedMessage
@@ -422,7 +418,12 @@ export default function UserCheckout() {
             <PageHeader
               breadcrumbs={[
                 {
-                  caption: <FormattedMessage id="home" defaultMessage="Home" />,
+                  caption: (
+                    <FormattedMessage
+                      id="my.orders"
+                      defaultMessage="My Orders"
+                    />
+                  ),
                   uri: '/c/orders',
                 },
                 {
@@ -436,28 +437,67 @@ export default function UserCheckout() {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={8}>
+            <Formik
+              key={JSON.stringify(initialValues)}
+              initialValues={{
+                items: initialValues,
+              }}
+              validationSchema={toFormikValidationSchema(
+                UserCheckoutItemsFormSchema,
+              )}
+              onSubmit={async ({
+                items,
+              }: {
+                items: { [key: string]: { quantity: number; price: string } };
+              }) => {
+                setIsEdit(false);
+                setItems(items);
+              }}
+            >
+              {({ submitForm, values }) => (
+                <>
+                  <CheckoutUserItemList
+                    token={token}
+                    items={userCheckout.data?.items ?? []}
+                    editable={isEdit}
+                  />
+                  {isEdit && (
+                    <>
+                      <Stack
+                        direction="row"
+                        justifyContent="flex-end"
+                        spacing={2}
+                        sx={{ p: 2 }}
+                      >
+                        <Button onClick={handleCancelEdit}>
+                          <FormattedMessage
+                            id="cancel"
+                            defaultMessage="Cancel"
+                          />
+                        </Button>
+                        <Button variant="outlined" onClick={submitForm}>
+                          <FormattedMessage id="done" defaultMessage="Done" />
+                        </Button>
+                      </Stack>
+                      <Divider />
+                    </>
+                  )}
+                </>
+              )}
+            </Formik>
+          </Grid>
+          <Grid item xs={12} sm={4}>
             <Card>
               <CardContent>
                 <Stack
-                  justifyContent="space-between"
                   direction="row"
                   alignItems="center"
+                  justifyContent="space-between"
                 >
-                  <Box>
-                    <Typography variant="caption" color="text.secondary">
-                      <FormattedMessage id="total" defaultMessage="total" />
-                    </Typography>
-                    <Typography variant="h5" fontWeight="bold">
-                      <FormattedNumber
-                        value={total.toNumber()}
-                        style="currency"
-                        currency="usd"
-                        maximumFractionDigits={token?.decimals}
-                      />{' '}
-                      {token ? token?.symbol : 'USD'}
-                    </Typography>
-                  </Box>
+                  <Typography variant="h5">
+                    <FormattedMessage id="checkout" defaultMessage="Checkout" />
+                  </Typography>
                   {userCheckout.data?.editable && !isEdit && (
                     <IconButton onClick={handleEdit}>
                       <Tooltip
@@ -475,83 +515,35 @@ export default function UserCheckout() {
                 </Stack>
               </CardContent>
               <Divider />
-              <Formik
-                key={JSON.stringify(initialValues)}
-                initialValues={{
-                  items: initialValues,
-                }}
-                validationSchema={toFormikValidationSchema(
-                  UserCheckoutItemsFormSchema,
-                )}
-                onSubmit={async ({
-                  items,
-                }: {
-                  items: { [key: string]: { quantity: number; price: string } };
-                }) => {
-                  setIsEdit(false);
-                  setItems(items);
-                }}
-              >
-                {({ submitForm, values }) => (
-                  <>
-                    <CheckoutUserItemList
-                      token={token}
-                      items={userCheckout.data?.items ?? []}
-                      editable={isEdit}
-                    />
-                    {isEdit && (
-                      <>
-                        <Stack
-                          direction="row"
-                          justifyContent="flex-end"
-                          spacing={2}
-                          sx={{ p: 2 }}
-                        >
-                          <Button onClick={handleCancelEdit}>
-                            <FormattedMessage
-                              id="cancel"
-                              defaultMessage="Cancel"
-                            />
-                          </Button>
-                          <Button variant="outlined" onClick={submitForm}>
-                            <FormattedMessage id="done" defaultMessage="Done" />
-                          </Button>
-                        </Stack>
-                        <Divider />
-                      </>
-                    )}
-                  </>
-                )}
-              </Formik>
               <CardContent>
                 <Stack
-                  direction="row"
-                  justifyContent="space-between"
                   spacing={2}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
                 >
-                  <Typography variant="body2">
-                    <FormattedMessage
-                      id="total.usd"
-                      defaultMessage="Total in USD"
-                    />
+                  <Typography variant="body1">
+                    <FormattedMessage id="total" defaultMessage="total" />
                   </Typography>
-
-                  <Typography color="text.secondary" variant="body2">
+                  <Typography variant="h5" fontWeight="bold">
                     <FormattedNumber
-                      style="currency"
-                      currency="usd"
                       value={total.toNumber()}
+                      style="currency"
                       maximumFractionDigits={token?.decimals}
-                    />
+                    />{' '}
+                    {token ? token?.symbol : 'USD'}
                   </Typography>
                 </Stack>
               </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Card>
+              <Divider />
               <CardContent>
                 <Stack spacing={2}>
+                  <Typography variant="body2" color="text.secondary">
+                    <FormattedMessage
+                      id="select.token.for.payment"
+                      defaultMessage="Select the token for payment:"
+                    />
+                  </Typography>
                   {chainId !== undefined && (
                     <FormControl fullWidth>
                       <InputLabel>
@@ -634,25 +626,41 @@ export default function UserCheckout() {
                   )}
 
                   {userCheckout.data?.requireEmail && (
-                    <TextField
-                      value={email}
-                      onChange={handleChangeEmail}
-                      fullWidth
-                      label={
-                        <FormattedMessage id="email" defaultMessage="Email" />
-                      }
-                      type="email"
-                      error={!isValidEmail || email === ''}
-                      helperText={
-                        !isValidEmail || !Boolean(email) ? (
+                    <Stack spacing={2}>
+                      <Box>
+                        <Typography variant="body1" color="text.secondary">
                           <FormattedMessage
-                            id="email.is.required"
-                            defaultMessage="Email is required"
+                            id="email.confirmation"
+                            defaultMessage="Email confirmation:"
                           />
-                        ) : undefined
-                      }
-                      required
-                    />
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          <FormattedMessage
+                            id="checkout.email.required.subtext"
+                            defaultMessage="This email will be used for order status updates."
+                          />
+                        </Typography>
+                      </Box>
+                      <TextField
+                        value={email}
+                        onChange={handleChangeEmail}
+                        fullWidth
+                        label={
+                          <FormattedMessage id="email" defaultMessage="Email" />
+                        }
+                        type="email"
+                        error={!isValidEmail || email === ''}
+                        helperText={
+                          !isValidEmail || !Boolean(email) ? (
+                            <FormattedMessage
+                              id="email.is.required"
+                              defaultMessage="Email is required"
+                            />
+                          ) : undefined
+                        }
+                        required
+                      />
+                    </Stack>
                   )}
 
                   {token && (
@@ -662,23 +670,41 @@ export default function UserCheckout() {
                       justifyContent="space-between"
                       alignItems="center"
                     >
-                      <Typography variant="body1">
+                      <Typography variant="body2">
                         <FormattedMessage
-                          id="balance"
-                          defaultMessage="Balance"
+                          id="wallet.balance"
+                          defaultMessage="Wallet balance"
                         />
                       </Typography>
-                      <Typography variant="body1" color="text.secondary">
-                        {balanceQuery.isLoading ? (
-                          <Skeleton />
-                        ) : (
-                          <FormattedNumber
-                            value={decimalBalance.toNumber()}
-                            maximumFractionDigits={token?.decimals}
-                          />
-                        )}{' '}
-                        {token?.symbol}
-                      </Typography>
+                      <Stack alignItems="flex-end">
+                        <Typography
+                          sx={(theme) => ({
+                            color: hasSufficientBalance
+                              ? theme.palette.success.main
+                              : theme.palette.error.main,
+                          })}
+                          variant="body2"
+                          color="text.secondary"
+                        >
+                          {balanceQuery.isLoading ? (
+                            <Skeleton />
+                          ) : (
+                            <FormattedNumber
+                              value={decimalBalance.toNumber()}
+                              maximumFractionDigits={token?.decimals}
+                            />
+                          )}{' '}
+                          {token?.symbol}
+                        </Typography>
+                        {!hasSufficientBalance && (
+                          <Typography variant="body2" color="text.secondary">
+                            <FormattedMessage
+                              id="insufficient.balance"
+                              defaultMessage="Insufficient balance"
+                            />
+                          </Typography>
+                        )}
+                      </Stack>
                     </Stack>
                   )}
 

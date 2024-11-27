@@ -44,6 +44,7 @@ import CopyIconButton from '@dexkit/ui/components/CopyIconButton';
 import OrderDetailsCard from '@dexkit/ui/modules/commerce/components/OrderDetailsCard';
 import ArrowBack from '@mui/icons-material/ArrowBack';
 import FileCopy from '@mui/icons-material/FileCopy';
+import Inventory from '@mui/icons-material/Inventory';
 
 interface OrderComponentProps {
   order: Order;
@@ -192,7 +193,9 @@ function OrderComponent({ order }: OrderComponentProps) {
                                   variant="rounded"
                                   sx={{ height: '5rem', width: '5rem' }}
                                   src={item.product.imageUrl ?? ''}
-                                />
+                                >
+                                  <Inventory />
+                                </Avatar>
                                 <Stack
                                   sx={{ height: '100%' }}
                                   justifyContent="space-between"
