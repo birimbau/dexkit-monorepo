@@ -167,14 +167,29 @@ export default function NotificationsDialog({
                 notificationTypes={notificationTypes}
               />
             ) : (
-              <Stack justifyContent="center" alignItems="center" sx={{ py: 2 }}>
-                <Typography variant="body1">
-                  <FormattedMessage
-                    id="nothing.to.see.here"
-                    defaultMessage="Nothing to see here"
-                  />
-                </Typography>
-              </Stack>
+              <Box sx={{ p: 2 }}>
+                <Stack spacing={1} alignItems="center">
+                  <NotificationsIcon fontSize="large" />
+                  <Box>
+                    <Typography textAlign="center" variant="h5">
+                      <FormattedMessage
+                        id="nothing.here"
+                        defaultMessage="Nothing Here"
+                      />
+                    </Typography>
+                    <Typography
+                      textAlign="center"
+                      variant="body1"
+                      color="text.secondary"
+                    >
+                      <FormattedMessage
+                        id="well.let.you.know.if.anything.comes.up."
+                        defaultMessage="We'll let you know if anything comes up."
+                      />
+                    </Typography>
+                  </Box>
+                </Stack>
+              </Box>
             )}
           </>
         )}
