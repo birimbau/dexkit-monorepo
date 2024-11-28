@@ -68,6 +68,7 @@ import useCheckoutNetworks from '@/modules/commerce/hooks/settings/useCheckoutNe
 import { UserCheckoutItemsFormSchema } from '@/modules/commerce/schemas';
 import { CheckoutItem } from '@/modules/commerce/types';
 import CheckoutTokenAutocomplete from '@dexkit/ui/modules/commerce/components/CheckoutTokenAutocomplete';
+import { useSiteReceiver } from '@dexkit/ui/modules/commerce/hooks/useSiteReceiver';
 import { useEvmTransferMutation } from '@dexkit/ui/modules/evm-transfer-coin/hooks';
 import Edit from '@mui/icons-material/Edit';
 import { Formik } from 'formik';
@@ -77,10 +78,18 @@ import { toFormikValidationSchema } from 'zod-formik-adapter';
 
 const validEmail = z.string().email();
 
-export default function UserCheckout() {
+export interface UserCheckoutProps {
+  siteId?: number;
+}
+
+export default function UserCheckout({ siteId }: UserCheckoutProps) {
   const router = useRouter();
 
   const { id } = router.query;
+
+  const { data: receiverData } = useSiteReceiver({ siteId: siteId });
+
+  console.log('siteId', siteId, receiverData);
 
   const userCheckout = useUserCheckout({ id: id as string });
 
@@ -306,7 +315,9 @@ export default function UserCheckout() {
             !hasSufficientBalance ||
             disabled ||
             !token ||
-            (userCheckout.data?.requireEmail && (!email || !isValidEmail))
+            (userCheckout.data?.requireEmail && (!email || !isValidEmail)) ||
+            !receiverData ||
+            !receiverData?.receiver
           }
           fullWidth
           onClick={handlePay}
@@ -605,7 +616,6 @@ export default function UserCheckout() {
                       </Select>
                     </FormControl>
                   )}
-
                   <NoSsr>
                     <CheckoutTokenAutocomplete
                       key={chainId}
@@ -624,7 +634,6 @@ export default function UserCheckout() {
                       />
                     </Alert>
                   )}
-
                   {userCheckout.data?.requireEmail && (
                     <Stack spacing={2}>
                       <Box>
@@ -662,7 +671,6 @@ export default function UserCheckout() {
                       />
                     </Stack>
                   )}
-
                   {token && (
                     <Stack
                       direction="row"
@@ -707,7 +715,15 @@ export default function UserCheckout() {
                       </Stack>
                     </Stack>
                   )}
-
+                  {!receiverData ||
+                    (!receiverData.receiver && (
+                      <Alert severity="error">
+                        <FormattedMessage
+                          id="checkout.is.currently.unavailable"
+                          defaultMessage="Checkout is currently unavailable. Please try again later."
+                        />
+                      </Alert>
+                    ))}
                   {renderPayButton()}
                 </Stack>
               </CardContent>
@@ -746,6 +762,7 @@ export const getStaticProps: GetStaticProps = async ({
       dehydratedState: dehydrate(queryClient),
       ...configResponse,
       id: params?.id,
+      siteId: configResponse?.siteId ?? null,
     },
     revalidate: 300,
   };

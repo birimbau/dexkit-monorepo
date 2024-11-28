@@ -179,6 +179,9 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
               }}
             />
           }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
             id="are.you.sure.you.want.to.delete.this.checkout"

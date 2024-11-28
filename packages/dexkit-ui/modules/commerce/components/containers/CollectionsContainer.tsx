@@ -1,6 +1,7 @@
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { FormattedMessage } from "react-intl";
 
+import Add from "@mui/icons-material/Add";
 import NextLink from "next/link";
 import CollectionsTable from "../CollectionsTable";
 import DashboardLayout from "../layouts/DashboardLayout";
@@ -32,12 +33,16 @@ export default function CollectionsContainer() {
           >
             <Button
               LinkComponent={NextLink}
+              startIcon={<Add />}
               onClick={() => {
                 setContainer("commerce.products.collection.create");
               }}
               variant="contained"
             >
-              <FormattedMessage id="create" defaultMessage="Create" />
+              <FormattedMessage
+                id="new.collection"
+                defaultMessage="New Collection"
+              />
             </Button>
           </Stack>
           <CollectionsTable />

@@ -180,6 +180,9 @@ export default function ProductForm({ onSubmit, isValid }: ProductFormProps) {
               />
             </strong>
           }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
             id="do.you.really.want.to.delete.this.product"

@@ -37,13 +37,15 @@ export const CONTAINERS: { [key: string]: React.ReactNode } = {
 
 export interface CommerceContainerRendererProps {
   containerId: string;
+  onActiveMenu: (activeMenu: string) => void;
 }
 
 export default function CommerceContainerRenderer({
   containerId,
+  onActiveMenu,
 }: CommerceContainerRendererProps) {
   return (
-    <ContainerProvider containerId={containerId}>
+    <ContainerProvider containerId={containerId} onActiveMenu={onActiveMenu}>
       {(id) => CONTAINERS[id]}
     </ContainerProvider>
   );

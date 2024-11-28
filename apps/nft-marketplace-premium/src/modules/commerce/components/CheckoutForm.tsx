@@ -10,7 +10,7 @@ import {
   Stack,
 } from '@mui/material';
 import { Field, FieldArray, useFormikContext } from 'formik';
-import { Checkbox, TextField } from 'formik-mui';
+import { Switch, TextField } from 'formik-mui';
 import Link from 'next/link';
 import { FormattedMessage } from 'react-intl';
 import { CheckoutItemType } from '../types';
@@ -54,7 +54,7 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
               <FormControlLabel
                 control={
                   <Field
-                    component={Checkbox}
+                    component={Switch}
                     type="checkbox"
                     name="requireEmail"
                   />
@@ -76,7 +76,7 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
             <FormGroup sx={{ px: 2 }} row>
               <FormControlLabel
                 control={
-                  <Field component={Checkbox} type="checkbox" name="editable" />
+                  <Field component={Switch} type="checkbox" name="editable" />
                 }
                 disabled={disabled}
                 label={

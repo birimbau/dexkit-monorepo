@@ -11,6 +11,24 @@ export const CHECKOUT_TOKENS: Token[] = [
     symbol: "USDC",
   },
   {
+    address: "0xdc035d45d973e3ec169d2276ddab16f1e407384f",
+    chainId: 1,
+    decimals: 18,
+    logoURI:
+      "https://raw.githubusercontent.com/DexKit/icons/refs/heads/master/token/usds.svg",
+    name: "USDS Stablecoin",
+    symbol: "USDS",
+  },
+  {
+    address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    chainId: 1,
+    decimals: 6,
+    name: "Tether USD",
+    symbol: "USDT",
+    logoURI:
+      "https://raw.githubusercontent.com/DexKit/icons/refs/heads/master/token/usdt.jpg",
+  },
+  {
     address: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
     chainId: 137,
     decimals: 6,

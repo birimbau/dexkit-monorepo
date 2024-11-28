@@ -10,7 +10,7 @@ import {
   Stack,
 } from "@mui/material";
 import { Field, FieldArray, useFormikContext } from "formik";
-import { Checkbox, TextField } from "formik-mui";
+import { Switch, TextField } from "formik-mui";
 import { FormattedMessage } from "react-intl";
 import { CheckoutItemType } from "../../../types";
 import useParams from "../hooks/useParams";
@@ -56,7 +56,7 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
               <FormControlLabel
                 control={
                   <Field
-                    component={Checkbox}
+                    component={Switch}
                     type="checkbox"
                     name="requireEmail"
                   />
@@ -68,7 +68,7 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
             <FormHelperText>
               <FormattedMessage
                 id="checkbox.required.email.message"
-                defaultMessage="If you check this box, the customer will be required to provide an email address to create an order."
+                defaultMessage="Turn on to require customers to provide an email address to create an order."
               />
             </FormHelperText>
           </FormControl>
@@ -78,7 +78,7 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
             <FormGroup sx={{ px: 2 }} row>
               <FormControlLabel
                 control={
-                  <Field component={Checkbox} type="checkbox" name="editable" />
+                  <Field component={Switch} type="checkbox" name="editable" />
                 }
                 disabled={disabled}
                 label={
@@ -92,7 +92,7 @@ export default function CheckoutForm({ disabled }: CheckoutFormProps) {
             <FormHelperText>
               <FormattedMessage
                 id="checkbox.editable"
-                defaultMessage="Check this if you want to make quantity field editable"
+                defaultMessage="Turn on to allow customers to edit the quantity field."
               />
             </FormHelperText>
           </FormControl>

@@ -197,6 +197,9 @@ export default function CategoriesTable({}: CategoriesTableProps) {
               defaultMessage="Delete Categories"
             />
           }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
             id="are.you.sure.you.want.to.delete.amount.categories?"
@@ -238,6 +241,9 @@ export default function CategoriesTable({}: CategoriesTableProps) {
                 }}
               />
             </strong>
+          }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
           }
         >
           <FormattedMessage

@@ -1,6 +1,5 @@
 import { Alert, Button, Stack } from "@mui/material";
 import { Formik } from "formik";
-import Link from "next/link";
 import { useSnackbar } from "notistack";
 import { FormattedMessage } from "react-intl";
 import { toFormikValidationSchema } from "zod-formik-adapter";
@@ -86,8 +85,9 @@ function CreateCheckoutComponent() {
                   severity="error"
                   action={
                     <Button
-                      LinkComponent={Link}
-                      href="/u/account/commerce/settings"
+                      onClick={() => {
+                        setContainer("commerce.settings");
+                      }}
                       variant="outlined"
                       color="inherit"
                     >

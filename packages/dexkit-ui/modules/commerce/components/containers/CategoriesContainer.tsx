@@ -39,7 +39,7 @@ export default function CategoriesContainer() {
             <Typography variant="h6">
               <FormattedMessage id="categories" defaultMessage="Categories" />
             </Typography>
-            <Typography variant="body1">
+            <Typography variant="body1" color="text.secondary">
               <FormattedMessage
                 id="create.categories.description.text"
                 defaultMessage="Create categories to organize your products for easier management."

@@ -61,9 +61,12 @@ import ConfirmPaymentDialog from "../dialogs/ConfirmPaymentDialog";
 const validEmail = z.string().email();
 
 import { SiteContext } from "@dexkit/ui/providers/SiteProvider";
+import { useSiteReceiver } from "../../hooks/useSiteReceiver";
 
 export default function PaymentCard() {
   const { siteId } = useContext(SiteContext);
+
+  const { data: receiverData } = useSiteReceiver({ siteId: siteId });
 
   const { cartItems, clearCart, requireEmail } = useCommerce();
 
@@ -292,7 +295,9 @@ export default function PaymentCard() {
             !token ||
             (requireEmail && (!email || !isValidEmail)) ||
             total.isZero() ||
-            showConfirm
+            showConfirm ||
+            !receiverData ||
+            !receiverData?.receiver
           }
           fullWidth
           onClick={handlePay}
@@ -487,13 +492,13 @@ export default function PaymentCard() {
                     defaultMessage="Wallet balance"
                   />
                 </Typography>
-                <Box>
+                <Stack alignItems="flex-end">
                   <Typography
                     variant="body2"
                     sx={{
                       color: (theme) =>
                         !hasSufficientBalance
-                          ? theme.palette.error.light
+                          ? theme.palette.error.main
                           : theme.palette.success.light,
                     }}
                   >
@@ -508,17 +513,14 @@ export default function PaymentCard() {
                     {token?.symbol}
                   </Typography>
                   {!hasSufficientBalance && (
-                    <Typography
-                      variant="body2"
-                      sx={{ color: (theme) => theme.palette.error.main }}
-                    >
+                    <Typography variant="body2" color="text.secondary">
                       <FormattedMessage
                         id="insufficient.balance"
                         defaultMessage="Insufficient balance"
                       />
                     </Typography>
                   )}
-                </Box>
+                </Stack>
               </Stack>
             )}
           </Stack>
@@ -566,7 +568,15 @@ export default function PaymentCard() {
           </>
         )}
         <Divider />
-        <CardContent>{renderPayButton()}</CardContent>
+        <CardContent>
+          <Alert severity="error">
+            <FormattedMessage
+              id="checkout.is.currently.unavailable"
+              defaultMessage="Checkout is currently unavailable. Please try again later."
+            />
+          </Alert>
+          {renderPayButton()}
+        </CardContent>
       </Card>
     </>
   );

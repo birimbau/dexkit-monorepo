@@ -200,6 +200,9 @@ export default function CollectionsTable({}: CollectionsTableProps) {
               defaultMessage="Delete collections"
             />
           }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
             id="are.you.sure.you.want.to.delete.amount.collections"

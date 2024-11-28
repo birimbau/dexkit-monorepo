@@ -13,8 +13,6 @@ export default function useCheckoutNetworks() {
 
   const { data } = useSiteOwner({ id: id ?? 0 });
 
-  console.log('oWNR', data);
-
   return useQuery(
     [GET_CHECKOUT_NETWORKS],
     async () => {

@@ -630,6 +630,9 @@ export function EditWizardContainer({ site }: Props) {
                   <Stack spacing={2} className={'builder-forms'}>
                     <CommerceContainerRenderer
                       containerId={activeMenu}
+                      onActiveMenu={(activeMenu) => {
+                        setActiveMenu(activeMenu as ActiveMenu);
+                      }}
                       key={activeMenu}
                     />
                     {activeMenu === ActiveMenu.General && config && (

@@ -382,6 +382,9 @@ export default function ProductsTable({}: ProducstTableProps) {
               }}
             />
           }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
+          }
         >
           <FormattedMessage
             id="are.you.sure.you.want.to.delete.this.product"
@@ -400,6 +403,9 @@ export default function ProductsTable({}: ProducstTableProps) {
               id="delete.products"
               defaultMessage="Delete Products"
             />
+          }
+          actionCaption={
+            <FormattedMessage id="delete" defaultMessage="Delete" />
           }
         >
           <FormattedMessage
