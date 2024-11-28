@@ -23,8 +23,8 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useMemo } from 'react';
 import {
+  useAdminWhitelabelConfigQuery,
   useSendConfigMutation,
-  useWhitelabelConfigQuery,
 } from 'src/hooks/whitelabel';
 
 export interface IntegrationsWizardContainerProps {
@@ -45,7 +45,7 @@ export default function IntegrationsWizardContainer({
     isFetched,
     isError: isConfigError,
     refetch,
-  } = useWhitelabelConfigQuery({
+  } = useAdminWhitelabelConfigQuery({
     slug: slug as string,
   });
 
