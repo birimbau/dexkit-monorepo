@@ -4,7 +4,8 @@ import { ERC20Abi } from "../constants/abis";
 
 import type { providers } from "ethers";
 
-import { ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
+import { useReadContracts } from "wagmi";
+import { ChainId, ZEROEX_NATIVE_TOKEN_ADDRESS } from "../constants";
 import { getERC20TokenAllowance } from "../services";
 import { approveToken, getERC20Balance } from "../services/balances";
 import { isAddressEqual } from "../utils";
@@ -15,15 +16,17 @@ export interface Erc20BalanceParams {
   account?: string;
   contractAddress?: string;
   provider?: providers.BaseProvider;
+  chainId?: ChainId;
 }
 
 export function useErc20BalanceQuery({
   account,
   contractAddress,
   provider,
+  chainId,
 }: Erc20BalanceParams) {
   return useQuery(
-    [ERC20_BALANCE, account, contractAddress],
+    [ERC20_BALANCE, account, contractAddress, chainId],
     async () => {
       if (!contractAddress || !provider || !account) {
         return BigNumber.from(0);
@@ -37,7 +40,53 @@ export function useErc20BalanceQuery({
 
       return (await contract.balanceOf(account)) as BigNumber;
     },
-    { refetchOnMount: "always", refetchOnWindowFocus: "always" }
+    {
+      refetchOnMount: "always",
+      refetchOnWindowFocus: "always",
+      enabled: Boolean(provider),
+    }
+  );
+}
+
+export const ERC20_BALANCE_V2 = "ERC20_BALANCE_V2";
+
+export interface Erc20BalanceParamsV2 {
+  account?: string;
+  contractAddress?: string;
+  provider?: providers.BaseProvider;
+  chainId?: ChainId;
+}
+
+export function useErc20BalanceQueryV2({
+  account,
+  contractAddress,
+  provider,
+  chainId,
+}: Erc20BalanceParamsV2) {
+  const { data: balance } = useReadContracts({
+    contracts: [{ address: "0x", abi: ERC20Abi, functionName: "balanceOf" }],
+  });
+
+  return useQuery(
+    [ERC20_BALANCE_V2, account, contractAddress, chainId],
+    async () => {
+      if (!contractAddress || !provider || !account) {
+        return BigNumber.from(0);
+      }
+
+      if (isAddressEqual(contractAddress, ZEROEX_NATIVE_TOKEN_ADDRESS)) {
+        return await provider.getBalance(account);
+      }
+
+      const contract = new Contract(contractAddress, ERC20Abi, provider);
+
+      return (await contract.balanceOf(account)) as BigNumber;
+    },
+    {
+      refetchOnMount: "always",
+      refetchOnWindowFocus: "always",
+      enabled: Boolean(provider),
+    }
   );
 }
 

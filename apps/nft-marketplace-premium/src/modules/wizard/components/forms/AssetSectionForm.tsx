@@ -8,6 +8,7 @@ import {
 import { ipfsUriToUrl, parseChainId } from '@dexkit/core/utils';
 import { useActiveChainIds } from '@dexkit/ui';
 import { AssetPageSection } from '@dexkit/ui/modules/wizard/types/section';
+import { SiteContext } from '@dexkit/ui/providers/SiteProvider';
 import {
   Avatar,
   Box,
@@ -27,7 +28,6 @@ import { Select, Switch, TextField } from 'formik-mui';
 import { SyntheticEvent, useContext, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useIntegrationDataQuery } from '../../hooks/integrations';
-import { SiteContext } from '../../providers/SiteWizardProvider';
 import { AssetFormType } from '../../types';
 import { CollectionItemAutocomplete } from './CollectionItemAutocomplete';
 export interface AssetSectionFormProps {

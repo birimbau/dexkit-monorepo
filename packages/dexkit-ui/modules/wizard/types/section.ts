@@ -39,7 +39,8 @@ export type SectionType =
   | "claim-airdrop-token-erc-20"
   | "carousel"
   | "showcase"
-  | "plugin";
+  | "plugin"
+  | "commerce";
 
 export interface PageSection {
   type: SectionType;
@@ -385,6 +386,45 @@ export interface ShowCasePageSection extends PageSection {
   settings: ShowCaseParams;
 }
 
+export type CommerceContentBase = {};
+
+export type CommerceCollectionContent = CommerceContentBase & {
+  type: "collection";
+  id: string;
+};
+
+export type CommerceCheckoutContent = CommerceContentBase & {
+  type: "checkout";
+  id: string;
+};
+
+export type CommerceSingleProductContent = CommerceContentBase & {
+  type: "single-product";
+  id: string;
+};
+
+export type CommerceStoreContent = CommerceContentBase & {
+  type: "store";
+  params: {
+    emailRequired: boolean;
+  };
+};
+
+export type CommerceContent =
+  | CommerceCollectionContent
+  | CommerceCheckoutContent
+  | CommerceStoreContent
+  | CommerceSingleProductContent;
+
+export type CommerceSettings = {
+  content: CommerceContent;
+};
+
+export interface CommercePageSection extends PageSection {
+  type: "commerce";
+  settings: CommerceSettings;
+}
+
 export type DexGeneratorPageSectionType =
   | TokenDropPageSection
   | NftDropPageSection
@@ -428,7 +468,8 @@ export type AppPageSection =
   | TokenTradePageSection
   | CarouselPageSection
   | ShowCasePageSection
-  | PluginPageSection;
+  | PluginPageSection
+  | CommercePageSection;
 
 export interface SectionMetadata {
   type: SectionType;

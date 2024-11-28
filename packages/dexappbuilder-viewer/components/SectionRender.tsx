@@ -33,6 +33,10 @@ const UserContractSection = dynamic(
   () => import("./sections/UserContractSection")
 );
 
+const CommerceSection = dynamic(
+  () => import("@dexkit/ui/modules/commerce/components/CommerceSection")
+);
+
 interface Props {
   section: AppPageSection;
   useLazy?: boolean;
@@ -89,6 +93,8 @@ export function SectionToRender({ section }: Props) {
     return <CarouselSection section={section} />;
   } else if (section.type === "showcase") {
     return <ShowCaseSection section={section} />;
+  } else if (section.type === "commerce") {
+    return <CommerceSection section={section} />;
   }
 }
 

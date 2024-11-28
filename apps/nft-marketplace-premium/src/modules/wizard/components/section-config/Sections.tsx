@@ -180,6 +180,14 @@ export const SECTION_TYPES_DATA = [
     description: 'Create a showcase section',
     icon: <CollectionsIcon fontSize="large" />,
   },
+  {
+    type: 'commerce',
+    titleId: 'commerce',
+    titleDefaultMessage: 'Commerce',
+    category: 'resources',
+    description: 'Dexkit Commerce',
+    icon: <CollectionsIcon fontSize="large" />,
+  },
 ] as SectionMetadata[];
 
 export const SECTIONS_TYPE_DATA_ICONS: {

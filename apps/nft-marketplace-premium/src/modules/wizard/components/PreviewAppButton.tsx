@@ -7,15 +7,17 @@ import { FormattedMessage } from 'react-intl';
 import { useThemeMode } from 'src/hooks/app';
 
 import { AppConfig } from '@dexkit/ui/modules/wizard/types/config';
+import SiteProvider from '@dexkit/ui/providers/SiteProvider';
 import { generateCSSVarsTheme } from '../utils';
 const PreviewPageDialog = dynamic(() => import('./dialogs/PreviewPageDialog'));
 
 interface Props {
   appConfig?: AppConfig;
   site?: string;
+  siteId?: number;
 }
 
-export function PreviewAppButton({ appConfig, site }: Props) {
+export function PreviewAppButton({ appConfig, site, siteId }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const { mode } = useThemeMode();
   const handleClosePreview = () => {
@@ -61,21 +63,25 @@ export function PreviewAppButton({ appConfig, site }: Props) {
   return (
     <>
       <CssVarsProvider theme={selectedTheme}>
-        <PreviewPageDialog
-          dialogProps={{
-            open: showPreview,
-            maxWidth: 'xl',
-            fullWidth: true,
-            onClose: handleClosePreview,
-          }}
-          appConfig={appConfig}
-          disabled={true}
-          sections={appConfig?.pages['home']?.sections}
-          name="Home"
-          withLayout={true}
-          page="home"
-          site={site}
-        />
+        {showPreview && (
+          <SiteProvider siteId={siteId}>
+            <PreviewPageDialog
+              dialogProps={{
+                open: showPreview,
+                maxWidth: 'xl',
+                fullWidth: true,
+                onClose: handleClosePreview,
+              }}
+              appConfig={appConfig}
+              disabled={true}
+              sections={appConfig?.pages['home']?.sections}
+              name="Home"
+              withLayout={true}
+              page="home"
+              site={site}
+            />
+          </SiteProvider>
+        )}
       </CssVarsProvider>
       <Button
         onClick={handleShowPreview}

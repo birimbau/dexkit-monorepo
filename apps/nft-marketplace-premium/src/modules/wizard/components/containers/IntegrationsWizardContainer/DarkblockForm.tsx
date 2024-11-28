@@ -3,6 +3,7 @@ import {
   Button,
   FormControlLabel,
   Grid,
+  Stack,
   Switch,
   Tooltip,
 } from '@mui/material';
@@ -67,30 +68,36 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
         isSubmitting,
         isValid,
         setFieldValue,
+        setFieldTouched,
         values,
         touched,
       }) => (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Box px={1}>
-              <Tooltip
-                title={
-                  <FormattedMessage
-                    id="enable.darkblock.on.asset.page"
-                    defaultMessage="Enable Darkblock on Asset page"
-                  />
-                }
-              >
+            <Box>
+              <Stack alignItems="flex-start">
                 <FormControlLabel
+                  sx={{ m: 0 }}
                   control={
-                    <Switch
-                      onChange={(e) =>
-                        setFieldValue('enableDarkblock', e.target.checked)
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="enable.darkblock.on.asset.page"
+                          defaultMessage="Darkblock on Asset page"
+                        />
                       }
-                      size="small"
-                      checked={values.enableDarkblock}
-                    />
+                      placement="right-end"
+                    >
+                      <Switch
+                        onChange={(e) => {
+                          setFieldValue('enableDarkblock', e.target.checked);
+                          setFieldTouched('enableDarkblock', true);
+                        }}
+                        checked={values.enableDarkblock}
+                      />
+                    </Tooltip>
                   }
+                  labelPlacement="start"
                   label={
                     <FormattedMessage
                       id="enable.darkblock"
@@ -98,32 +105,31 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
                     />
                   }
                 />
-              </Tooltip>
-            </Box>
-          </Grid>
-          <Grid item xs={12}>
-            <Box px={1}>
-              <Tooltip
-                title={
-                  <FormattedMessage
-                    id="enable.darkblock.on.collection.page"
-                    defaultMessage="Enable Darkblock on Collection page"
-                  />
-                }
-              >
                 <FormControlLabel
+                  sx={{ m: 0 }}
                   control={
-                    <Switch
-                      onChange={(e) =>
-                        setFieldValue(
-                          'enableDarkblockCollection',
-                          e.target.checked,
-                        )
+                    <Tooltip
+                      title={
+                        <FormattedMessage
+                          id="enable.darkblock.on.collection.page"
+                          defaultMessage="Enable Darkblock on Collection page"
+                        />
                       }
-                      size="small"
-                      checked={values.enableDarkblockCollection}
-                    />
+                      placement="right-end"
+                    >
+                      <Switch
+                        onChange={(e) => {
+                          setFieldValue(
+                            'enableDarkblockCollection',
+                            e.target.checked,
+                          );
+                          setFieldTouched('enableDarkblockCollection', true);
+                        }}
+                        checked={values.enableDarkblockCollection}
+                      />
+                    </Tooltip>
                   }
+                  labelPlacement="start"
                   label={
                     <FormattedMessage
                       id="enable.darkblock.collection"
@@ -131,13 +137,21 @@ export default function DarkblockForm({ siteId }: DarkblockFormProps) {
                     />
                   }
                 />
-              </Tooltip>
+              </Stack>
             </Box>
           </Grid>
           <Grid item xs={12}>
             <Button
+              size="small"
               variant="contained"
-              disabled={isSubmitting || !isValid || !touched}
+              disabled={
+                isSubmitting ||
+                !isValid ||
+                !touched ||
+                Object.keys(touched).filter((key) =>
+                  Boolean((touched as any)?.[key]),
+                ).length === 0
+              }
               onClick={submitForm}
             >
               <FormattedMessage id="save" defaultMessage="Save" />

@@ -3,11 +3,11 @@ import {
   AppPageSection,
   SectionType,
 } from '@dexkit/ui/modules/wizard/types/section';
+import { SiteContext } from '@dexkit/ui/providers/SiteProvider';
 import { Box, Grid } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { useContext, useState } from 'react';
 import { myAppsApi } from 'src/services/whitelabel';
-import { SiteContext } from '../../providers/SiteWizardProvider';
 import AddCarouselForm from '../forms/AddCarouselForm';
 import AddShowCaseSectionForm from '../forms/AddShowCaseSectionForm';
 import AssetSectionForm from '../forms/AssetSectionForm';
@@ -27,6 +27,7 @@ import { TokenTradeSectionForm } from '../forms/TokenTradeSectionForm';
 import { UserContractForm } from '../forms/UserContractForm';
 import VideoSectionForm from '../forms/VideoSectionForm';
 import WalletSectionForm from '../forms/WalletSectionForm';
+import CommerceSectionForm from '../sections/CommerceSectionForm';
 
 const ApiKeyIntegrationDialog = dynamic(
   () => import('../dialogs/ApiKeyIntegrationDialog'),
@@ -305,6 +306,21 @@ export function SectionFormRender({
         onCancel={onClose}
         onSave={(data) => onSave({ type: 'showcase', settings: data })}
         data={section?.type === sectionType ? section.settings : undefined}
+        saveOnChange
+      />
+    );
+  } else if (sectionType === 'commerce') {
+    return (
+      <CommerceSectionForm
+        onChange={(data) =>
+          onChange({ type: 'commerce', settings: { content: data } })
+        }
+        onSubmit={(data) =>
+          onSave({ type: 'commerce', settings: { content: data } })
+        }
+        initialValues={
+          section?.type === sectionType ? section.settings.content : undefined
+        }
         saveOnChange
       />
     );
