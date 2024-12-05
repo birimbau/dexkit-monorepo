@@ -144,7 +144,7 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
                 <Share />
               </Tooltip>
             </IconButton>
-            <IconButton onClick={handleDelete(row.id ?? "", row.title)}>
+            <IconButton onClick={handleDelete(row.id ?? "", row?.title ?? "")}>
               <Delete color="error" />
             </IconButton>
           </Stack>
