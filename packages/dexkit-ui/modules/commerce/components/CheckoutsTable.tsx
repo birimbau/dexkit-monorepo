@@ -189,7 +189,7 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
           />
         </AppConfirmDialog>
       )}
-      <Box>
+      <Box sx={{ display: "flex" }}>
         <DataGrid
           localeText={{
             toolbarQuickFilterPlaceholder: formatMessage({
@@ -209,7 +209,7 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
             setContainer("commerce.checkouts.edit", { id: row.id });
           }}
           sx={{
-            height: 300,
+            height: data?.items.length === 0 ? 300 : undefined,
             "& .MuiDataGrid-cell:focus": {
               outline: "none",
             },

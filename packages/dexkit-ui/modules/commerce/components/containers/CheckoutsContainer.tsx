@@ -16,6 +16,8 @@ import { CheckoutFormType } from "../../types";
 import { useSnackbar } from "notistack";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { CheckoutSchema } from "../../schemas";
+import { ShareType } from "./types";
+import { generateShareLink } from "./utils";
 
 const AddCheckoutDialog = dynamic(() => import("./dialogs/AddCheckoutDialog"));
 
@@ -30,7 +32,22 @@ export default function CheckoutsContainer() {
     setUrl(undefined);
   };
 
-  const handleShareContent = (value: string) => {};
+  const handleShareContent = (value: string) => {
+    const msg = `There is the checkout link: ${url}`;
+
+    let link = "";
+
+    if (
+      ["telegram", "whatsapp", "facebook", "email", "pinterest", "x"].includes(
+        value
+      ) &&
+      url
+    ) {
+      link = generateShareLink(msg, url, value as ShareType);
+
+      window.open(link, "_blank");
+    }
+  };
 
   const { setContainer } = useParams();
 
