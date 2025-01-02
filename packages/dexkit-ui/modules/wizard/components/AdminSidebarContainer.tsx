@@ -185,7 +185,7 @@ export default function AdminSidebarContainer({
             ...(activeBuilderKit !== BuilderKit.NFT
               ? [
                   {
-                    id: "fees.marketplace.fees",
+                    id: "swap-fees",
                     title: (
                       <FormattedMessage
                         id="swap.fees.menu.container"

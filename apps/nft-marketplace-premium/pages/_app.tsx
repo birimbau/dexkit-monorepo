@@ -23,7 +23,7 @@ import { ThemeMode } from '@dexkit/ui/constants/enum';
 import { AppConfigContext as AppUIConfigContext } from '@dexkit/ui/context/AppConfigContext';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles';
-import type { } from '@mui/material/themeCssVarsAugmentation';
+import type {} from '@mui/material/themeCssVarsAugmentation';
 import { getTheme } from 'src/theme';
 
 import defaultAppConfig from '../config/app.minimal.json';
@@ -48,7 +48,6 @@ interface MyAppProps extends AppProps<{ dehydratedState: DehydratedState }> {
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
-  
   const router = useRouter();
 
   const [loading, setLoading] = React.useState(false);
@@ -214,7 +213,6 @@ export default function MyApp(props: MyAppProps) {
     }
   }, [appConfig, appPage]);
 
-
   React.useEffect(() => {
     router.events.on('routeChangeStart', () => {
       setLoading(true);
@@ -242,11 +240,16 @@ export default function MyApp(props: MyAppProps) {
 
   const config = appConfig || defaultAppConfig;
   const favicon = config.favicon_url || '/favicon.ico';
+  const isPNG = favicon.endsWith('.png');
 
   return (
     <CacheProvider value={emotionCache}>
       <Head>
-        <link rel="shortcut icon" href={favicon} />
+        {isPNG ? (
+          <link rel="icon" type="image/png" href={favicon} />
+        ) : (
+          <link rel="shortcut icon" href={favicon} />
+        )}
         <meta name="viewport" content="initial-scale=1, width=device-width" />
         <meta
           name="theme-color"
@@ -262,29 +265,30 @@ export default function MyApp(props: MyAppProps) {
               value={{ appConfig: config, appNFT, siteId }}
             >
               <WagmiUIProvider config={config}>
-              <QueryClientProvider client={queryClient}>
-                <Hydrate state={pageProps.dehydratedState}>
-                  <DefaultSeo {...SEO} />
-                  <LocalizationProvider dateAdapter={AdapterMoment}>
-                    <AppMarketplaceProvider
-                      appLocaleMessages={appLocaleMessages}
-                    >
-                      <Backdrop
-                        open={loading}
-                        sx={{
-                          color:
-                            theme?.colorSchemes?.light?.palette?.primary?.main,
-                          zIndex: theme.zIndex.drawer + 1,
-                        }}
+                <QueryClientProvider client={queryClient}>
+                  <Hydrate state={pageProps.dehydratedState}>
+                    <DefaultSeo {...SEO} />
+                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                      <AppMarketplaceProvider
+                        appLocaleMessages={appLocaleMessages}
                       >
-                        <CircularProgress color="inherit" size={80} />
-                      </Backdrop>
-                      {false && <AppBarANN />}
-                      {getLayout(<Component {...pageProps} />)}
-                    </AppMarketplaceProvider>
-                  </LocalizationProvider>
-                </Hydrate>
-              </QueryClientProvider>
+                        <Backdrop
+                          open={loading}
+                          sx={{
+                            color:
+                              theme?.colorSchemes?.light?.palette?.primary
+                                ?.main,
+                            zIndex: theme.zIndex.drawer + 1,
+                          }}
+                        >
+                          <CircularProgress color="inherit" size={80} />
+                        </Backdrop>
+                        {false && <AppBarANN />}
+                        {getLayout(<Component {...pageProps} />)}
+                      </AppMarketplaceProvider>
+                    </LocalizationProvider>
+                  </Hydrate>
+                </QueryClientProvider>
               </WagmiUIProvider>
             </AppUIConfigContext.Provider>
           </AppConfigContext.Provider>
