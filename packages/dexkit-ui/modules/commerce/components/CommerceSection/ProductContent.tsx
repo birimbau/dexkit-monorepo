@@ -5,6 +5,7 @@ import Share from "@mui/icons-material/Share";
 import {
   Box,
   Button,
+  ButtonBase,
   Grid,
   IconButton,
   Skeleton,
@@ -14,7 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import Decimal from "decimal.js";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FormattedMessage, FormattedNumber } from "react-intl";
 import useCommerce from "../../hooks/useCommerce";
 import useUserProduct from "../../hooks/useUserProduct";
@@ -24,6 +25,7 @@ import ContentHeader from "./ContentHeader";
 import { getWindowUrl } from "@dexkit/core/utils/browser";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import useUserProductImages from "../../hooks/useUserProductImages";
 import { ShareType } from "../containers/types";
 import { generateShareLink } from "../containers/utils";
 
@@ -31,9 +33,25 @@ const ShareDialogV2 = dynamic(
   () => import("../../../../components/dialogs/ShareDialogV2")
 );
 
-const Image = styled("img")((theme) => ({
+const Image = styled("img")(({ theme }) => ({
+  height: "100%",
+  width: "100%",
+  objectFit: "cover",
+  aspectRatio: "1/1",
+  borderRadius: theme.shape.borderRadius,
+  border: `1px solid ${theme.palette.grey[200]}`,
+
+  backgroundColor: theme.palette.background.paper,
+}));
+
+const ImageThumbButton = styled(ButtonBase)(({ theme }) => ({
   height: "auto",
   width: "100%",
+  aspectRatio: "1/1",
+  borderRadius: theme.shape.borderRadius * 2,
+  border: `1px solid ${theme.palette.grey[200]}`,
+
+  backgroundColor: theme.palette.background.paper,
 }));
 
 export interface ProductContentProps {
@@ -142,6 +160,17 @@ export default function ProductContent({
     setUrl(`${getWindowUrl()}/c/product/${product?.id}`);
   };
 
+  const { data: images } = useUserProductImages({ productId });
+
+  const [imageUrl, setImageUrl] = useState<string>();
+
+  const handleSelectImage = useCallback(
+    (url: string) => () => {
+      setImageUrl(url);
+    },
+    []
+  );
+
   return (
     <>
       {url && (
@@ -166,7 +195,22 @@ export default function ProductContent({
           </Grid>
         )}
         <Grid item xs={12} sm={6}>
-          <Image src={product?.imageUrl ?? ""} />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Image
+                src={
+                  imageUrl !== undefined ? imageUrl : product?.imageUrl ?? ""
+                }
+              />
+            </Grid>
+            {images?.map((image, index) => (
+              <Grid item xs={3} key={index}>
+                <ImageThumbButton onClick={handleSelectImage(image.imageUrl)}>
+                  <Image src={image.imageUrl} />
+                </ImageThumbButton>
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Box>
