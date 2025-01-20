@@ -81,7 +81,7 @@ function setCustomNode(chainId?: number) {
     if (network) {
       customNode = {
         // magic not allow the default rpc used
-        rpcUrl: network.chainId === 56 ? "https://bsc-dataseed1.binance.org/" : (network?.providerRpcUrl as string),
+        rpcUrl: network.chainId === 56 ? "https://bsc-dataseed1.defibit.io" : (network?.providerRpcUrl as string),
         chainId: network?.chainId,
       };
     }
