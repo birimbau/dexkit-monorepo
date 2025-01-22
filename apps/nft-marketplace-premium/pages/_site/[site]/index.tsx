@@ -65,7 +65,7 @@ export const getStaticProps: GetStaticProps = async ({
     props: {
       dehydratedState: dehydrate(queryClient),
       sections: sections,
-      layout: homePage.layout || null,
+      layout: homePage?.layout || null,
       ...configResponse,
     },
     revalidate: 300,
