@@ -1,8 +1,5 @@
 import { CoinTypes } from "@dexkit/core/constants";
-import {
-  useErc20BalanceQuery,
-  useEvmNativeBalanceQuery,
-} from "@dexkit/core/hooks";
+import { useErc20BalanceQuery } from "@dexkit/core/hooks";
 import { Coin, EvmCoin } from "@dexkit/core/types";
 import {
   buildEtherReceiveAddress,
@@ -17,11 +14,14 @@ import FileCopy from "@mui/icons-material/FileCopy";
 import { UserEvents } from "@dexkit/core/constants/userEvents";
 import { parseEther } from "@dexkit/core/utils/ethers/parseEther";
 import { parseUnits } from "@dexkit/core/utils/ethers/parseUnits";
+import { formatStringNumber } from "@dexkit/core/utils/formatStringNumber";
 import { Divider, Skeleton, Stack, Typography } from "@mui/material";
 import type { providers } from "ethers";
 import { useSnackbar } from "notistack";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
+import { formatEther } from "viem";
+import { useBalance } from "wagmi";
 import { useTrackUserEventsMutation } from "../../../hooks/userEvents";
 import { useEvmTransferMutation } from "../hooks";
 import { EvmSendForm } from "./forms/EvmSendForm";
@@ -65,11 +65,9 @@ export default function EvmTransferCoin({
     coin?: Coin | null;
   }>({ address: to, amount: amount, coin: defaultCoin });
 
-  const { data: nativeBalance, isLoading: isNativeBalanceLoading } =
-    useEvmNativeBalanceQuery({
-      provider,
-      account,
-    });
+  const balanceQuery = useBalance({
+    address: account as "0x",
+  });
 
   const { data: erc20Balance, isLoading } = useErc20BalanceQuery({
     provider,
@@ -231,14 +229,16 @@ export default function EvmTransferCoin({
         return formatBigNumber(erc20Balance, values.coin.decimals);
       } else if (
         values.coin.coinType === CoinTypes.EVM_NATIVE &&
-        nativeBalance
+        balanceQuery.data
       ) {
-        return formatBigNumber(nativeBalance, values.coin.decimals);
+        return formatStringNumber({
+          value: formatEther(balanceQuery.data?.value),
+        });
       }
     }
 
     return "0.0";
-  }, [erc20Balance, values.coin, nativeBalance]);
+  }, [erc20Balance, values.coin, values.coin?.coinType, balanceQuery.data]);
 
   /* const handleClose = () => {
     if (onClose) {
