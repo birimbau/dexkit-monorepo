@@ -119,3 +119,7 @@ export const THIRD_WEB_CONTRACT_VERSIONS: { [key: string]: string } = {
   AirdropERC721: "1.0.7",
   AirdropERC1155: "1.0.8",
 };
+
+
+export const DEPLOYABLE_CONTRACTS_URL =
+  'https://raw.githubusercontent.com/DexKit/assets/main/contracts/thirdweb/index.json';

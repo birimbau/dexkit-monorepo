@@ -23,6 +23,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import AdminSidebarContainer from '@dexkit/ui/modules/wizard/components/AdminSidebarContainer';
 
 import CommerceContainerRenderer from '@dexkit/ui/modules/commerce/components/containers/CommerceContainerRenderer';
+import DexAppBuilderContainerRenderer from '@dexkit/ui/modules/commerce/components/containers/DexAppBuilderContainerRenderer';
 
 import {
   QUERY_ADMIN_WHITELABEL_CONFIG_NAME,
@@ -139,11 +140,11 @@ export type PagesContextType = {
 };
 
 export const PagesContext = React.createContext<PagesContextType>({
-  setSelectedKey: () => {},
-  setIsEditPage: () => {},
-  setOldPage: () => {},
+  setSelectedKey: () => { },
+  setIsEditPage: () => { },
+  setOldPage: () => { },
   isEditPage: false,
-  handleCancelEdit: (hasChanges?: boolean) => {},
+  handleCancelEdit: (hasChanges?: boolean) => { },
 });
 
 function TourButton() {
@@ -635,6 +636,13 @@ export function EditWizardContainer({ site }: Props) {
                       }}
                       key={activeMenu}
                     />
+                    <DexAppBuilderContainerRenderer
+                      containerId={activeMenu}
+                      onActiveMenu={(activeMenu) => {
+                        setActiveMenu(activeMenu as ActiveMenu);
+                      }}
+                      key={activeMenu}
+                    />
                     {activeMenu === ActiveMenu.General && config && (
                       <GeneralWizardContainer
                         config={config}
@@ -646,7 +654,7 @@ export function EditWizardContainer({ site }: Props) {
                     {activeMenu === ActiveMenu.AppVersion &&
                       config &&
                       site?.owner?.toLowerCase() ===
-                        user?.address?.toLowerCase() && (
+                      user?.address?.toLowerCase() && (
                         <AppVersionWizardContainer site={site} />
                       )}
 
@@ -661,7 +669,7 @@ export function EditWizardContainer({ site }: Props) {
 
                     {activeMenu === ActiveMenu.Team &&
                       site?.owner?.toLowerCase() ===
-                        user?.address?.toLowerCase() && (
+                      user?.address?.toLowerCase() && (
                         <TeamWizardContainer site={site} />
                       )}
 
@@ -746,7 +754,7 @@ export function EditWizardContainer({ site }: Props) {
 
                     {activeMenu === ActiveMenu.Rankings &&
                       site?.owner?.toLowerCase() ===
-                        user?.address?.toLowerCase() && (
+                      user?.address?.toLowerCase() && (
                         <RankingWizardContainer siteId={site?.id} />
                       )}
 

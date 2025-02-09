@@ -171,29 +171,29 @@ export default function AdminSidebarContainer({
           options={[
             ...(activeBuilderKit !== BuilderKit.Swap
               ? [
-                  {
-                    id: "fees.marketplace.fees",
-                    title: (
-                      <FormattedMessage
-                        id="marketplace.fees.menu.container"
-                        defaultMessage="Marketplace Fees"
-                      />
-                    ),
-                  },
-                ]
+                {
+                  id: "fees.marketplace.fees",
+                  title: (
+                    <FormattedMessage
+                      id="marketplace.fees.menu.container"
+                      defaultMessage="Marketplace Fees"
+                    />
+                  ),
+                },
+              ]
               : []),
             ...(activeBuilderKit !== BuilderKit.NFT
               ? [
-                  {
-                    id: "swap-fees",
-                    title: (
-                      <FormattedMessage
-                        id="swap.fees.menu.container"
-                        defaultMessage="Swap Fees"
-                      />
-                    ),
-                  },
-                ]
+                {
+                  id: "swap-fees",
+                  title: (
+                    <FormattedMessage
+                      id="swap.fees.menu.container"
+                      defaultMessage="Swap Fees"
+                    />
+                  ),
+                },
+              ]
               : []),
           ]}
         />
@@ -210,16 +210,16 @@ export default function AdminSidebarContainer({
           options={[
             ...(activeBuilderKit !== BuilderKit.Swap
               ? [
-                  {
-                    id: "data.collections",
-                    title: (
-                      <FormattedMessage
-                        id="collections"
-                        defaultMessage="Collections"
-                      />
-                    ),
-                  },
-                ]
+                {
+                  id: "data.collections",
+                  title: (
+                    <FormattedMessage
+                      id="collections"
+                      defaultMessage="Collections"
+                    />
+                  ),
+                },
+              ]
               : []),
             {
               id: "data.tokens",
@@ -261,7 +261,57 @@ export default function AdminSidebarContainer({
           ]}
         />
       </Box>
+      <Box sx={{ backgroundColor: (theme) => theme.palette.grey[100] }}>
+        <AdminSidebarMenu
+          activeMenuId={activeMenuId}
+          icon={<ShoppingCart />}
+          title={
+            <FormattedMessage
+              id="dex.app.builder"
+              defaultMessage="DexAppBuilder"
+            />
+          }
+          open={isMenuToggled("dexappbuilder")}
+          onSelectMenuId={onChangeMenu}
+          onToggle={handleToggleMenu("dexappbuilder")}
+          isSiteOwner={isSiteOwner}
+          options={[
+            {
+              id: "dexappbuilder.deploy.contract",
+              title: (
+                <FormattedMessage
+                  id="deploy.contract"
+                  defaultMessage="Deploy"
+                />
+              ),
+            },
+            {
+              id: "dexappbuilder.manage.contract",
+              title: <FormattedMessage id="manage" defaultMessage="Manage" />,
+            },
 
+            {
+              id: "dexappbuilder.manage.contract.form",
+              title: (
+                <FormattedMessage
+                  id="manage.form"
+                  defaultMessage="Manage Form"
+                />
+              ),
+            },
+
+            {
+              id: "dexappbuilder.create.contract.form",
+              title: (
+                <FormattedMessage
+                  id="create.contract.form"
+                  defaultMessage="Create Form"
+                />
+              ),
+            },
+          ]}
+        />
+      </Box>
       {isSiteOwner && (
         <>
           {commerceEnabled && (
