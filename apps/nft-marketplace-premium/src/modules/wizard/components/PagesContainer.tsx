@@ -405,7 +405,7 @@ export function PagesContainer({
       const newPages = { ...pages };
 
       if (page.title) {
-        newPages[slugify(page.title)] = {
+        newPages[slugify(page.title).toLowerCase()] = {
           ...page,
           sections: [],
           title: page.title,
