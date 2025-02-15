@@ -5,14 +5,13 @@ import Share from "@mui/icons-material/Share";
 import {
   Box,
   Button,
-  ButtonBase,
   Grid,
   IconButton,
   Skeleton,
   Stack,
   styled,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 import Decimal from "decimal.js";
 import { useCallback, useMemo, useState } from "react";
@@ -28,6 +27,10 @@ import { useRouter } from "next/router";
 import useUserProductImages from "../../hooks/useUserProductImages";
 import { ShareType } from "../containers/types";
 import { generateShareLink } from "../containers/utils";
+import ProductImagesSlide from "./ProductImagesSlide";
+
+// Import Swiper styles
+import "swiper/css";
 
 const ShareDialogV2 = dynamic(
   () => import("../../../../components/dialogs/ShareDialogV2")
@@ -44,15 +47,7 @@ const Image = styled("img")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const ImageThumbButton = styled(ButtonBase)(({ theme }) => ({
-  height: "auto",
-  width: "100%",
-  aspectRatio: "1/1",
-  borderRadius: theme.shape.borderRadius * 2,
-  border: `1px solid ${theme.palette.grey[200]}`,
 
-  backgroundColor: theme.palette.background.paper,
-}));
 
 export interface ProductContentProps {
   productId: string;
@@ -171,6 +166,8 @@ export default function ProductContent({
     []
   );
 
+  console.log("Vproduct", product, productId);
+
   return (
     <>
       {url && (
@@ -203,13 +200,9 @@ export default function ProductContent({
                 }
               />
             </Grid>
-            {images?.map((image, index) => (
-              <Grid item xs={3} key={index}>
-                <ImageThumbButton onClick={handleSelectImage(image.imageUrl)}>
-                  <Image src={image.imageUrl} />
-                </ImageThumbButton>
-              </Grid>
-            ))}
+            <Grid item xs={12}>
+              <ProductImagesSlide onSelectImage={handleSelectImage} images={images ?? []} />
+            </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12} sm={6}>

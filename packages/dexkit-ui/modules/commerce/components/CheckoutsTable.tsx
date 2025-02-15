@@ -1,6 +1,7 @@
 import {
   DataGrid,
   GridColDef,
+  GridFilterModel,
   GridPaginationModel,
   GridSortModel,
 } from "@mui/x-data-grid";
@@ -34,7 +35,8 @@ export interface CheckoutsTableProps {
 }
 
 export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
-  const [query, setQuery] = useState("");
+
+  const [filterModel, setFilterModel] = useState<GridFilterModel>();
 
   const { setContainer } = useParams();
 
@@ -50,7 +52,7 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
   const { data, isLoading, refetch } = useCheckoutList({
     limit: paginationModel.pageSize,
     page: paginationModel.page,
-    q: query,
+    q: filterModel?.quickFilterValues?.[0] as string,
     sortModel,
   });
 
@@ -240,18 +242,14 @@ export default function CheckoutsTable({ onShare }: CheckoutsTableProps) {
           sortModel={sortModel}
           sortingMode="server"
           disableRowSelectionOnClick
+          onFilterModelChange={setFilterModel}
+          filterModel={filterModel}
           slotProps={{
             toolbar: {
               placeholder: formatMessage({
                 id: "search.products",
                 defaultMessage: "Search products",
               }),
-              quickFilterProps: {
-                value: query,
-                onChange: (e) => {
-                  setQuery(e.target.value);
-                },
-              },
             },
           }}
           slots={{
