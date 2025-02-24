@@ -5576,11 +5576,13 @@ __metadata:
     "@storybook/react-vite": "npm:^7.0.26"
     "@storybook/testing-library": "npm:^0.2.0"
     "@transak/transak-sdk": "npm:^3.0.1"
+    "@types/eth-url-parser": "npm:^1.0.3"
     "@types/papaparse": "npm:^5.3.9"
     babel-loader: "npm:^8.3.0"
     decimal.js: "npm:^10.4.3"
     eslint: "npm:^7.32.0"
     eslint-config-custom: "npm:*"
+    eth-url-parser: "npm:^1.0.4"
     papaparse: "npm:^5.4.1"
     qr-scanner: "npm:^1.4.2"
     react-docgen-typescript-loader: "npm:^3.7.2"
@@ -16245,6 +16247,13 @@ __metadata:
   version: 1.0.6
   resolution: "@types/estree@npm:1.0.6"
   checksum: cdfd751f6f9065442cd40957c07fd80361c962869aa853c1c2fd03e101af8b9389d8ff4955a43a6fcfa223dd387a089937f95be0f3eec21ca527039fd2d9859a
+  languageName: node
+  linkType: hard
+
+"@types/eth-url-parser@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@types/eth-url-parser@npm:1.0.3"
+  checksum: 78b96aef2c350d246eb3d365602f71ec45bac502a2d6cf5cb6cc2ea7624153ac4d79b72dff83258c1de5342385d00ac2b2cad55d18c825d9a37a2d0373554bf0
   languageName: node
   linkType: hard
 
