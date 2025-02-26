@@ -13,9 +13,11 @@ Note: Yarn is the preferred package manager for this project.
 #### Clone the repository:
 
 ```
-git clone https://github.com/yourusername/dexapp-builder.git
+git clone https://github.com/DexKit/dexkit-monorepo.git
 cd dexapp-builder
 ```
+
+If you plan to colaborate fork the repository instead
 
 #### Install dependencies:
 
@@ -38,6 +40,7 @@ yarn dev
 ```
 
 The project should now be live at:
+(Be sure that project is running on port 3000, in case port 3000 is already ocuppied kill the process that is runnin on it)
 
 ```
 http://localhost:3000/
