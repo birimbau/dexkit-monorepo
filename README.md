@@ -1,4 +1,4 @@
-# DexApp Builder
+# DexAppBuilder
 
 Tap into the potential of Web3 with DexAppBuilder. Easily create decentralized applications (DApps) without the coding headaches. Join us now to revolutionize your DApp development journey on Web3!
 
